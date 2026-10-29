@@ -137,41 +137,31 @@ Short-Budget LLM-Guided Optimization}
 \begin{document}
 \maketitle
 \begin{abstract}
-Iterative prompt and program optimizers such as GEPA refine a candidate
-by evaluating it on a search set, showing a proposer model a subset of
-failing examples, and generating a revision. Recent methods seek to
-improve this loop by expanding what the proposer observes in each round,
-using full-set error clustering, targeted minibatches, or trace
-inspection, or by upgrading the proposer to a larger model. Because
-existing evaluations always condition revisions on a surviving parent
-from the search lineage, the contribution of parent inheritance has
-remained confounded with the breadth of per-round feedback disclosure.
-We separate these factors in a factorial study under matched evaluation
-budgets across nine prompt and code optimization benchmarks and two
-model families.
-
-Under short evaluation budgets where task rules must be inferred from
-feedback, greedy parent inheritance accounts for the dominant share of
-optimization progress. Accumulating edits along a parent-child lineage
-substantially outperforms resampling from the initial seed across both
-model families, even when seed-reset proposals are given a clustered
-summary of all search-set failures in every round, whereas upgrading the
-proposer to a larger model within the same family yields no comparable
-gain. Moreover, parent inheritance alters the value of wider per-round
-feedback: full-set error clustering and diverse failure selection
-improve accuracy when resetting to the seed and accelerate learning in
-the opening rounds of search, but sequential parent inheritance rapidly
-closes this gap as solved error categories are retained in the candidate
-and filtered from subsequent failure lists. On classification tasks
-where target labels appear only in evaluator feedback, instructing the
-proposer to copy revealed facts into the candidate prompt allows parent
-inheritance to accumulate the label inventory across rounds and surpass
-GEPA at less than half of its token cost, whereas the same instruction
-fails under seed resetting and slightly degrades accuracy when all
-options are already given in the seed. Finally, call-type token
-accounting shows that GEPA expends the vast majority of its tokens on
-full-set validation and minibatch gating, with only a small fraction
-spent on proposer reflection.
+Iterative language-model optimizers refine prompts and programs by
+evaluating a candidate, showing a proposer model a sample of failing
+cases, and keeping revisions that improve performance. Recent work
+attributes the limits of this loop to narrow single-round reflection,
+introducing full-set error clustering, targeted minibatches, or larger
+proposer models so the optimizer sees more failure modes per step. Yet
+every existing evaluation tests these mechanisms exclusively inside
+lineage-preserving search, where each revision edits a surviving parent,
+leaving the contribution of parent inheritance confounded with the
+breadth of per-round feedback. Across 1,750 pre-registered runs spanning
+nine prompt and program synthesis benchmarks, we separate parent
+inheritance from feedback disclosure under matched evaluation budgets.
+We find that greedy parent inheritance drives the vast majority of
+optimization progress, outperforming seed-reset resampling even when
+seed-reset proposals receive a clustered summary of all failures in
+every round or use a larger proposer model. While full-set error
+clustering and diverse failure selection improve single-step rewrites
+from the seed and accelerate the opening rounds of search, sequential
+parent inheritance rapidly closes this gap as solved error modes are
+retained in the candidate and filtered from subsequent failure lists.
+Moreover, decomposing token expenditure in GEPA reveals that proposer
+reflection accounts for only a small fraction of total cost whereas
+validation and minibatch gating consume nearly the entire budget,
+showing that greedy parent inheritance over raw failures captures the
+gains of complex reflective loops at a fraction of their compute.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -298,15 +288,20 @@ Evolutionary search with language models, as in FunSearch
 \citep{kravatskiy2026improvevolve}, maintains an archive of high-scoring
 programs and prompts a model to mutate or recombine selected parents.
 Performance gains in this literature are typically credited to the
-evolutionary loop as a whole. The closest methodological study is
-Evolution or Illusion? \citep{oved2026evolution}, which varies how a
-fixed generation budget is split between initial seeds and evolutionary
-generations, showing that strategy rankings can reverse across budget
-scales. \citet{oved2026evolution} hold feedback presentation fixed, do
-not break down token usage by call type, and treat best-of-\(N\)
-resampling only as a reference curve. We complement their work by fixing
-the evaluation budget cap and crossing parent inheritance with feedback
-disclosure.
+evolutionary loop as a whole. A recent evaluation audit of 27
+self-evolving configuration and code optimization systems in
+recommendation and ranking \citep{yang2026selfevolvingrecsys} finds that
+none runs an equal-budget random or seed-reset search over its edit
+space or reports multi-session spread on a sealed test split. In general
+program evolution, Evolution or Illusion? \citep{oved2026evolution}
+varies how a fixed generation budget is split between initial seeds and
+evolutionary generations, showing that strategy rankings can reverse
+across budget scales. \citet{oved2026evolution} hold feedback
+presentation fixed, do not break down token usage by call type, and
+treat best-of-\(N\) resampling only as a reference curve. We complement
+these studies by fixing the evaluation budget cap, separating search and
+held-out splits across ten seeds per cell, and crossing parent
+inheritance with feedback disclosure.
 
 \hypertarget{reflective-prompt-optimization}{%
 \subsection{Reflective Prompt
@@ -314,18 +309,22 @@ Optimization}\label{reflective-prompt-optimization}}
 
 Early automatic prompt optimizers either backpropagated textual
 critiques from failing examples, as in ProTeGi
-\citep{pryzant2023automatic} and TextGrad
-\citep{yuksekgonul2024textgrad}, or showed the proposer a score-ordered
-history of past instructions, as in OPRO \citep{yang2023large} and
-EvoPrompt \citep{guo2023evoprompt}. GEPA \citep{a2025gepa} combined
-reflection on a small random minibatch of default size \(b=3\) with
-Pareto-front parent selection and minibatch acceptance gating. GEPA
-0.0.7 also includes a prompt instruction asking the reflection model to
-copy domain-specific facts from feedback into the revised prompt;
-Section 4.3 tests this instruction directly. Other recent studies
-examine when reflective optimization helps or fails:
-\citet{lumer2026reflective} show that per-dimension feedback transfers
-better than scalar scores under noisy judges;
+\citep{pryzant2023automatic}, TextGrad \citep{yuksekgonul2024textgrad},
+and graph-level LLM-AutoDiff \citep{yin2025llmautodiff}, accumulated
+sampling-based momentum across stochastic gradient steps
+\citep{ding2026scaling}, or showed the proposer a score-ordered history
+of past instructions, as in OPRO \citep{yang2023large} and EvoPrompt
+\citep{guo2023evoprompt}. GEPA \citep{a2025gepa} combined reflection on
+a small random minibatch of default size \(b=3\) with Pareto-front
+parent selection and minibatch acceptance gating. GEPA 0.0.7 also
+includes a prompt instruction asking the reflection model to copy
+domain-specific facts from feedback into the revised prompt; Section 4.3
+tests this instruction directly. Other recent studies examine when
+reflective optimization helps or fails: \citet{lumer2026reflective} show
+that per-dimension feedback transfers better than scalar scores under
+noisy judges, consistent with findings that optimizing harnesses against
+ungrounded proxy judges induces Goodhart overfitting without improving
+held-out validity \citep{yang2026ideationgoodhart};
 \citet{giummarra2026understanding} find that GEPA improves MATH-500
 accuracy but fails to improve on HotpotQA with local reasoning models
 while increasing token cost; and \citet{ma2024large} show that prompt
@@ -379,8 +378,9 @@ Design}\label{methodology-and-experimental-design}}
 Loop}\label{the-pfa-optimization-loop}}
 
 We study iterative optimization over a candidate space \(\mathcal{C}\)
-consisting of natural language system prompts or Python functions. Each
-task defines a search set
+consisting of natural language system prompts or Python functions,
+implemented within the AdalFlow optimization framework
+\citep{yin2025llmautodiff}. Each task defines a search set
 \(\mathcal{D}_{\text{search}} = \{(x_i, y^*_i)\}_{i=1}^{N_{\text{search}}}\)
 partitioned into \(G\) failure categories
 \(\{C^{\text{search}}_1, \dots, C^{\text{search}}_G\}\), and a disjoint
@@ -1366,10 +1366,15 @@ lists, shifting \texttt{first-k} disclosure across 46\% to 86\% of
 Consequently, while \texttt{clustergold} speeds up learning in rounds 1
 and 2, \texttt{parent-first} catches up by round 4 (Table 5C). On tasks
 such as \texttt{banking77} where target labels are hidden in feedback,
-this accumulation works only if the proposer writes revealed facts into
-the candidate prompt via \texttt{CARRY\_FACTS}; when all options are
-already in the seed, as on \texttt{bbh\_ste}, copying training facts
-slightly hurts generalization.
+this accumulation works only if the proposer writes revealed domain
+facts into the candidate prompt via \texttt{CARRY\_FACTS}
+\citep{shi2025integrating}; when all options are already in the seed, as
+on \texttt{bbh\_ste}, copying training facts slightly hurts
+generalization. This contrast parallels selective LLM-guided
+regularization in recommendation \citep{shi2026selective}, where
+applying LLM guidance indiscriminately degrades performance on
+well-specified instances while selective intervention targeted to
+under-specified cases yields consistent gains.
 
 \textbf{Implications for evaluating reflective optimizers.} Because
 recent reflection-scope methods such as ESPO \citep{liu2026espo}, RPT
@@ -1381,11 +1386,13 @@ measure residual improvements on top of parent inheritance. In our grid,
 \texttt{parent-first} at termination. Gains over default GEPA in
 short-budget settings can therefore come from replacing mixed pass/fail
 minibatches with pure failure feedback rather than from clustering
-itself. Future evaluations of reflection-scope or proposer-upgrade
-methods should include three controls: a lineage-off \texttt{seed}
-baseline row alongside the \texttt{parent} row, a zero-feedback
-\texttt{seed-none} baseline to detect crowding-out, and call-type token
-accounting separating reflection from validation.
+itself. Consistent with recent evaluation audits of self-evolving
+systems \citep{yang2026selfevolvingrecsys}, future evaluations of
+reflection-scope or proposer-upgrade methods should include three
+controls: a lineage-off \texttt{seed} baseline row alongside the
+\texttt{parent} row, a zero-feedback \texttt{seed-none} baseline to
+detect crowding-out, and call-type token accounting separating
+reflection from validation.
 
 \textbf{Practical guidelines.} When tuning prompts or code under short
 evaluation budgets, practitioners should build on the best parent
