@@ -207,16 +207,17 @@ evaluations cannot tell how much progress comes from wider single-round
 reflection and how much comes from accumulating edits along a
 parent-child lineage.
 
-To separate these factors, we organize an optimizer around three design
-choices: lineage \(P\), feedback disclosure \(F\), and evaluation
-scheduling \(A\). Lineage \(P\) determines whether each proposal edits
-the initial seed \(P = \text{seed}\), which corresponds to best-of-\(N\)
-resampling from the seed's feedback, or edits the current search-best
-candidate \(P = \text{parent}\). Disclosure \(F\) determines whether the
-evaluator shows the proposer only the scalar score, the first \(k\)
-failures, \(k\) structurally diverse failures, a random mixed minibatch
-of \(k\) passing and failing examples, or an LLM-clustered summary of
-all failures with or without expected answers. Scheduling \(A\) governs
+To separate these factors, we organize a large language model (LLM)
+optimizer around three design choices: lineage \(P\), feedback
+disclosure \(F\), and evaluation scheduling \(A\). Lineage \(P\)
+determines whether each proposal edits the initial seed
+\(P = \text{seed}\), which corresponds to best-of-\(N\) resampling from
+the seed's feedback, or edits the current search-best candidate
+\(P = \text{parent}\). Disclosure \(F\) determines whether the evaluator
+shows the proposer only the scalar score, the first \(k\) failures,
+\(k\) structurally diverse failures, a random mixed minibatch of \(k\)
+passing and failing examples, or an LLM-clustered summary of all
+failures with or without expected answers. Scheduling \(A\) governs
 candidate evaluation and stopping. We run a crossed \(P \times F\)
 factorial experiment under a fixed full-search-set scheduler with early
 stopping, complemented by a system-level comparison against GEPA under
@@ -224,7 +225,7 @@ matched maximum task-model call caps. Across 1,750 runs on nine task
 families, comprising five constructed rule-discovery tasks, a
 rubric-judged customer support task, ScoNe \citep{she2023scone}, a
 12-intent subset of Banking77 \citep{casanueva2020efficient}, and
-BIG-Bench Hard salient translation error detection
+BIG-Bench Hard salient translation error detection (BBH-STE)
 \citep{suzgun2022challenging}, we replicate the main contrasts on
 \texttt{claude-haiku-5-5} and test a larger proposer model
 \texttt{gpt-4.1}.
