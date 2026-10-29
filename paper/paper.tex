@@ -139,39 +139,39 @@ Short-Budget LLM-Guided Optimization}
 \begin{abstract}
 Iterative prompt and program optimizers such as GEPA refine a candidate
 by evaluating it on a search set, showing a proposer model a subset of
-failing examples, and generating a revision. Recent methods expand what
-the proposer sees in each round through full-set error clustering,
-targeted minibatches, or trace inspection, or upgrade the proposer to a
-larger model. Because existing evaluations always edit a surviving
-parent from the search lineage, the effect of parent inheritance
-(lineage) has remained confounded with the breadth of per-round feedback
-disclosure. We separate these factors in a \(P \times F\) factorial
-study under matched task-model call caps across 1,750 optimization runs
-on nine task families.
+failing examples, and generating a revision. Recent methods seek to
+improve this loop by expanding what the proposer observes in each round,
+using full-set error clustering, targeted minibatches, or trace
+inspection, or by upgrading the proposer to a larger model. Because
+existing evaluations always condition revisions on a surviving parent
+from the search lineage, the contribution of parent inheritance has
+remained confounded with the breadth of per-round feedback disclosure.
+We separate these factors in a factorial study under matched evaluation
+budgets across nine prompt and code optimization benchmarks and two
+model families.
 
-Under short budgets where task rules must be recovered from feedback,
-greedy parent inheritance accounts for the largest accuracy gain.
-Averaged across seven primary tasks, parent inheritance improves
-held-out accuracy over seed-reset resampling by +0.238 on
-\texttt{gpt-4.1-mini} and +0.222 on \texttt{claude-haiku-5-5},
-outperforming seed-reset proposals even when those proposals observe a
-clustered summary of all search-set failures in every round (+0.157).
-Upgrading the proposer from \texttt{gpt-4.1-mini} to \texttt{gpt-4.1}
-yields no clear gain (−0.019), whereas parent inheritance under
-\texttt{gpt-4.1} adds +0.380. Full-set error clustering with expected
-answers improves over showing the first four failures under seed
-resetting (+0.156) and in round 2 under parent inheritance (+0.173), but
-sequential parent inheritance closes this gap by round 4 and finishes at
-a similar level (−0.018 on \texttt{gpt-4.1-mini}; −0.008 on
-\texttt{claude-haiku-5-5}). On a 12-intent Banking77 subset where intent
-labels appear only in feedback, appending one sentence that instructs
-the proposer to copy feedback facts into the prompt raises
-parent-inheritance accuracy from 0.372 to 0.856, surpassing GEPA (0.664)
-at 43\% of its median token cost, while scoring 0.317 under seed
-resetting; on BBH translation error detection, where all options appear
-in the seed, the same sentence lowers accuracy by −0.061. Finally,
-call-type token accounting shows that GEPA spends 85\% to 98\% of its
-tokens on validation and minibatch checks and 2\% to 15\% on reflection.
+Under short evaluation budgets where task rules must be inferred from
+feedback, greedy parent inheritance accounts for the dominant share of
+optimization progress. Accumulating edits along a parent-child lineage
+substantially outperforms resampling from the initial seed across both
+model families, even when seed-reset proposals are given a clustered
+summary of all search-set failures in every round, whereas upgrading the
+proposer to a larger model within the same family yields no comparable
+gain. Moreover, parent inheritance alters the value of wider per-round
+feedback: full-set error clustering and diverse failure selection
+improve accuracy when resetting to the seed and accelerate learning in
+the opening rounds of search, but sequential parent inheritance rapidly
+closes this gap as solved error categories are retained in the candidate
+and filtered from subsequent failure lists. On classification tasks
+where target labels appear only in evaluator feedback, instructing the
+proposer to copy revealed facts into the candidate prompt allows parent
+inheritance to accumulate the label inventory across rounds and surpass
+GEPA at less than half of its token cost, whereas the same instruction
+fails under seed resetting and slightly degrades accuracy when all
+options are already given in the seed. Finally, call-type token
+accounting shows that GEPA expends the vast majority of its tokens on
+full-set validation and minibatch gating, with only a small fraction
+spent on proposer reflection.
 \end{abstract}
 
 \hypertarget{introduction}{%
@@ -207,27 +207,29 @@ evaluations cannot tell how much progress comes from wider single-round
 reflection and how much comes from accumulating edits along a
 parent-child lineage.
 
-To separate these factors, we organize an optimizer around three
-choices: lineage (\(P\)), which determines whether each proposal edits
-the initial seed (\(P = \text{seed}\), equivalent to best-of-\(N\)
-resampling from the seed's feedback) or edits the current search-best
-candidate (\(P = \text{parent}\)); disclosure (\(F\)), which determines
-what failure information the evaluator shows the proposer (score only,
-the first \(k\) failures, \(k\) diverse failures, a random mixed
-minibatch of \(k\) passing and failing examples, or an LLM-clustered
-summary of all failures with or without expected answers); and
-scheduling (\(A\)), which governs candidate evaluation and stopping. We
-run a crossed \(P \times F\) factorial experiment under a fixed
-full-search-set scheduler with early stopping, alongside a system-level
-comparison against GEPA under matched maximum task-model call caps.
-Across 1,750 runs on nine task families (five constructed rule-discovery
-tasks, a rubric-judged support reply task, ScoNe \citep{she2023scone}, a
+To separate these factors, we organize an optimizer around three design
+choices: lineage \(P\), feedback disclosure \(F\), and evaluation
+scheduling \(A\). Lineage \(P\) determines whether each proposal edits
+the initial seed \(P = \text{seed}\), which corresponds to best-of-\(N\)
+resampling from the seed's feedback, or edits the current search-best
+candidate \(P = \text{parent}\). Disclosure \(F\) determines whether the
+evaluator shows the proposer only the scalar score, the first \(k\)
+failures, \(k\) structurally diverse failures, a random mixed minibatch
+of \(k\) passing and failing examples, or an LLM-clustered summary of
+all failures with or without expected answers. Scheduling \(A\) governs
+candidate evaluation and stopping. We run a crossed \(P \times F\)
+factorial experiment under a fixed full-search-set scheduler with early
+stopping, complemented by a system-level comparison against GEPA under
+matched maximum task-model call caps. Across 1,750 runs on nine task
+families, comprising five constructed rule-discovery tasks, a
+rubric-judged customer support task, ScoNe \citep{she2023scone}, a
 12-intent subset of Banking77 \citep{casanueva2020efficient}, and
 BIG-Bench Hard salient translation error detection
-\citep{suzgun2022challenging}), we replicate the main contrasts on
-\texttt{claude-haiku-5-5} and test a larger proposer (\texttt{gpt-4.1}).
+\citep{suzgun2022challenging}, we replicate the main contrasts on
+\texttt{claude-haiku-5-5} and test a larger proposer model
+\texttt{gpt-4.1}.
 
-Our main findings are:
+Our main findings are as follows:
 
 \begin{itemize}
 \tightlist
@@ -235,55 +237,51 @@ Our main findings are:
   \textbf{Parent inheritance outweighs single-round disclosure breadth
   and proposer size (Sections 4.1--4.2):} On tasks where rules must be
   recovered from feedback, switching from \(P = \text{seed}\) to
-  \(P = \text{parent}\) produces the largest accuracy gain across both
-  \texttt{gpt-4.1-mini} (+0.238 across all seven primary tasks; +0.332
-  across the five feedback-dependent tasks) and
-  \texttt{claude-haiku-5-5} (+0.222). This advantage holds even when
-  seed-reset proposals draw fresh random examples each round
-  (\texttt{seed-minibatch}) or receive a clustered summary of all
-  search-set failures in every round (\texttt{seed-clustergold}):
-  showing just four raw failures under parent inheritance
-  (\texttt{parent-first}) still beats \texttt{seed-clustergold} by
-  +0.157. Upgrading the proposer from \texttt{gpt-4.1-mini} to
-  \texttt{gpt-4.1} on three feedback-dependent prompt tasks yields no
-  clear gain in either row, while parent inheritance under
-  \texttt{gpt-4.1} adds +0.380.
+  \(P = \text{parent}\) produces the largest accuracy gain in our study,
+  adding +0.238 across all seven primary tasks on \texttt{gpt-4.1-mini}
+  and +0.222 across five tasks on \texttt{claude-haiku-5-5}. This
+  advantage holds even when seed-reset proposals draw fresh random
+  examples each round in \texttt{seed-minibatch} or receive a clustered
+  summary of all search-set failures in every round in
+  \texttt{seed-clustergold}: showing just four raw failures under parent
+  inheritance still beats \texttt{seed-clustergold} by +0.157. Upgrading
+  the proposer from \texttt{gpt-4.1-mini} to \texttt{gpt-4.1} on three
+  feedback-dependent prompt tasks yields no clear gain in either row,
+  while parent inheritance under \texttt{gpt-4.1} adds +0.380.
 \item
   \textbf{Fact retention in the prompt explains the Banking77 gap with
   GEPA (Section 4.3):} On the 12-intent Banking77 task, where intent
   names appear only in error feedback, baseline \texttt{parent-first}
-  initially scored 0.372 against 0.664 for GEPA. Logs showed that early
-  formatting-only edits scored 0.000 and stayed anchored to the seed,
-  whereas GEPA's reflection prompt explicitly tells the proposer to copy
-  domain facts from feedback into the instruction. In a follow-up
-  experiment on Banking77 and BBH-STE, appending one sentence with this
-  instruction raised \texttt{parent-first} on Banking77 from 0.372 to
-  0.856 at 43\% of GEPA's median tokens, while \texttt{seed-first} with
-  the same sentence retained only the 4 intents shown in round 1 and
-  scored 0.317. On BBH-STE, where all six option labels are already in
-  the seed, the same sentence reduced accuracy by −0.061.
+  initially scored 0.372 against 0.664 for GEPA. Inspection of the
+  search logs showed that early formatting-only edits scored 0.000 and
+  stayed anchored to the seed, whereas GEPA's reflection prompt
+  explicitly tells the proposer to copy domain facts from feedback into
+  the instruction. In a follow-up experiment on Banking77 and BBH-STE,
+  appending one sentence with this instruction raised
+  \texttt{parent-first} on Banking77 from 0.372 to 0.856 at 43\% of
+  GEPA's median token cost, while \texttt{seed-first} with the same
+  sentence retained only the 4 intents shown in round 1 and scored
+  0.317. On BBH-STE, where all six option labels are already in the
+  seed, the same sentence reduced accuracy by −0.061.
 \item
   \textbf{Parent inheritance closes the gap with wider per-round
   disclosure over multiple rounds (Sections 4.4--4.6):} When resetting
-  to the seed (\(P = \text{seed}\)), showing only the first four
-  failures crowds out zero-feedback code priors on unshown error
-  categories, and both diverse sampling (+0.061) and target-preserving
-  clustering (+0.156) improve accuracy. Under parent inheritance
-  (\(P = \text{parent}\)), full-set clustering initially leads in round
-  2 (+0.173), but as solved categories are retained in the parent (70\%
-  to 95\% retention) and filtered from future failure lists,
-  \texttt{first-k} disclosure naturally shifts across 46\% to 86\% of
-  the search set, catching up by round 4 and finishing at the same
-  level. Conversely, random mixed minibatches hurt parent-inheritance
-  accuracy (−0.061 on \texttt{gpt-4.1-mini}; −0.093 on
-  \texttt{claude-haiku-5-5}) by spending feedback slots on passing
-  examples.
+  to the seed, showing only the first four failures crowds out
+  zero-feedback code priors on unshown error categories, and both
+  diverse sampling and target-preserving clustering improve accuracy
+  over \texttt{first-k} disclosure. Under parent inheritance, full-set
+  clustering initially leads in round 2 by +0.173, but as solved
+  categories are retained in the parent and filtered from future failure
+  lists, \texttt{first-k} disclosure shifts across 46\% to 86\% of the
+  search set, catching up by round 4 and finishing at the same level.
+  Conversely, random mixed minibatches reduce parent-inheritance
+  accuracy by spending feedback slots on passing examples.
 \item
   \textbf{GEPA spends most of its token budget on validation and
   minibatch gating (Section 4.7):} Across all seven prompt tasks
   evaluated with GEPA, proposer reflection consumes only 2\% to 15\% of
-  total tokens, while full search-set validations (21\% to 74\%) and
-  minibatch checks (18\% to 77\%) consume the remaining 85\% to 98\%.
+  total tokens, while full search-set validations and minibatch checks
+  consume the remaining 85\% to 98\%.
 \end{itemize}
 
 \hypertarget{related-work}{%
@@ -319,7 +317,7 @@ critiques from failing examples, as in ProTeGi
 \citep{yuksekgonul2024textgrad}, or showed the proposer a score-ordered
 history of past instructions, as in OPRO \citep{yang2023large} and
 EvoPrompt \citep{guo2023evoprompt}. GEPA \citep{a2025gepa} combined
-reflection on a small random minibatch (default size \(b=3\)) with
+reflection on a small random minibatch of default size \(b=3\) with
 Pareto-front parent selection and minibatch acceptance gating. GEPA
 0.0.7 also includes a prompt instruction asking the reflection model to
 copy domain-specific facts from feedback into the revised prompt;
@@ -331,8 +329,8 @@ better than scalar scores under noisy judges;
 accuracy but fails to improve on HotpotQA with local reasoning models
 while increasing token cost; and \citet{ma2024large} show that prompt
 optimizers rely heavily on the proposer's pre-trained task prior,
-matching our results on tasks where the prior already fits the
-specification (\texttt{dates} and \texttt{scone}).
+matching our results on \texttt{dates} and \texttt{scone}, where the
+model prior already fits the specification.
 
 \hypertarget{expanding-reflection-scope}{%
 \subsection{Expanding Reflection
@@ -341,21 +339,21 @@ Scope}\label{expanding-reflection-scope}}
 Several recent papers argue that small random minibatches under-sample
 the error distribution during reflection. \citet{liu2026espo} formalize
 this via a coupon-collector bound and introduce ESPO, which clusters all
-training failures into three to seven error patterns (Diagnose) before
-generating pattern-specific edits (Diversify) and bootstrap-selecting
-among them (Stabilize). RPT \citep{bayat2026reflective} gives the
-optimizer a clustering tool over full-set critiques; AdaGEPA
-\citep{chen2026adagepa} swaps minibatch slots toward identified failure
-modes; CASD \citep{singh2026coding} replaces iterative search with a
-coding agent that reads all traces before writing a single prompt; and
-Contrastive Reflection \citep{koh2026contrastive} pairs failing and
-passing examples from decision-tree slices. Every iterative method in
-this group is evaluated only inside a lineage-preserving loop, without a
-seed-reset control (\(P = \text{seed}\)) or a zero-feedback baseline.
-Testing disclosure schemes with and without parent inheritance shows
-that single-round error coverage strongly limits seed-reset
-optimization, whereas under parent inheritance its terminal effect is
-much smaller.
+training failures into three to seven error patterns in a Diagnose stage
+before generating pattern-specific edits in a Diversify stage and
+bootstrap-selecting among them in a Stabilize stage. RPT
+\citep{bayat2026reflective} gives the optimizer a clustering tool over
+full-set critiques; AdaGEPA \citep{chen2026adagepa} swaps minibatch
+slots toward identified failure modes; CASD \citep{singh2026coding}
+replaces iterative search with a coding agent that reads all traces
+before writing a single prompt; and Contrastive Reflection
+\citep{koh2026contrastive} pairs failing and passing examples from
+decision-tree slices. Every iterative method in this group is evaluated
+only inside a lineage-preserving loop, without a seed-reset control or a
+zero-feedback baseline. Testing disclosure schemes with and without
+parent inheritance shows that single-round error coverage strongly
+limits seed-reset optimization, whereas under parent inheritance its
+terminal effect is much smaller.
 
 \hypertarget{validation-efficiency-and-example-selection}{%
 \subsection{Validation Efficiency and Example
@@ -380,7 +378,8 @@ Design}\label{methodology-and-experimental-design}}
 Loop}\label{the-pfa-optimization-loop}}
 
 We study iterative optimization over a candidate space \(\mathcal{C}\)
-(system prompts or Python functions). Each task defines a search set
+consisting of natural language system prompts or Python functions. Each
+task defines a search set
 \(\mathcal{D}_{\text{search}} = \{(x_i, y^*_i)\}_{i=1}^{N_{\text{search}}}\)
 partitioned into \(G\) failure categories
 \(\{C^{\text{search}}_1, \dots, C^{\text{search}}_G\}\), and a disjoint
@@ -429,16 +428,16 @@ failing indices \(\mathcal{E}(c) = \{i : s_i(c) = 0\}\).
     \(f_t = F(p_t, \mathcal{D}_{\text{search}}, k=4)\) from
     \(E(p_t, \mathcal{D}_{\text{search}})\).
   \item
-    \textbf{Proposal:} Query proposer \(M_{\text{prop}}\)
-    (\texttt{PROPOSE\_TEMPLATE}, Appendix B.1) with task objective,
+    \textbf{Proposal:} Query proposer \(M_{\text{prop}}\) with
+    \texttt{PROPOSE\_TEMPLATE} (Appendix B.1) using the task objective,
     \(p_t\), and \(f_t\) to generate \(c_t\).
   \item
     \textbf{Evaluation (\(A\)):} Evaluate \(c_t\) on
-    \(\mathcal{D}_{\text{search}}\) (using 1 evaluation from cap \(B\))
-    and cache \(E(c_t, \mathcal{D}_{\text{search}})\). If
+    \(\mathcal{D}_{\text{search}}\), consuming 1 evaluation from cap
+    \(B\), and cache \(E(c_t, \mathcal{D}_{\text{search}})\). If
     \(S(c_t, \mathcal{D}_{\text{search}}) > S(c^*_{t-1}, \mathcal{D}_{\text{search}})\),
-    set \(c^*_t = c_t\); otherwise keep \(c^*_t = c^*_{t-1}\) (strict
-    improvement; ties keep the earlier candidate).
+    set \(c^*_t = c_t\); otherwise keep \(c^*_t = c^*_{t-1}\) under
+    strict improvement tie-breaking.
   \end{itemize}
 \item
   \textbf{Output:} Evaluate \(c^*\) once on
@@ -448,80 +447,83 @@ failing indices \(\mathcal{E}(c) = \{i : s_i(c) = 0\}\).
 
 \textbf{Factor 1: Lineage (\(P\)).} Under \(P = \text{seed}\), every
 round sets \(p_t = c_0\) and reuses the cached evaluation of \(c_0\).
-Under deterministic disclosure (\texttt{none}, \texttt{first},
-\texttt{diverse}), \(p_t\) and \(f_t\) stay fixed across rounds, so the
-\(B-1\) proposals are independent samples from \(M_{\text{prop}}\) (at
-default provider temperature) conditioned on \(c_0\). Under
-\texttt{minibatch}, \texttt{cluster}, and \texttt{clustergold}, \(f_t\)
-varies across rounds while still requiring a single-edit jump from
-\(c_0\). Under \(P = \text{parent}\), every round edits the current
-search-best candidate \(p_t = c^*_{t-1}\) (reusing its cached evaluation
-if the previous proposal did not strictly improve on it). When
-\(S(c_0, \mathcal{D}_{\text{search}}) = 0.0\) (\texttt{labels},
-\texttt{routing}, \texttt{replies}, \texttt{banking77}),
-strict-improvement tie-breaking keeps \(p_t = c_0\) until a proposal
-scores above zero; this occurs in round 1 on \texttt{routing} and
-\texttt{replies} (and round 1 or 2 on \texttt{labels}), but can take
-several rounds on \texttt{banking77} (Section 4.3). Once \(c^*_t\)
-improves over \(c_0\), \(P = \text{parent}\) combines three effects
-relative to \(P = \text{seed}\): (a) \emph{text inheritance} (keeping
-discovered rules in \(p_{t+1}\)), (b) \emph{residual-error exposure
-shift} (removing solved cases from \(\mathcal{E}(p_{t+1})\) so new
-categories enter the \(k=4\) window), and (c) \emph{multi-step edit
-decomposition} (fixing a few categories per round). Secondary
-inspiration candidates are disabled in all cells.
+Under deterministic disclosure schemes such as \texttt{none},
+\texttt{first}, and \texttt{diverse}, both \(p_t\) and \(f_t\) stay
+fixed across rounds, so the \(B-1\) proposals are independent samples
+from \(M_{\text{prop}}\) at default provider temperature conditioned on
+\(c_0\). Under \texttt{minibatch}, \texttt{cluster}, and
+\texttt{clustergold}, \(f_t\) varies across rounds while still requiring
+a single-edit jump from \(c_0\). Under \(P = \text{parent}\), every
+round edits the current search-best candidate \(p_t = c^*_{t-1}\),
+reusing its cached evaluation if the previous proposal did not strictly
+improve on it. When \(S(c_0, \mathcal{D}_{\text{search}}) = 0.0\), as on
+\texttt{labels}, \texttt{routing}, \texttt{replies}, and
+\texttt{banking77}, strict-improvement tie-breaking keeps \(p_t = c_0\)
+until a proposal scores above zero; this occurs in round 1 on
+\texttt{routing} and \texttt{replies} and in round 1 or 2 on
+\texttt{labels}, but can take several rounds on \texttt{banking77}
+(Section 4.3). Once \(c^*_t\) improves over \(c_0\),
+\(P = \text{parent}\) combines three mechanisms relative to
+\(P = \text{seed}\): text inheritance, which keeps discovered rules in
+\(p_{t+1}\); residual-error exposure shift, which removes solved cases
+from \(\mathcal{E}(p_{t+1})\) so new categories enter the \(k=4\)
+display window; and multi-step edit decomposition, which allows the
+proposer to fix a subset of categories per round. Secondary inspiration
+candidates are disabled in all cells.
 
 \textbf{Factor 2: Feedback Disclosure (\(F\)).} Failing examples are
-formatted with their input, wrong output, and expected answer (or
-rubric; Appendix B). We compare six operators: - \texttt{none}: Masks
-the evaluation of \(p_t\) (\texttt{score=None}, no instance scores,
-\texttt{\{\{\ feedback\ \}\}} set to \texttt{(no\ feedback)}). Because
-\(p_t = c_0\) carries no round-dependent signal under \texttt{none},
-\texttt{seed-none} is the shared zero-feedback baseline. -
-\texttt{first}: Shows \(S(p_t, \mathcal{D}_{\text{search}})\),
-per-instance binary scores, and the first \(k = 4\) failures of \(p_t\)
-in dataset order, plus the count of remaining failures. In round 1, this
-exposes 2 categories on \texttt{labels}, \texttt{dates},
-\texttt{replies}, and \texttt{size}, up to 3 on \texttt{duration}, and
-up to 4 on \texttt{routing}, \texttt{banking77}, and \texttt{bbh\_ste}.
-- \texttt{diverse}: Selects \(k = 4\) failures via greedy farthest-point
-sampling under normalized Levenshtein distance over a structural input
-signature (\texttt{\_shape} in \texttt{presets.py}, mapping lowercase
-letters to \texttt{a}, uppercase to \texttt{A}, and digits to \texttt{9}
-while keeping punctuation; e.g., \texttt{"2024-03-15"} \(\to\)
-\texttt{"9-9-9"}), starting from the first failure. -
+formatted with their input, wrong output, and expected answer or grading
+rubric (Appendix B). We compare six operators: - \texttt{none}: Masks
+the evaluation of \(p_t\) by setting \texttt{score=None}, omitting
+instance scores, and rendering \texttt{\{\{\ feedback\ \}\}} as
+\texttt{(no\ feedback)}. Because \(p_t = c_0\) carries no
+round-dependent signal under \texttt{none}, \texttt{seed-none} is the
+shared zero-feedback baseline. - \texttt{first}: Shows
+\(S(p_t, \mathcal{D}_{\text{search}})\), per-instance binary scores, and
+the first \(k = 4\) failures of \(p_t\) in dataset order, followed by
+the count of remaining failures. In round 1, this exposes 2 categories
+on \texttt{labels}, \texttt{dates}, \texttt{replies}, and \texttt{size},
+up to 3 on \texttt{duration}, and up to 4 on \texttt{routing},
+\texttt{banking77}, and \texttt{bbh\_ste}. - \texttt{diverse}: Selects
+\(k = 4\) failures via greedy farthest-point sampling under normalized
+Levenshtein distance over a structural input signature defined by
+\texttt{\_shape} in \texttt{presets.py}, which maps lowercase letters to
+\texttt{a}, uppercase letters to \texttt{A}, and digits to \texttt{9}
+while preserving punctuation, starting from the first failure. -
 \texttt{minibatch}: Draws \(k = 4\) examples uniformly at random without
-replacement from \(\mathcal{D}_{\text{search}}\) each round
-(\texttt{random.Random(1000\ +\ r)} for run \(r \in \{0, \dots, 9\}\))
-and shows whether \(p_t\) passed or failed each drawn example with its
-expected answer, while still gating acceptance on the full search set. -
-\texttt{cluster}: Passes all failures \(\mathcal{E}(p_t)\) to one call
-of the clusterer model (matching \(M_{\text{prop}}\)), which groups them
-into 3 to 7 patterns and outputs one line per pattern with a
-description, failure count, and one verbatim representative wrong answer
-(\texttt{CLUSTER\_PROMPT}, Appendix B.3). Clustering tokens are included
-in search tokens. - \texttt{clustergold}: Identical to \texttt{cluster},
-except the prompt requires each representative failure to include the
-input, wrong answer, and full expected answer
-(\texttt{CLUSTER\_GOLD\_PROMPT}, Appendix B.3).
+replacement from \(\mathcal{D}_{\text{search}}\) in each round using
+\texttt{random.Random(1000\ +\ r)} for run seed
+\(r \in \{0, \dots, 9\}\), and shows whether \(p_t\) passed or failed
+each drawn example alongside its expected answer, while still gating
+acceptance on the full search set. - \texttt{cluster}: Passes all
+failures \(\mathcal{E}(p_t)\) to one call of the clusterer model, which
+matches \(M_{\text{prop}}\) and groups them into 3 to 7 patterns,
+outputting one line per pattern with a description, failure count, and
+one verbatim representative wrong answer (\texttt{CLUSTER\_PROMPT},
+Appendix B.3). Clustering tokens are included in search tokens. -
+\texttt{clustergold}: Identical to \texttt{cluster}, except the prompt
+requires each representative failure to include the input, wrong answer,
+and full expected answer (\texttt{CLUSTER\_GOLD\_PROMPT}, Appendix B.3).
 
 \textbf{Scheduling (\(A\)) and GEPA Comparison.} In our \(P \times F\)
 grid, every proposal is evaluated on all of
 \(\mathcal{D}_{\text{search}}\) up to \(B = 8\) evaluations for prompt
-tasks (\(c_0\) plus 7 proposals, capping task calls at
-\(8 \times N_{\text{search}}\)) and \(B = 12\) for code tasks (\(c_0\)
-plus 11 proposals, 60-second subprocess timeout across 24 test cases,
-capping executions at 288). Missing fenced blocks trigger at most one
-retry (all 1,750 runs produced valid blocks); code exceptions score
-\(0.0\) with the traceback in feedback. Proposer, task, and clusterer
-models use default provider sampling (\texttt{openai} SDK 2.44.0 for
-\texttt{gpt-4.1-mini} and \texttt{gpt-4.1}; \texttt{anthropic} SDK
-0.112.0 with default adaptive thinking for \texttt{claude-haiku-5-5}),
-and the \texttt{replies} judge uses \texttt{gpt-4.1-mini} at
-\texttt{temperature=0} with response caching. For system-level
-comparison, we run \texttt{gepa} 0.0.7 \citep{a2025gepa} with default
-minibatch size \(b = 3\), Pareto selection, minibatch acceptance gating,
-its built-in reflection prompt, and the same task-call cap
+tasks, corresponding to \(c_0\) plus 7 proposals and at most
+\(8 \times N_{\text{search}}\) task calls, and \(B = 12\) evaluations
+for code tasks, corresponding to \(c_0\) plus 11 proposals executed with
+a 60-second subprocess timeout across 24 test cases for at most 288
+executions. Missing fenced blocks trigger at most one retry, though all
+1,750 runs produced valid blocks on the first try; code exceptions score
+\(0.0\) with the traceback included in feedback. Proposer, task, and
+clusterer models use default provider sampling in \texttt{openai} SDK
+2.44.0 for \texttt{gpt-4.1-mini} and \texttt{gpt-4.1} and
+\texttt{anthropic} SDK 0.112.0 with default adaptive thinking for
+\texttt{claude-haiku-5-5}, while the \texttt{replies} judge uses
+\texttt{gpt-4.1-mini} at \texttt{temperature=0} with response caching.
+For system-level comparison, we run \texttt{gepa} 0.0.7
+\citep{a2025gepa} with default minibatch size \(b = 3\), Pareto
+selection, minibatch acceptance gating, its built-in reflection prompt,
+and the same task-call cap
 \(\text{max\_metric\_calls} = 8 \times N_{\text{search}}\), testing both
 unmodified \texttt{GEPA\ mb3} and early-stopped
 \texttt{GEPA\ mb3\ +\ stop}.
@@ -580,36 +582,38 @@ Plain bytes, SI decimal (\texttt{10KB}), IEC binary (\texttt{4MiB},
 \textbf{Table 1:} Specifications of the seven primary tasks and two
 public extension tasks.
 
-In the five constructed tasks (\texttt{labels}, \texttt{dates},
-\texttt{routing}, \texttt{duration}, \texttt{size}) and
+In the five constructed tasks, namely \texttt{labels}, \texttt{dates},
+\texttt{routing}, \texttt{duration}, and \texttt{size}, as well as in
 \texttt{replies}, the seed \(c_0\) omits key rules or label names so
 that high accuracy requires learning from feedback (Appendix B.2). For
 the two code tasks, \(c_0\) is a 4-line function that handles only
-single-character suffixes (\texttt{s}, \texttt{m}, \texttt{h} on
-\texttt{duration}; \texttt{B}, \texttt{K}, \texttt{M}, \texttt{G} on
-\texttt{size}). This setup favors methods that accumulate rules across
-rounds. To test public benchmarks, we included \texttt{scone}
-\citep{she2023scone} in Batch A.1 and added \texttt{banking77}
-\citep{casanueva2020efficient} and \texttt{bbh\_ste}
+single-character suffixes: \texttt{s}, \texttt{m}, and \texttt{h} on
+\texttt{duration}, and \texttt{B}, \texttt{K}, \texttt{M}, and
+\texttt{G} on \texttt{size}. This setup favors methods that accumulate
+rules across rounds. To test public benchmarks, we included
+\texttt{scone} \citep{she2023scone} in Batch A.1 and added
+\texttt{banking77} \citep{casanueva2020efficient} and \texttt{bbh\_ste}
 \citep{suzgun2022challenging} in Batch A.4. For \texttt{banking77}, 12
 of 77 intents were sampled with \texttt{random.Random(0)} before
-registration (after an excluded 20-intent smoke test scored \(\le 0.15\)
-within 8 evaluations), drawing 2 search and 3 held-out queries per
+registration after an excluded 20-intent smoke test scored at most 0.15
+within 8 evaluations, drawing 2 search and 3 held-out queries per
 intent. For \texttt{bbh\_ste}, the six option names were included in
 \(c_0\), and examples exceeding the 300-character feedback truncation
-limit were filtered before registration (retaining 198 of 250 examples,
-sampling 3 search and 6 held-out per class).
+limit were filtered before registration, retaining 198 of 250 examples
+and sampling 3 search and 6 held-out examples per class.
 
 \hypertarget{statistical-estimands-bootstrap-protocol-and-run-accounting}{%
 \subsection{Statistical Estimands, Bootstrap Protocol, and Run
 Accounting}\label{statistical-estimands-bootstrap-protocol-and-run-accounting}}
 
-The replication unit is a run with seed \(r \in \{0, \dots, 9\}\)
-(\(n = 10\) runs per cell). Let \(Y_{\tau,P,F,r} \in [0, 1]\) denote
-held-out accuracy \(S(c^*, \mathcal{D}_{\text{holdout}})\) on task
-\(\tau \in \mathcal{T}\) (reserving \(t\) for rounds), and
-\(\bar{Y}_{\tau,P,F} = \frac{1}{10}\sum_{r=0}^9 Y_{\tau,P,F,r}\).
-Weighting tasks in \(\mathcal{T}\) equally, we estimate:
+The replication unit is an optimization run with seed
+\(r \in \{0, \dots, 9\}\), giving \(n = 10\) runs per cell. Let
+\(Y_{\tau,P,F,r} \in [0, 1]\) denote held-out accuracy
+\(S(c^*, \mathcal{D}_{\text{holdout}})\) on task
+\(\tau \in \mathcal{T}\), reserving \(t\) for optimization rounds, and
+let \(\bar{Y}_{\tau,P,F} = \frac{1}{10}\sum_{r=0}^9 Y_{\tau,P,F,r}\)
+denote the cell mean. Weighting tasks in \(\mathcal{T}\) equally, we
+estimate three quantities:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -632,38 +636,37 @@ Weighting tasks in \(\mathcal{T}\) equally, we estimate:
   \(\mathcal{U}_\tau \subset \{1, \dots, G\}\) is the set of categories
   where \(c_0\) fails at least one search example in \(>50\%\) of
   \texttt{seed} runs, excluding categories shown among the first four
-  failures in \(>50\%\) of \texttt{seed-first} runs (\texttt{seed-none}
-  uses the same reference set \(\mathcal{U}_\tau\)). Across proposals
-  \(\mathcal{V}_r = \{c_1, \dots, c_{m_r}\}\) in run \(r\),
+  failures in \(>50\%\) of \texttt{seed-first} runs, with
+  \texttt{seed-none} using the same reference set \(\mathcal{U}_\tau\).
+  Across proposals \(\mathcal{V}_r = \{c_1, \dots, c_{m_r}\}\) in run
+  \(r\),
   \[\text{Cov}_{\text{unshown}}(r) = \frac{1}{|\mathcal{U}_\tau|} \sum_{g \in \mathcal{U}_\tau} \frac{1}{|\mathcal{V}_r|} \sum_{c \in \mathcal{V}_r} \mathbf{1}\!\left[s_i(c) = 1 \text{ for all } i \in C^{\text{eval}}_g\right],\]
   where \(C^{\text{eval}}_g\) is \(C^{\text{search}}_g\) for prompt
-  tasks and \(C^{\text{holdout}}_g\) (evaluated offline after search)
-  for code tasks. Crowding-out (\(\mathcal{H}_{C1}\)) holds when
+  tasks and \(C^{\text{holdout}}_g\), evaluated offline after search
+  completes, for code tasks. Crowding-out (\(\mathcal{H}_{C1}\)) holds
+  when
   \(\bar{\text{Cov}}_{\text{unshown}}(\text{seed-first}) - \bar{\text{Cov}}_{\text{unshown}}(\text{seed-none}) < 0\).
 \end{enumerate}
 
 \textbf{Bootstrap inference and run accounting.} All confidence
-intervals are 95\% percentile bootstrap intervals
-(\([\tilde{\psi}_{(251)}, \tilde{\psi}_{(9750)}]\), 1-indexed) over
-\(N_{\text{boot}} = 10{,}000\) task-stratified resamples
-(\texttt{random.Random(0)} in \texttt{results/analyze.py}), resampling
-10 runs with replacement within each task-by-condition cell. For
-conditional tokens-to-solve ratios (\(\mathcal{H}_{C3}\)), solved runs
-are resampled within each arm on tasks with \(\ge 3/10\) solved runs per
-arm. Alongside these fixed-strata intervals, we report per-task
-intervals (Table 2A), leave-one-task-out intervals (Table 8), and
-two-stage task-cluster bootstrap intervals (resampling tasks at the
-outer level; on \texttt{gpt-4.1-mini}, the 7-task cluster interval is
-{[}+0.104, +0.363{]} for \(\Delta_{\text{lineage}}\) and {[}+0.052,
-+0.336{]} for \(I_{\text{clustergold}}\), which is positive on all 7/7
-tasks, sign test \(p = 0.0156\)). All 1,750 completed runs in
-\texttt{results/runs.jsonl} come from five registered batches (Table 7,
-Appendix A): Batch A.1 (main \texttt{gpt-4.1-mini} grid,
-\texttt{duration} interventions, and GEPA on 5 tasks; 750 runs), Batch
-A.2 (\texttt{clustergold} sensitivity; 140 runs), Batch A.3
-(\texttt{claude-haiku-5-5} replication; 350 runs), Batch A.4 (public
-tasks, \texttt{gpt-4.1} proposer, and Haiku \texttt{diverse}; 470 runs),
-and Batch A.5 (\texttt{carry-facts} follow-up; 40 runs).
+intervals are 95\% percentile bootstrap intervals given by the 1-indexed
+order statistics \([\tilde{\psi}_{(251)}, \tilde{\psi}_{(9750)}]\) over
+\(N_{\text{boot}} = 10{,}000\) task-stratified resamples initialized
+with \texttt{random.Random(0)} in \texttt{results/analyze.py},
+resampling 10 runs with replacement within each task-by-condition cell.
+For conditional tokens-to-solve ratios (\(\mathcal{H}_{C3}\)), solved
+runs are resampled within each arm on tasks with at least \(3/10\)
+solved runs per arm. Alongside these fixed-strata intervals, we report
+per-task intervals (Table 2A), leave-one-task-out intervals (Table 8),
+and two-stage task-cluster bootstrap intervals that resample tasks at
+the outer level: on \texttt{gpt-4.1-mini}, the 7-task cluster interval
+is {[}+0.104, +0.363{]} for \(\Delta_{\text{lineage}}\) and {[}+0.052,
++0.336{]} for \(I_{\text{clustergold}}\), which is positive on all 7
+tasks with exact two-sided sign test \(p = 0.0156\). All 1,750 completed
+runs in \texttt{results/runs.jsonl} come from five sequential
+pre-registered batches documented in Table 7 and Appendix A: Batch A.1
+with 750 runs, Batch A.2 with 140 runs, Batch A.3 with 350 runs, Batch
+A.4 with 470 runs, and Batch A.5 with 40 runs.
 
 \hypertarget{experimental-results}{%
 \section{Experimental Results}\label{experimental-results}}
@@ -685,7 +688,7 @@ shared by both rows.}
 Models}\label{parent-inheritance-across-task-families-and-models}}
 
 Tables 2A and 2B report held-out accuracy across the seven primary tasks
-on \texttt{gpt-4.1-mini} (770 runs across Batches A.1 and A.2).
+on \texttt{gpt-4.1-mini}.
 
 \begin{center}
 \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
@@ -791,39 +794,39 @@ Parent row within-row contrasts: \texttt{parent-minibatch} \(-\)
 \textbf{Table 2B:} Cross-task interaction and within-row disclosure
 contrasts on \texttt{gpt-4.1-mini}.
 
-Parent inheritance produces the largest accuracy contrast in the grid
-(\(\Delta_{\text{lineage}} = +0.238\) across the four Batch A.1
-disclosure schemes and \(+0.218\) across all five schemes; Table 2B).
+Parent inheritance produces the largest accuracy contrast in the grid,
+increasing 7-task held-out accuracy by
+\(\Delta_{\text{lineage}} = +0.238\) across the four Batch A.1
+disclosure schemes and by \(+0.218\) across all five schemes (Table 2B).
 Importantly, this gain is not simply a consequence of
-\texttt{seed-first} observing the same four failures each round: even
-when seed-reset proposals draw fresh random examples every round
-(\texttt{seed-minibatch}, 0.686) or receive a target-preserving summary
-of all search-set failures in every round (\texttt{seed-clustergold},
-0.789), \texttt{parent-first} (0.946) beats both by +0.261 and +0.157,
-and \texttt{parent-clustergold} (0.928) beats \texttt{seed-clustergold}
-by +0.139 (+0.198 across the five feedback-dependent tasks). Thus, even
-when the proposer sees a summary of all failing categories, rewriting
-the seed from scratch in a single step falls well short of accumulating
-edits across rounds.
+\texttt{seed-first} observing the same four failures each round. Even
+when seed-reset proposals draw fresh random examples every round in
+\texttt{seed-minibatch} or receive a target-preserving summary of all
+search-set failures in every round in \texttt{seed-clustergold},
+\texttt{parent-first} beats both by +0.261 and +0.157, and
+\texttt{parent-clustergold} beats \texttt{seed-clustergold} by +0.139
+across all seven tasks and +0.198 across the five feedback-dependent
+tasks. Thus, even when the proposer sees a summary of all failing
+categories, rewriting the seed from scratch in a single step falls well
+short of accumulating edits across rounds.
 
 Across tasks, Figure 1 and Table 2A show two distinct regimes. On
 \texttt{dates} and \texttt{scone}, the model's pre-trained prior already
-solves most cases without feedback (\texttt{seed-none} scores 1.000 and
-0.897), leaving little room for lineage to help (−0.002 and +0.010). On
-the five tasks where rules or policies are withheld from \(c_0\), parent
-inheritance adds between +0.160 (\texttt{size}) and +0.492
-(\texttt{replies}), averaging +0.332. Every pre-registered
-\texttt{parent} cell on these five tasks beats every pre-registered
-\texttt{seed} cell; the only crossover involves
-\texttt{seed-clustergold} (0.794) beating \texttt{parent-cluster}
-(0.519) on \texttt{replies}, where the unadjusted \texttt{cluster}
-prompt dropped grading rubrics (Section 4.6). Replicating the experiment
-on \texttt{claude-haiku-5-5} across the same five tasks confirms these
-patterns (Table 3, Panel A): parent inheritance adds +0.222 overall
-(\(\mathcal{H}_{H1}\); +0.257 excluding \texttt{duration}, where Haiku
-starts at 0.954), and \texttt{parent-first} (0.979) again outperforms
-both \texttt{seed-minibatch} (0.706) and \texttt{seed-clustergold}
-(0.823).
+solves most cases without feedback, scoring 1.000 and 0.897 under
+\texttt{seed-none} and leaving little room for lineage to help. On the
+five tasks where rules or policies are withheld from \(c_0\), parent
+inheritance adds between +0.160 on \texttt{size} and +0.492 on
+\texttt{replies}, averaging +0.332. Every pre-registered \texttt{parent}
+cell on these five tasks beats every pre-registered \texttt{seed} cell;
+the only crossover involves \texttt{seed-clustergold} beating
+\texttt{parent-cluster} on \texttt{replies}, where the unadjusted
+\texttt{cluster} prompt dropped grading rubrics (Section 4.6).
+Replicating the experiment on \texttt{claude-haiku-5-5} across the same
+five tasks confirms these patterns (Table 3, Panel A): parent
+inheritance adds +0.222 overall and +0.257 when excluding
+\texttt{duration}, where Haiku starts near ceiling at 0.954, and
+\texttt{parent-first} again outperforms both \texttt{seed-minibatch} and
+\texttt{seed-clustergold}.
 
 \begin{center}
 \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
@@ -907,23 +910,21 @@ Inheritance}\label{upgrading-proposer-model-capacity-versus-parent-inheritance}}
 Panel B of Table 3 tests whether upgrading the proposer and clusterer
 from \texttt{gpt-4.1-mini} to \texttt{gpt-4.1} reduces the need for
 parent inheritance on \texttt{labels}, \texttt{routing}, and
-\texttt{replies} (holding the task model fixed at
-\texttt{gpt-4.1-mini}). Across all five tested conditions, replacing
+\texttt{replies} while holding the task model fixed at
+\texttt{gpt-4.1-mini}. Across all five tested conditions, replacing
 \texttt{gpt-4.1-mini} with \texttt{gpt-4.1} yields no positive accuracy
-gain (\(\Delta_{\text{prop}}\) ranges from −0.069 in
-\texttt{seed-clustergold} to +0.002 in \texttt{seed-none}; on
-\texttt{labels} \texttt{seed-none}, both proposers average
-\(67/240 = 0.279\) from distinct run distributions, with 9 of 10
-\texttt{gpt-4.1} runs scoring \(6/24 = 0.250\) and one scoring
-\(13/24 = 0.542\)). Meanwhile, parent inheritance under the
-\texttt{gpt-4.1} proposer adds \(\Delta_{\text{lineage}} = +0.380\)
-(\(\mathcal{H}_{S1\text{-prop}}\)), exhibits a large attenuation
-interaction (\(I_{\text{clustergold}} = +0.294\),
-\(\mathcal{H}_{S2\text{-prop}}\)), and scores slightly higher with
-\texttt{first-k} failures than with \texttt{clustergold}
-(\(\mathcal{H}_{S3\text{-prop}} = -0.057\)). Upgrading proposer capacity
-within the GPT-4.1 family therefore does not substitute for parent
-inheritance.
+gain, with \(\Delta_{\text{prop}}\) ranging from −0.069 in
+\texttt{seed-clustergold} to +0.002 in \texttt{seed-none}. On
+\texttt{labels} under \texttt{seed-none}, both proposers average
+\(67/240 = 0.279\) from distinct run distributions, where nine of ten
+\texttt{gpt-4.1} runs score \(6/24 = 0.250\) and one scores
+\(13/24 = 0.542\). Meanwhile, parent inheritance under the
+\texttt{gpt-4.1} proposer adds \(\Delta_{\text{lineage}} = +0.380\),
+exhibits a large attenuation interaction of
+\(I_{\text{clustergold}} = +0.294\), and scores slightly higher with
+\texttt{first-k} failures than with \texttt{clustergold} by +0.057.
+Upgrading proposer capacity within the GPT-4.1 family therefore does not
+substitute for parent inheritance.
 
 \hypertarget{public-benchmarks-and-instruction-level-retention-of-feedback-facts}{%
 \subsection{Public Benchmarks and Instruction-Level Retention of
@@ -985,24 +986,23 @@ runs) on \texttt{banking77} and \texttt{bbh\_ste}.
 
 In the pre-registered grid (Table 4, Panel A), parent inheritance
 increases pooled public-benchmark accuracy by
-\(\Delta_{\text{lineage}} = +0.088\) {[}+0.045, +0.130{]}
-(\(\mathcal{H}_{P1}\)), driven by \texttt{banking77} (+0.158 {[}+0.077,
-+0.241{]}) while \texttt{bbh\_ste} changes little (+0.017 {[}−0.006,
-+0.039{]}). However, \texttt{GEPA\ mb3} initially outperformed our
-baseline \texttt{parent-first} loop on \texttt{banking77} (0.664
-vs.~0.372), while matching it on \texttt{bbh\_ste} (0.633 vs.~0.653).
+\(\Delta_{\text{lineage}} = +0.088\), driven by \texttt{banking77} at
++0.158 while \texttt{bbh\_ste} changes by only +0.017. However,
+\texttt{GEPA\ mb3} initially outperformed our baseline
+\texttt{parent-first} loop on \texttt{banking77}, scoring 0.664 against
+0.372, while matching it on \texttt{bbh\_ste} at 0.633 versus 0.653.
 
 Inspecting the Batch A.4 \texttt{banking77} logs identified two reasons
 for this gap. First, because the seed instruction
-(\texttt{"Classify\ the\ banking\ customer\ query."}) contains none of
-the 12 \texttt{snake\_case} intent labels, first-round edits that only
+\texttt{"Classify\ the\ banking\ customer\ query."} contains none of the
+12 \texttt{snake\_case} intent labels, first-round edits that only
 adjusted formatting scored 0.000 and were rejected under
 strict-improvement tie-breaking; only 3 of 10 \texttt{parent-first} runs
 improved in round 1, and 2 runs stayed at 0.000 across all 8
 evaluations. Second, each run's held-out accuracy closely tracked how
-many of the 12 ground-truth intent names appeared in its final prompt
-(mean 5.6/12 for \texttt{parent-first} vs.~9.0/12 for
-\texttt{GEPA\ mb3}; Table 4). Comparing the meta-prompts showed why:
+many of the 12 ground-truth intent names appeared in its final prompt,
+averaging 5.6 out of 12 for \texttt{parent-first} versus 9.0 out of 12
+for \texttt{GEPA\ mb3} (Table 4). Comparing the meta-prompts showed why:
 GEPA 0.0.7's reflection prompt explicitly instructs the model to
 \emph{``identify all niche and domain specific factual information about
 the task and include it in the instruction,''} whereas our proposer
@@ -1022,55 +1022,48 @@ fact-carrying instruction.}
 \end{figure}
 
 To test whether explicit fact copying accounts for this gap, we
-registered a follow-up batch (Batch A.5) that appended one sentence
-(\texttt{CARRY\_FACTS}, Appendix B.1) to the proposer objective:
+registered a follow-up batch (Appendix A.5) that appended one sentence,
+\texttt{CARRY\_FACTS} (Appendix B.1), to the proposer objective:
 \emph{``The task model sees only this prompt, never the feedback: copy
 every task-specific fact the feedback reveals (for example the exact
 expected labels or formats) into the prompt.''} On \texttt{banking77}
 (Table 4, Panel B and Figure 2), appending \texttt{CARRY\_FACTS} raised
-\texttt{parent-first} accuracy from 0.372 to 0.856 (+0.483 {[}+0.328,
-+0.644{]}, \(\mathcal{H}_{F1}\)), with all 10 runs improving in round 1
-and surpassing \texttt{GEPA\ mb3} by +0.192 (\(\mathcal{H}_{F2}\)) at
-43\% of its median token cost (45.8k vs.~106.9k tokens). This gain
+\texttt{parent-first} accuracy from 0.372 to 0.856, with all 10 runs
+improving in round 1 and surpassing \texttt{GEPA\ mb3} by +0.192 at 43\%
+of its median token cost, using 45.8k versus 106.9k tokens. This gain
 requires parent inheritance: \texttt{seed-first\ +\ carry} observes the
-same 4 seed failures every round, writes exactly 4 intents into the
-prompt in every run, and scores 0.317, whereas
-\texttt{parent-first\ +\ carry} accumulates 11 to 12 intents across
-rounds (mean 11.7/12; lineage effect +0.539 on \texttt{banking77} and
-+0.258 pooled, \(\mathcal{H}_{F4}\)). Conversely, on \texttt{bbh\_ste},
-where all six option labels are already given in the seed, appending
-\texttt{CARRY\_FACTS} reduced \texttt{parent-first} accuracy from 0.653
-to 0.592 (−0.061 {[}−0.119, −0.006{]}, failing non-inferiority test
-\(\mathcal{H}_{F3}\)). Copying feedback facts into the prompt helps when
-label inventories must be discovered from feedback, and slightly hurts
-when the specification is already complete in the seed.
+same 4 seed failures every round, writes 4 intents into the prompt in
+every run, and scores 0.317, whereas \texttt{parent-first\ +\ carry}
+accumulates 11 to 12 intents across rounds with a mean of 11.7 out of
+12. Conversely, on \texttt{bbh\_ste}, where all six option labels are
+already given in the seed, appending \texttt{CARRY\_FACTS} reduced
+\texttt{parent-first} accuracy from 0.653 to 0.592, a change of −0.061
+that fails non-inferiority test \(\mathcal{H}_{F3}\). Copying feedback
+facts into the prompt helps when label inventories must be discovered
+from feedback, and slightly hurts when the specification is already
+complete in the seed.
 
 \hypertarget{interaction-between-lineage-and-feedback-diversity-mathcalh_c2}{%
 \subsection{\texorpdfstring{Interaction Between Lineage and Feedback
 Diversity
 (\(\mathcal{H}_{C2}\))}{Interaction Between Lineage and Feedback Diversity (\textbackslash mathcal\{H\}\_\{C2\})}}\label{interaction-between-lineage-and-feedback-diversity-mathcalh_c2}}
 
-When resetting to the seed (\(P = \text{seed}\)), replacing the first
-four failures (\texttt{first}) with four farthest-point diverse failures
-(\texttt{diverse}) raises 7-task accuracy by +0.061 {[}+0.046, +0.077{]}
-on \texttt{gpt-4.1-mini} (Table 2B), led by \texttt{labels} (0.408 to
-0.633), \texttt{duration} (0.562 to 0.729), and \texttt{replies} (0.294
-to 0.419). Under parent inheritance (\(P = \text{parent}\)), the
-difference between \texttt{diverse} and \texttt{first} is −0.007
-{[}−0.025, +0.012{]}, yielding a positive attenuation interaction of
-\(I_{\text{diverse}} = +0.068\) {[}+0.043, +0.092{]}
-(\(\mathcal{H}_{C2}\), rejecting \(\mathcal{H}_{R1}\)). This interaction
-replicates on \texttt{claude-haiku-5-5} across the five non-ceiling
-tasks (\(I_{\text{diverse}} = +0.122\) {[}+0.088, +0.158{]},
-\(\mathcal{H}_{Hd}\); Table 3, Panel A). At the task level,
+When resetting to the seed, replacing the first four failures with four
+farthest-point diverse failures raises 7-task accuracy by +0.061 on
+\texttt{gpt-4.1-mini} (Table 2B), led by \texttt{labels},
+\texttt{duration}, and \texttt{replies}. Under parent inheritance, the
+difference between \texttt{diverse} and \texttt{first} is −0.007,
+yielding a positive attenuation interaction of
+\(I_{\text{diverse}} = +0.068\) that supports \(\mathcal{H}_{C2}\) and
+rejects \(\mathcal{H}_{R1}\). This interaction replicates on
+\texttt{claude-haiku-5-5} across the five non-ceiling tasks at
+\(I_{\text{diverse}} = +0.122\) (Table 3, Panel A). At the task level,
 \texttt{size} is the only task with a materially negative
-\(I_{\text{diverse}}\) on \texttt{gpt-4.1-mini} (−0.088; ceiling
-\texttt{dates} is −0.004), while \texttt{routing} is the only
-non-ceiling task where \texttt{seed-diverse} scores below
-\texttt{seed-first} on both models (0.442 vs.~0.500 on
-\texttt{gpt-4.1-mini}; 0.400 vs.~0.500 on Haiku) because surface edit
-distance selects two \texttt{fulfillment} tickets in round 1, covering 3
-queues instead of 4.
+\(I_{\text{diverse}}\) on \texttt{gpt-4.1-mini} at −0.088, while
+\texttt{routing} is the only non-ceiling task where
+\texttt{seed-diverse} scores below \texttt{seed-first} on both models
+because surface edit distance selects two \texttt{fulfillment} tickets
+in round 1, covering 3 queues instead of 4.
 
 \hypertarget{unshown-category-coverage-mathcalh_c1-and-cross-round-exposure}{%
 \subsection{\texorpdfstring{Unshown-Category Coverage
@@ -1078,8 +1071,8 @@ queues instead of 4.
 Exposure}{Unshown-Category Coverage (\textbackslash mathcal\{H\}\_\{C1\}) and Cross-Round Exposure}}\label{unshown-category-coverage-mathcalh_c1-and-cross-round-exposure}}
 
 Panel A of Table 5 tests whether showing a narrow set of failures under
-seed resetting crowds out pre-trained capabilities on unshown categories
-(\(\mathcal{H}_{C1}\)).
+seed resetting crowds out pre-trained capabilities on unshown
+categories.
 
 \begin{center}
 \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
@@ -1141,33 +1134,33 @@ Parent-to-Child Retention, Prompt Length, and Token Cost
 exposure, retention, candidate length, and token cost in
 \texttt{first-k} cells (Panel B, \texttt{gpt-4.1-mini}).
 
-On both code synthesis tasks (\texttt{duration} and \texttt{size}),
-rewriting the 4-line seed function with zero feedback
-(\texttt{seed-none}) often produces general parsers that handle several
-unshown formats (0.058 and 0.431 unshown coverage). When
-\texttt{seed-first} shows four unit-suffix or SI failures, the proposer
-specializes its code to those formats and drops handlers for unshown
-categories, lowering unshown coverage by −0.055 on \texttt{duration} and
-−0.113 on \texttt{size} (and lowering held-out accuracy on
-\texttt{duration} below \texttt{seed-none} on both \texttt{gpt-4.1-mini}
-and \texttt{claude-haiku-5-5}; Tables 2A and 3). The causal intervention
-on \texttt{duration} confirms this: showing only ISO-8601 failures
-(\texttt{seed-iso}) reduces unshown coverage by −0.048, whereas showing
-4 random failures per round (\texttt{seed-random}) raises it by +0.061.
-On \texttt{labels}, where the zero-feedback prior rarely guesses hidden
-\texttt{snake\_case} names, no drop occurs (+0.018), so
+On both code synthesis tasks, rewriting the 4-line seed function with
+zero feedback in \texttt{seed-none} often produces general parsers that
+handle several unshown formats, reaching 0.058 unshown coverage on
+\texttt{duration} and 0.431 on \texttt{size}. When \texttt{seed-first}
+shows four unit-suffix or SI failures, the proposer specializes its code
+to those displayed formats and drops handlers for unshown categories,
+lowering unshown coverage by −0.055 on \texttt{duration} and −0.113 on
+\texttt{size}, and lowering held-out accuracy on \texttt{duration} below
+\texttt{seed-none} on both \texttt{gpt-4.1-mini} and
+\texttt{claude-haiku-5-5} (Tables 2A and 3). The causal intervention on
+\texttt{duration} confirms this mechanism: showing only ISO-8601
+failures in \texttt{seed-iso} reduces unshown coverage by −0.048,
+whereas showing 4 random failures per round in \texttt{seed-random}
+changes it by +0.061. On \texttt{labels}, where the zero-feedback prior
+rarely guesses hidden \texttt{snake\_case} names, no drop occurs, so
 \(\mathcal{H}_{C1}\) holds on 2 of 3 tested tasks.
 
 Panel B of Table 5 shows how parent inheritance avoids this trap. While
-\texttt{seed-first} shows the exact same 4 failures every round (11\% to
-25\% of \(\mathcal{D}_{\text{search}}\)), \texttt{parent-first} retains
-70\% to 95\% of parent-solved examples when generating children and
-filters solved examples from the failure list, exposing 46\% to 86\% of
-\(\mathcal{D}_{\text{search}}\) across rounds on the five non-ceiling
-tasks. Because early stopping halts search once
-\(\mathcal{D}_{\text{search}}\) is solved, \texttt{parent-first} also
-uses fewer or equal mean search tokens on four of the seven tasks
-despite producing longer candidates.
+\texttt{seed-first} shows the exact same 4 failures every round,
+covering only 11\% to 25\% of \(\mathcal{D}_{\text{search}}\),
+\texttt{parent-first} retains 70\% to 95\% of parent-solved examples
+when generating children and filters solved examples from the failure
+list, exposing 46\% to 86\% of \(\mathcal{D}_{\text{search}}\) across
+rounds on the five non-ceiling tasks. Because early stopping halts
+search once \(\mathcal{D}_{\text{search}}\) is solved,
+\texttt{parent-first} also uses fewer or equal mean search tokens on
+four of the seven tasks despite producing longer candidates.
 
 \hypertarget{full-set-error-clustering-with-and-without-lineage}{%
 \subsection{Full-Set Error Clustering With and Without
@@ -1177,14 +1170,15 @@ In Batch A.1, the initial \texttt{cluster} arm underperformed
 \texttt{first} in the parent row by −0.082 and lost to the best
 alternative disclosure scheme in both rows, refuting
 \(\mathcal{H}_{R2}\) (Table 7). Leave-one-task-out analysis (Table 8)
-traced this deficit to \texttt{replies} (0.519 vs.~0.981), where
+traced this deficit to \texttt{replies}, where \texttt{parent-cluster}
+scored 0.519 against 0.981 for \texttt{parent-first} because
 \texttt{CLUSTER\_PROMPT} asked for a representative wrong answer without
-requiring the expected answer and dropped the grading rubric in 80\% of
-summaries (125/156). In Batch A.2 (\texttt{clustergold}), requiring each
-cluster line to include the input, wrong answer, and full expected
-answer restored 100\% rubric retention on \texttt{replies} (65/65) and
-raised \texttt{parent-clustergold} on \texttt{replies} to 0.869 (+0.350,
-\(\mathcal{H}_{S1\text{-gold}}\)).
+requiring the expected answer and dropped the grading rubric in 125 of
+156 summaries. In Batch A.2, \texttt{clustergold} required each cluster
+line to include the input, wrong answer, and full expected answer,
+restoring 100\% rubric retention on \texttt{replies} across all 65
+summaries and raising \texttt{parent-clustergold} on \texttt{replies} to
+0.869 (Table 2A).
 
 \begin{center}
 \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
@@ -1212,43 +1206,41 @@ Proposal Round (\(t\)) & \texttt{seed-first} & \texttt{seed-diverse} & \texttt{s
 
 \textbf{Table 5C:} Anytime search-set accuracy across the five
 non-ceiling tasks on \texttt{gpt-4.1-mini} at proposal steps
-\(t \in \{1, 2, 4, 7\}\) (with 95\% bootstrap intervals for
+\(t \in \{1, 2, 4, 7\}\), with 95\% bootstrap intervals for
 \texttt{clustergold} \(-\) \texttt{first} and separate \texttt{parent}
 differences for the 3 prompt tasks with \(B=8\) and 2 code tasks with
-\(B=12\)).
+\(B=12\).
 
 With expected answers preserved, the benefit of full-set clustering
 depends on both lineage and the optimization round (Tables 2B and 5C): -
-\textbf{Under seed resetting (\(P = \text{seed}\)):}
-\texttt{seed-clustergold} is the strongest seed-row method on both
-\texttt{gpt-4.1-mini} (0.789, beating \texttt{seed-first} by +0.156) and
-\texttt{claude-haiku-5-5} (0.823, beating \texttt{seed-first} by
-+0.179). - \textbf{Under parent inheritance (\(P = \text{parent}\)):} At
+\textbf{Under seed resetting:} \texttt{seed-clustergold} is the
+strongest seed-row method on both \texttt{gpt-4.1-mini}, where it
+reaches 0.789 and beats \texttt{seed-first} by +0.156, and
+\texttt{claude-haiku-5-5}, where it reaches 0.823 and beats
+\texttt{seed-first} by +0.179. - \textbf{Under parent inheritance:} At
 terminal evaluation, \texttt{parent-clustergold} and
 \texttt{parent-first} show no detectable difference on
-\texttt{gpt-4.1-mini} (−0.018 {[}−0.053, +0.010{]},
-\(\mathcal{H}_{S2\text{-gold}}\); \(I_{\text{clustergold}} = +0.174\),
-or \(+0.916\) {[}+0.421, +1.415{]} log-odds units on an exploratory
-logit scale) or \texttt{claude-haiku-5-5} (−0.008 {[}−0.017, +0.002{]},
-\(\mathcal{H}_{H3}\); \(I_{\text{clustergold}} = +0.187\),
-\(\mathcal{H}_{H2}\)), and \texttt{clustergold} scores lower with the
-\texttt{gpt-4.1} proposer (−0.057, \(\mathcal{H}_{S3\text{-prop}}\)).
-Table 5C shows how this convergence unfolds across rounds: at \(t=1\)
-(where both rows edit \(c_0\)) and at \(t=2\) (the first
-parent-inheritance step), \texttt{clustergold} leads \texttt{first} by
+\texttt{gpt-4.1-mini} at −0.018 or on \texttt{claude-haiku-5-5} at
+−0.008, yielding positive attenuation interactions of
+\(I_{\text{clustergold}} = +0.174\) and \(+0.187\), as well as
+\(+0.916\) log-odds units on an exploratory logit scale, while
+\texttt{clustergold} scores lower by −0.057 under the \texttt{gpt-4.1}
+proposer. Table 5C shows how this convergence unfolds across rounds: at
+\(t=1\), where both rows edit \(c_0\), and at \(t=2\), the first
+parent-inheritance step, \texttt{clustergold} leads \texttt{first} by
 +0.146 and +0.173 in the parent row. By \(t=4\), sequential error
 exposure under \texttt{parent-first} closes the gap on both prompt and
-code tasks (0.946 vs.~0.929), whereas \texttt{seed-first} remains 0.180
-behind \texttt{seed-clustergold} at \(t=7\). Moreover, the extra
-clusterer call increases median search tokens on five of seven tasks (up
-to 2.08\(\times\) on \texttt{routing} in \texttt{parent}, 58.5k
-vs.~28.2k, and 2.17\(\times\) in \texttt{seed}, 38.1k vs.~17.6k). -
-\textbf{Clustered failures vs.~random mixed minibatches:} Under parent
-inheritance, \texttt{parent-clustergold} still beats
-\texttt{parent-minibatch} (+0.043 on \texttt{gpt-4.1-mini}; +0.086 on
-Haiku) because \texttt{parent-minibatch} wastes display slots on
-already-passing examples and scores below \texttt{parent-first} (−0.061
-and −0.093).
+code tasks, reaching 0.946 versus 0.929, whereas \texttt{seed-first}
+remains 0.180 behind \texttt{seed-clustergold} at \(t=7\). Moreover, the
+extra clusterer call increases median search tokens on five of seven
+tasks, reaching up to 2.08\(\times\) on \texttt{routing} in
+\texttt{parent} at 58.5k versus 28.2k tokens and 2.17\(\times\) in
+\texttt{seed} at 38.1k versus 17.6k tokens. - \textbf{Clustered failures
+vs.~random mixed minibatches:} Under parent inheritance,
+\texttt{parent-clustergold} still beats \texttt{parent-minibatch} by
++0.043 on \texttt{gpt-4.1-mini} and +0.086 on Haiku because
+\texttt{parent-minibatch} wastes display slots on already-passing
+examples and scores below \texttt{parent-first} by −0.061 and −0.093.
 
 \hypertarget{system-level-search-efficiency-and-token-decomposition-against-gepa-mathcalh_c3}{%
 \subsection{\texorpdfstring{System-Level Search Efficiency and Token
@@ -1256,9 +1248,8 @@ Decomposition Against GEPA
 (\(\mathcal{H}_{C3}\))}{System-Level Search Efficiency and Token Decomposition Against GEPA (\textbackslash mathcal\{H\}\_\{C3\})}}\label{system-level-search-efficiency-and-token-decomposition-against-gepa-mathcalh_c3}}
 
 Table 6 compares \texttt{evolve\ (parent-first)} against
-\texttt{GEPA\ 0.0.7} (\texttt{minibatch=3}, with and without early
-stopping) at matched maximum task-model call caps across all seven
-prompt tasks.
+\texttt{GEPA\ 0.0.7} with and without early stopping at matched maximum
+task-model call caps across all seven prompt tasks.
 
 \begin{center}
 \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
@@ -1303,23 +1294,21 @@ maximum task-model call caps (\(n=10\) runs per cell,
 \texttt{gpt-4.1-mini}).
 
 \texttt{evolve\ (parent-first)} solves the search set at least as often
-as \texttt{GEPA\ +\ stop} on four of the five primary prompt tasks
-(\texttt{labels}, \texttt{dates}, \texttt{routing}, \texttt{replies}),
-while \texttt{GEPA\ +\ stop} solves more often on \texttt{scone} (4/10
-vs.~2/10). Among solved runs on the two tasks meeting the \(\ge 3/10\)
-eligibility rule (\texttt{labels} and \texttt{dates}),
-\texttt{GEPA\ +\ stop} median tokens-to-solve is 3.34\(\times\) and
-2.59\(\times\) that of \texttt{parent-first} (\(\mathcal{H}_{C3}\); on
-\texttt{dates}, two right-tail \texttt{GEPA\ +\ stop} runs at 30.4k and
-100.5k tokens widen the upper bootstrap bound to 4.84\(\times\), while
-the 5-task refutation test \(\mathcal{H}_{R4}\) is not evaluable as
-registered because three tasks had \(<3\) solved runs in one arm).
-Across all seven prompt tasks, unconditional median search tokens per
-run for \texttt{parent-first} are 2.2\(\times\) to 3.4\(\times\) lower
-than for \texttt{GEPA\ +\ stop}. Call-type accounting (last column of
-Table 6) shows why: proposer reflection accounts for only 2\% to 15\% of
-GEPA's tokens, whereas full search-set validations (21\% to 74\%) and
-minibatch checks (18\% to 77\%) consume 85\% to 98\%.
+as \texttt{GEPA\ +\ stop} on four of the five primary prompt tasks,
+while \texttt{GEPA\ +\ stop} solves more often on \texttt{scone}. Among
+solved runs on the two tasks meeting the \(\ge 3/10\) eligibility rule,
+\texttt{labels} and \texttt{dates}, \texttt{GEPA\ +\ stop} median
+tokens-to-solve is 3.34\(\times\) and 2.59\(\times\) that of
+\texttt{parent-first} (Table 6). On \texttt{dates}, two right-tail
+\texttt{GEPA\ +\ stop} runs at 30.4k and 100.5k tokens widen the upper
+bootstrap bound to 4.84\(\times\), while the 5-task refutation test
+\(\mathcal{H}_{R4}\) is not evaluable as registered because three tasks
+had fewer than 3 solved runs in one arm. Across all seven prompt tasks,
+unconditional median search tokens per run for \texttt{parent-first} are
+2.2\(\times\) to 3.4\(\times\) lower than for \texttt{GEPA\ +\ stop}.
+Call-type accounting in the last column of Table 6 shows why: proposer
+reflection accounts for only 2\% to 15\% of GEPA's tokens, whereas full
+search-set validations and minibatch checks consume 85\% to 98\%.
 
 \hypertarget{boundary-conditions-robustness-and-negative-findings}{%
 \subsection{Boundary Conditions, Robustness, and Negative
@@ -1332,32 +1321,27 @@ Findings}\label{boundary-conditions-robustness-and-negative-findings}}
   \textbf{Unresolved disclosure contrasts on the public benchmarks
   (\(\mathcal{H}_{P2}\text{--}\mathcal{H}_{P5}\)):} While parent
   inheritance improves pooled accuracy on \texttt{banking77} and
-  \texttt{bbh\_ste} (\(\mathcal{H}_{P1}\) and \(\mathcal{H}_{F4}\)), the
-  disclosure interactions (\(I_{\text{clustergold}} = +0.017\),
-  \(I_{\text{diverse}} = -0.014\)) and parent-row contrasts
-  (\texttt{clustergold} \(-\) \texttt{first} \(= +0.021\);
-  \texttt{minibatch} \(-\) \texttt{first} \(= -0.011\)) have wide
-  confidence intervals centered near zero due to run-to-run variance on
-  baseline \texttt{banking77} and flat disclosure performance on
-  \texttt{bbh\_ste} (Table 7).
+  \texttt{bbh\_ste}, the disclosure interactions and parent-row
+  contrasts on these two tasks have wide confidence intervals centered
+  near zero due to run-to-run variance on baseline \texttt{banking77}
+  and flat disclosure performance on \texttt{bbh\_ste} (Table 7).
 \item
   \textbf{Task-specificity of \texttt{CARRY\_FACTS}
   (\(\mathcal{H}_{F3}\)):} Appending \texttt{CARRY\_FACTS} lowers
-  \texttt{parent-first} accuracy on \texttt{bbh\_ste} by −0.061
-  {[}−0.119, −0.006{]} (where all option labels are already in the
-  seed).
+  \texttt{parent-first} accuracy on \texttt{bbh\_ste} by −0.061, where
+  all option labels are already present in the seed.
 \item
   \textbf{Task-level exceptions:} On \texttt{routing}, surface
   edit-distance \texttt{diverse} sampling scores below \texttt{first}
   under seed resetting on both models; under parent inheritance on
   \texttt{gpt-4.1-mini}, \texttt{parent-clustergold} scores below
-  \texttt{parent-first} on \texttt{replies} (−0.112) and
-  \texttt{routing} (−0.083). On \texttt{scone}, all cells sit near
-  ceiling (0.889 to 0.918).
+  \texttt{parent-first} on \texttt{replies} by −0.112 and on
+  \texttt{routing} by −0.083. On \texttt{scone}, all cells sit near
+  ceiling between 0.889 and 0.918.
 \item
   \textbf{Leave-one-task-out stability:} Dropping any single task (Table
   8), \(\Delta_{\text{lineage}}\) stays between +0.196 and +0.278 on
-  \texttt{gpt-4.1-mini} (and +0.168 to +0.257 on Haiku),
+  \texttt{gpt-4.1-mini} and between +0.168 and +0.257 on Haiku,
   \(I_{\text{diverse}}\) stays between +0.046 and +0.094, and
   \texttt{parent-minibatch} \(-\) \texttt{parent-first} stays between
   −0.042 and −0.069.
@@ -1367,94 +1351,90 @@ Findings}\label{boundary-conditions-robustness-and-negative-findings}}
 \section{Discussion}\label{discussion}}
 
 \textbf{Why parent inheritance substitutes for wide single-round
-disclosure.} Under seed resetting (\(P = \text{seed}\)), the proposer
-has no persistent state, so a narrow feedback sample can anchor the
-rewrite on displayed formats and crowd out zero-feedback priors on
-unshown categories (Table 5, Panel A). Even when a full-set summary
-(\texttt{seed-clustergold}) exposes all failing categories, synthesizing
-every rule from scratch in a single edit reaches only 0.723 across the
-five feedback-dependent tasks. Under parent inheritance
-(\(P = \text{parent}\)), the candidate text retains rules discovered in
-earlier rounds (70\% to 95\% retention of solved cases) while full
+disclosure.} Under seed resetting, the proposer has no persistent state,
+so a narrow feedback sample can anchor the rewrite on displayed formats
+and crowd out zero-feedback priors on unshown categories (Table 5, Panel
+A). Even when a full-set summary in \texttt{seed-clustergold} exposes
+all failing categories, synthesizing every rule from scratch in a single
+edit reaches only 0.723 across the five feedback-dependent tasks. Under
+parent inheritance, the candidate text retains rules discovered in
+earlier rounds, preserving 70\% to 95\% of solved cases, while full
 search-set evaluation removes those solved cases from future failure
 lists, shifting \texttt{first-k} disclosure across 46\% to 86\% of
 \(\mathcal{D}_{\text{search}}\) over a run (Table 5, Panel B).
 Consequently, while \texttt{clustergold} speeds up learning in rounds 1
 and 2, \texttt{parent-first} catches up by round 4 (Table 5C). On tasks
-where target labels are hidden in feedback (\texttt{banking77}), this
-accumulation works only if the proposer writes revealed facts into the
-candidate prompt (\texttt{CARRY\_FACTS}); when all options are already
-in the seed (\texttt{bbh\_ste}), copying training facts slightly hurts
-generalization.
+such as \texttt{banking77} where target labels are hidden in feedback,
+this accumulation works only if the proposer writes revealed facts into
+the candidate prompt via \texttt{CARRY\_FACTS}; when all options are
+already in the seed, as on \texttt{bbh\_ste}, copying training facts
+slightly hurts generalization.
 
 \textbf{Implications for evaluating reflective optimizers.} Because
 recent reflection-scope methods such as ESPO \citep{liu2026espo}, RPT
 \citep{bayat2026reflective}, and AdaGEPA \citep{chen2026adagepa} are
 tested only inside lineage-preserving loops, their reported gains
 measure residual improvements on top of parent inheritance. In our grid,
-\texttt{parent-clustergold} beats \texttt{parent-minibatch} (+0.043 on
-\texttt{gpt-4.1-mini} and +0.086 on Haiku) but does not beat
-\texttt{parent-first} at termination (−0.018 and −0.008). Gains over
-default GEPA in short-budget settings can therefore come from replacing
-mixed pass/fail minibatches with pure failure feedback rather than from
-clustering itself. Future evaluations of reflection-scope or
-proposer-upgrade methods should include: (i) a lineage-off
-(\texttt{seed}) baseline row alongside the \texttt{parent} row; (ii) a
-zero-feedback (\texttt{seed-none}) baseline to detect crowding-out; and
-(iii) call-type token accounting separating reflection from validation.
+\texttt{parent-clustergold} beats \texttt{parent-minibatch} by +0.043 on
+\texttt{gpt-4.1-mini} and +0.086 on Haiku, but does not beat
+\texttt{parent-first} at termination. Gains over default GEPA in
+short-budget settings can therefore come from replacing mixed pass/fail
+minibatches with pure failure feedback rather than from clustering
+itself. Future evaluations of reflection-scope or proposer-upgrade
+methods should include three controls: a lineage-off \texttt{seed}
+baseline row alongside the \texttt{parent} row, a zero-feedback
+\texttt{seed-none} baseline to detect crowding-out, and call-type token
+accounting separating reflection from validation.
 
 \textbf{Practical guidelines.} When tuning prompts or code under short
-evaluation budgets: (1) build on the best parent candidate and check for
-zero-score stalls on tasks with hidden labels; (2) show raw failing
-examples with full expected answers rather than random pass/fail
-minibatches; (3) instruct the proposer to copy revealed task rules or
-labels into the prompt when they are absent from the seed; and (4)
-reserve full-set error clustering for one-shot repair, parallel
-best-of-\(N\) sampling, or the first 1--2 rounds of search.
+evaluation budgets, practitioners should build on the best parent
+candidate while monitoring for zero-score stalls on tasks with hidden
+labels, show raw failing examples with full expected answers instead of
+random pass/fail minibatches, instruct the proposer to copy revealed
+task rules or labels into the prompt when they are absent from the seed,
+and reserve full-set error clustering for one-shot repair, parallel
+best-of-\(N\) sampling, or the first two rounds of search.
 
 \hypertarget{limitations}{%
 \section{Limitations}\label{limitations}}
 
 Several constraints bound our conclusions. First, five of the seven
-primary tasks (\texttt{labels}, \texttt{dates}, \texttt{routing},
-\texttt{duration}, \texttt{size}) and \texttt{replies} are constructed
-by withholding rules from the seed, which favors cross-round
-accumulation; on the two public extension tasks (\texttt{banking77} and
-\texttt{bbh\_ste}), the pooled lineage effect is smaller (+0.088
-vs.~+0.225 across the same four disclosure schemes on the primary tasks)
-and disclosure interactions
-(\(\mathcal{H}_{P2}\text{--}\mathcal{H}_{P5}\)) are not statistically
+primary tasks and \texttt{replies} are constructed by withholding rules
+from the seed, which favors cross-round accumulation; on the two public
+extension tasks, \texttt{banking77} and \texttt{bbh\_ste}, the pooled
+lineage effect is smaller at +0.088 versus +0.225 across the same four
+disclosure schemes on the primary tasks, and the disclosure interactions
+\(\mathcal{H}_{P2}\text{--}\mathcal{H}_{P5}\) are not statistically
 resolved. Grouping search examples by category on constructed tasks also
 reduces round-1 category diversity under \texttt{first}, and on larger
 tasks where \(B\) rounds of \(k=4\) failures cannot cover the error
 space, wider per-round disclosure may retain an advantage beyond round
-4. Second, while \texttt{parent-clustergold}
-vs.~\texttt{seed-clustergold} (+0.139 overall, +0.198 on non-ceiling
-tasks) shows that parent inheritance helps even when all failure
-categories are summarized every round, \texttt{seed-clustergold}
-compresses failures into 3--7 patterns; fully separating text
-inheritance from residual-error exposure under raw feedback would
-require controls that reset to \(c_0\) while showing all raw failures
-(\texttt{seed-all}) or the cumulative union of parent-trajectory
-failures (\texttt{seed-union}). Third, our comparison with GEPA 0.0.7 is
+4. Second, while \texttt{parent-clustergold} versus
+\texttt{seed-clustergold} shows that parent inheritance adds +0.139
+overall and +0.198 on non-ceiling tasks even when all failure categories
+are summarized every round, \texttt{seed-clustergold} compresses
+failures into 3 to 7 patterns; fully separating text inheritance from
+residual-error exposure under raw feedback would require controls that
+reset to \(c_0\) while showing all raw failures or the cumulative union
+of parent-trajectory failures. Third, our comparison with GEPA 0.0.7 is
 system-level across parent selection, minibatch gating, minibatch size,
 and reflection wording. Fourth, \texttt{carry-facts} was designed after
 inspecting Batch A.4 \texttt{banking77} logs and tested on two public
-benchmarks, helping \texttt{banking77} (+0.483) and hurting
-\texttt{bbh\_ste} (−0.061). Fifth, \texttt{banking77} was subsampled to
-12 intents and \texttt{bbh\_ste} to 198 examples (with held-out sets of
-12--72 examples across tasks) to fit the 8-evaluation budget and
+benchmarks, helping \texttt{banking77} by +0.483 and hurting
+\texttt{bbh\_ste} by −0.061. Fifth, \texttt{banking77} was subsampled to
+12 intents and \texttt{bbh\_ste} to 198 examples, with held-out sets of
+12 to 72 examples across tasks, to fit the 8-evaluation budget and
 300-character feedback window. Sixth, \texttt{dates} and \texttt{scone}
 start near ceiling. Seventh, \texttt{cluster} and \texttt{clustergold}
 test only the Diagnose stage of ESPO \citep{liu2026espo}, and
 \texttt{diverse} uses surface Levenshtein distance. Eighth, experiments
-use two model families (\texttt{gpt-4.1-mini} / \texttt{gpt-4.1} and
-\texttt{claude-haiku-5-5}, which uses default adaptive thinking) and a
-single \texttt{gpt-4.1-mini} judge on \texttt{replies}. Finally, batches
-ran sequentially over two days, and three intermediate batches
-interrupted by API quota exhaustion (267 aborted run attempts in total)
-were quarantined and re-run from scratch under pre-registered rules
-(Appendix A).
+use two model families, \texttt{gpt-4.1-mini} / \texttt{gpt-4.1} and
+\texttt{claude-haiku-5-5} with default adaptive thinking, and a single
+\texttt{gpt-4.1-mini} judge on \texttt{replies}. Finally, batches ran
+sequentially over two days, and three intermediate batches interrupted
+by API quota exhaustion totaling 267 aborted run attempts were
+quarantined and re-run from scratch under pre-registered rules (Appendix
+A).
 
 \hypertarget{appendix-a-pre-registered-protocols-hypothesis-inventory-and-robustness-tables}{%
 \section{Appendix A: Pre-Registered Protocols, Hypothesis Inventory, and
@@ -1463,14 +1443,14 @@ Tables}\label{appendix-a-pre-registered-protocols-hypothesis-inventory-and-robus
 
 All protocols, sample sizes, estimands, and decision rules were
 registered in \texttt{preregistration-zh.md} and
-\texttt{experiments.json} before executing each batch (translated in
-\texttt{preregistration-en.md}), with frozen code commits and SHA-256
+\texttt{experiments.json} before executing each batch and translated in
+\texttt{preregistration-en.md}, with frozen code commits and SHA-256
 data hashes archived in the repository: - \textbf{A.1 Main Factorial
 Grid (\texttt{gpt-4.1-mini}, 750 runs, commit \texttt{d5ab8923}):}
 Registered
 \(P \in \{\text{seed}, \text{parent}\} \times F \in \{\text{none}, \text{first}, \text{diverse}, \text{minibatch}, \text{cluster}\}\)
-across 7 tasks (\(n=10\)), \texttt{duration} interventions
-(\texttt{seed-iso}, \texttt{seed-random}), and \texttt{GEPA\ mb3} /
+across 7 tasks with \(n=10\), \texttt{duration} interventions
+\texttt{seed-iso} and \texttt{seed-random}, and \texttt{GEPA\ mb3} /
 \texttt{GEPA\ mb3\ +\ stop}, defining \(\Delta_{\text{lineage}}\),
 \(\mathcal{H}_{C1}\text{--}\mathcal{H}_{C3}\), and
 \(\mathcal{H}_{R1}\text{--}\mathcal{H}_{R4}\). - \textbf{A.2
@@ -1480,17 +1460,17 @@ omission in Batch A.1 \texttt{replies-cluster}, testing
 \(\mathcal{H}_{S1\text{-gold}}\) and \(\mathcal{H}_{S2\text{-gold}}\)
 with \texttt{CLUSTER\_GOLD\_PROMPT}. - \textbf{A.3 Second-Model
 Replication (\texttt{rep-haiku}, \texttt{claude-haiku-5-5}, 350 runs):}
-Registered 5 non-ceiling tasks \(\times\) 7 cells (\texttt{seed-none}
+Registered 5 non-ceiling tasks across 7 cells, namely \texttt{seed-none}
 and
-\(\{\text{seed}, \text{parent}\} \times \{\text{first}, \text{minibatch}, \text{clustergold}\}\)),
+\(\{\text{seed}, \text{parent}\} \times \{\text{first}, \text{minibatch}, \text{clustergold}\}\),
 testing \(\mathcal{H}_{H1}\text{--}\mathcal{H}_{H3}\). - \textbf{A.4
 Public Benchmarks, Strong Proposer, and Haiku Diverse (470 runs):}
-Registered 2 public tasks (\texttt{banking77}, \texttt{bbh\_ste})
-\(\times\) 9 factorial cells + 2 GEPA arms
+Registered 2 public tasks, \texttt{banking77} and \texttt{bbh\_ste},
+across 9 factorial cells plus 2 GEPA arms
 (\(\mathcal{H}_{P1}\text{--}\mathcal{H}_{P5}\)), 3 tasks with
 \texttt{gpt-4.1} proposer
 (\(\mathcal{H}_{S1\text{-prop}}\text{--}\mathcal{H}_{S3\text{-prop}}\)),
-and 5 tasks \(\times\) 2 \texttt{diverse} cells on Haiku
+and 5 tasks across 2 \texttt{diverse} cells on Haiku
 (\(\mathcal{H}_{Hd}\)). - \textbf{A.5 Discovery-Motivated
 \texttt{carry-facts} Follow-Up (\texttt{fix-carryfacts},
 \texttt{gpt-4.1-mini}, 40 runs):} Registered after inspecting Batch A.4
@@ -1499,7 +1479,7 @@ and \texttt{parent-first\ +\ carry} on \texttt{banking77} and
 \texttt{bbh\_ste} (\(\mathcal{H}_{F1}\text{--}\mathcal{H}_{F4}\)).
 
 Table 7 lists the descriptive main-effect estimate
-(\(\Delta_{\text{lineage}}\)) and all 25 pre-registered hypothesis tests
+\(\Delta_{\text{lineage}}\) and all 25 pre-registered hypothesis tests
 across Batches A.1--A.5, and Table 8 reports the leave-one-task-out
 sensitivity analysis.
 
@@ -1676,12 +1656,12 @@ task-stratified bootstrap confidence intervals) for
 
 \textbf{Quarantine protocol for API credit interruptions.} Three
 intermediate execution batches hit HTTP 429
-(\texttt{credit\_balance\_exhausted}) errors mid-run (267 interrupted
-run attempts total: 90 \texttt{.jsonl} files in
+\texttt{credit\_balance\_exhausted} errors mid-run, totaling 267
+interrupted run attempts across 90 \texttt{.jsonl} files in
 \texttt{runs/paper/gpt41mini/\_failed\_nocredit/}, 64 Haiku
 \texttt{replies} runs where the \texttt{gpt-4.1-mini} judge returned
 HTTP 429 from call 1 and was replaced in Batch A.3, and 113
-\texttt{.jsonl} files in \texttt{runs/paper/\_failed\_nocredit\_r4/}).
+\texttt{.jsonl} files in \texttt{runs/paper/\_failed\_nocredit\_r4/}.
 Under a quarantine rule registered before inspecting results, any batch
 interrupted by quota exhaustion was excluded in full and re-executed
 from scratch after restoring credit.
@@ -1695,11 +1675,11 @@ Specifications}\label{appendix-b-verbatim-prompt-templates-and-seed-specificatio
 Templates}\label{b.1-proposer-and-task-model-prompt-templates}}
 
 Every optimization run uses \texttt{LLMProposer} with
-\texttt{PROPOSE\_TEMPLATE}
-(\texttt{adalflow/optim/evolution/proposer.py}), where
+\texttt{PROPOSE\_TEMPLATE} in
+\texttt{adalflow/optim/evolution/proposer.py}, where
 \texttt{\{\{\ kind\ \}\}} is \texttt{"system\ prompt"} for prompt tasks
 and \texttt{"Python\ program"} for code tasks, and \texttt{inspiration}
-is disabled (\texttt{None}):
+is disabled:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1730,8 +1710,8 @@ is disabled (\texttt{None}):
 \end{Shaded}
 
 For prompt tasks, the task model is queried using
-\texttt{PROMPT\_TEMPLATE}
-(\texttt{adalflow/optim/evolution/presets.py}):
+\texttt{PROMPT\_TEMPLATE} in
+\texttt{adalflow/optim/evolution/presets.py}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1747,21 +1727,19 @@ For prompt tasks, the task model is queried using
 \end{Highlighting}
 \end{Shaded}
 
-Under \(F = \text{none}\) (\texttt{seed-none}),
-\texttt{\{\{\ feedback\ \}\}} in \texttt{PROPOSE\_TEMPLATE} is
-\texttt{(no\ feedback)} (\texttt{score=None},
-\texttt{instance\_scores=\{\}}, \texttt{feedback=""}). Under
+Under \(F = \text{none}\), \texttt{\{\{\ feedback\ \}\}} in
+\texttt{PROPOSE\_TEMPLATE} is \texttt{(no\ feedback)} with
+\texttt{score=None}, \texttt{instance\_scores=\{\}}, and
+\texttt{feedback=""}. Under
 \(F \in \{\text{first}, \text{diverse}, \text{minibatch}, \text{cluster}, \text{clustergold}\}\),
 \texttt{render\_feedback} formats \texttt{Score:\ \{score:.4g\}}, up to
-30 lowest per-instance scores
-(\texttt{Per-instance\ scores\ (lowest\ first):}), and
-\texttt{Feedback:} followed by the evaluator feedback string truncated
-at 6,000 characters. Each failing prompt example is formatted on one
-line as
-\texttt{input\ \{item!r\}\ -\textgreater{}\ got\ \{got!r\},\ expected\ \{want!r\}}
-(each truncated at 300 characters). In Batch A.5
-(\texttt{fix-carryfacts}), the following verbatim string
-(\texttt{CARRY\_FACTS}) is appended to \texttt{\{\{\ objective\ \}\}}:
+30 lowest per-instance scores, and \texttt{Feedback:} followed by the
+evaluator feedback string truncated at 6,000 characters. Each failing
+prompt example is formatted on one line as
+\texttt{input\ \{item!r\}\ -\textgreater{}\ got\ \{got!r\},\ expected\ \{want!r\}},
+with each field truncated at 300 characters. In Batch A.5, the following
+verbatim string \texttt{CARRY\_FACTS} is appended to
+\texttt{\{\{\ objective\ \}\}}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1867,7 +1845,7 @@ Tasks}{B.2 Verbatim Objectives and Seed Candidates (c\_0) for All Nine Tasks}}\l
     \texttt{output\_format}:
     \texttt{"Reply\ with\ the\ option\ letter\ in\ parentheses\ only,\ for\ example\ (A)."}
   \item
-    \texttt{seed} (verbatim):
+    \texttt{seed}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1927,8 +1905,8 @@ Tasks}{B.2 Verbatim Objectives and Seed Candidates (c\_0) for All Nine Tasks}}\l
 Prompts}\label{b.3-verbatim-clustering-and-judge-prompts}}
 
 In \texttt{cluster} (Batch A.1), all failing cases of \(p_t\) are passed
-to one call of the clusterer model using \texttt{CLUSTER\_PROMPT}
-(\texttt{benchmarks/evolution/factorial.py}):
+to one call of the clusterer model using \texttt{CLUSTER\_PROMPT} in
+\texttt{benchmarks/evolution/factorial.py}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1958,8 +1936,8 @@ In \texttt{clustergold} (Batches A.2, A.3, A.4),
 \end{Shaded}
 
 In \texttt{replies}, candidate outputs are scored at temperature 0 by
-\texttt{gpt-4.1-mini} using \texttt{JUDGE\_PROMPT}
-(\texttt{benchmarks/evolution/replies\_task.py}):
+\texttt{gpt-4.1-mini} using \texttt{JUDGE\_PROMPT} in
+\texttt{benchmarks/evolution/replies\_task.py}:
 
 \begin{Shaded}
 \begin{Highlighting}[]
