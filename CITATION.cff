@@ -2,16 +2,24 @@ cff-version: 1.2.0
 message: "If you use this code or method, please cite the paper."
 title: "Lineage Is Memory: Build on the Best Parent and Let It Accumulate What Feedback Reveals"
 authors:
-  - family-names: "TODO"
-    given-names: "TODO"
+  - family-names: "Yang"
+    given-names: "Shanglin"
+  - family-names: "Shi"
+    given-names: "Zhan"
+  - family-names: "Yin"
+    given-names: "Li"
 date-released: 2026-10-28
 license: MIT
-repository-code: "TODO"
+repository-code: "https://github.com/shangliy/lineage-is-memory"
 preferred-citation:
   type: article
   title: "Lineage Is Memory: Build on the Best Parent and Let It Accumulate What Feedback Reveals"
   authors:
-    - family-names: "TODO"
-      given-names: "TODO"
+    - family-names: "Yang"
+      given-names: "Shanglin"
+    - family-names: "Shi"
+      given-names: "Zhan"
+    - family-names: "Yin"
+      given-names: "Li"
   year: 2026
   journal: "arXiv preprint"

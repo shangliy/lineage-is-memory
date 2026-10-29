@@ -1,7 +1,7 @@
 # Lineage Is Memory
 
 Code, run summaries and pre-registrations for **"Lineage Is Memory: Build on the Best
-Parent and Let It Accumulate What Feedback Reveals"** ([paper/paper.pdf](paper/paper.pdf); arXiv link: TODO).
+Parent and Let It Accumulate What Feedback Reveals"** ([paper/paper.pdf](paper/paper.pdf); arXiv: coming soon).
 
 In LLM-guided prompt evolution, *building on the best parent* (lineage) is the main
 lever, and it works as memory: facts the feedback reveals accumulate in the prompt
@@ -70,12 +70,10 @@ tracker and is not needed.
 See [CITATION.cff](CITATION.cff), or:
 
 ```bibtex
-@misc{lineage-is-memory-2026,
+@misc{yang2026lineage,
   title  = {Lineage Is Memory: Build on the Best Parent and Let It Accumulate What Feedback Reveals},
-  author = {TODO},
+  author = {Yang, Shanglin and Shi, Zhan and Yin, Li},
   year   = {2026},
-  eprint = {TODO},
-  archivePrefix = {arXiv},
 }
 ```
 
