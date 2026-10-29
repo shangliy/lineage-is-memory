@@ -1,0 +1,5 @@
+adalflow @ git+https://github.com/shangliy/AdalFlow.git@76c8a738#subdirectory=adalflow
+gepa==0.0.7
+openai
+anthropic
+matplotlib
