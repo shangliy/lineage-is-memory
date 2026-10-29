@@ -71,8 +71,8 @@ See [CITATION.cff](CITATION.cff), or:
 
 ```bibtex
 @misc{yang2026lineage,
-  title  = {Lineage Is Memory: Build on the Best Parent and Let It Accumulate What Feedback Reveals},
-  author = {Yang, Shanglin and Shi, Zhan and Yin, Li},
+  title  = {Lineage Is Memory: Parent Inheritance and Feedback Disclosure in Short-Budget LLM-Guided Optimization},
+  author = {Yang, Shanglin and Shi, Zhan},
   year   = {2026},
 }
 ```
