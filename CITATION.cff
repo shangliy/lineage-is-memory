@@ -9,6 +9,7 @@ authors:
   - family-names: "Shi"
     given-names: "Zhan"
     affiliation: "Santa Clara University"
+    email: "ashi2@scu.edu"
 date-released: 2026-10-28
 license: MIT
 repository-code: "https://github.com/shangliy/lineage-is-memory"
@@ -23,5 +24,6 @@ preferred-citation:
     - family-names: "Shi"
       given-names: "Zhan"
       affiliation: "Santa Clara University"
+      email: "ashi2@scu.edu"
   year: 2026
   journal: "arXiv preprint"
