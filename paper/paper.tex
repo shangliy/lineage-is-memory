@@ -1257,38 +1257,48 @@ All protocols, sample sizes, estimands, and decision rules were
 registered in \texttt{preregistration-zh.md} and
 \texttt{experiments.json} before executing each batch and translated in
 \texttt{preregistration-en.md}, with frozen code commits and SHA-256
-data hashes archived in the repository: - \textbf{A.1 Main Factorial
-Grid (\texttt{gpt-4.1-mini}, 750 runs, commit \texttt{d5ab8923}):}
-Registered
-\(P \in \{\text{seed}, \text{parent}\} \times F \in \{\text{none}, \text{first}, \text{diverse}, \text{minibatch}, \text{cluster}\}\)
-across 7 tasks with \(n=10\), \texttt{duration} interventions
-\texttt{seed-iso} and \texttt{seed-random}, and \texttt{GEPA\ mb3} /
-\texttt{GEPA\ mb3\ +\ stop}, defining \(\Delta_{\text{lineage}}\),
-\(\mathcal{H}_{C1}\text{--}\mathcal{H}_{C3}\), and
-\(\mathcal{H}_{R1}\text{--}\mathcal{H}_{R4}\). - \textbf{A.2
-Target-Preserving Cluster Sensitivity (\texttt{sens-clustergold},
-\texttt{gpt-4.1-mini}, 140 runs):} Registered after auditing rubric
-omission in Batch A.1 \texttt{replies-cluster}, testing
-\(\mathcal{H}_{S1\text{-gold}}\) and \(\mathcal{H}_{S2\text{-gold}}\)
-with \texttt{CLUSTER\_GOLD\_PROMPT}. - \textbf{A.3 Second-Model
-Replication (\texttt{rep-haiku}, \texttt{claude-haiku-5-5}, 350 runs):}
-Registered 5 non-ceiling tasks across 7 cells, namely \texttt{seed-none}
-and
-\(\{\text{seed}, \text{parent}\} \times \{\text{first}, \text{minibatch}, \text{clustergold}\}\),
-testing \(\mathcal{H}_{H1}\text{--}\mathcal{H}_{H3}\). - \textbf{A.4
-Public Benchmarks, Strong Proposer, and Haiku Diverse (470 runs):}
-Registered 2 public tasks, \texttt{banking77} and \texttt{bbh\_ste},
-across 9 factorial cells plus 2 GEPA arms
-(\(\mathcal{H}_{P1}\text{--}\mathcal{H}_{P5}\)), 3 tasks with
-\texttt{gpt-4.1} proposer
-(\(\mathcal{H}_{S1\text{-prop}}\text{--}\mathcal{H}_{S3\text{-prop}}\)),
-and 5 tasks across 2 \texttt{diverse} cells on Haiku
-(\(\mathcal{H}_{Hd}\)). - \textbf{A.5 Discovery-Motivated
-\texttt{carry-facts} Follow-Up (\texttt{fix-carryfacts},
-\texttt{gpt-4.1-mini}, 40 runs):} Registered after inspecting Batch A.4
-\texttt{banking77} trajectories, testing \texttt{seed-first\ +\ carry}
-and \texttt{parent-first\ +\ carry} on \texttt{banking77} and
-\texttt{bbh\_ste} (\(\mathcal{H}_{F1}\text{--}\mathcal{H}_{F4}\)).
+data hashes archived in the repository:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{A.1 Main Factorial Grid (\texttt{gpt-4.1-mini}, 750 runs,
+  commit \texttt{d5ab8923}):} Registered
+  \(P \in \{\text{seed}, \text{parent}\} \times F \in \{\text{none}, \text{first}, \text{diverse}, \text{minibatch}, \text{cluster}\}\)
+  across 7 tasks with \(n=10\), \texttt{duration} interventions
+  \texttt{seed-iso} and \texttt{seed-random}, and \texttt{GEPA\ mb3} /
+  \texttt{GEPA\ mb3\ +\ stop}, defining \(\Delta_{\text{lineage}}\),
+  \(\mathcal{H}_{C1}\text{--}\mathcal{H}_{C3}\), and
+  \(\mathcal{H}_{R1}\text{--}\mathcal{H}_{R4}\).
+\item
+  \textbf{A.2 Target-Preserving Cluster Sensitivity
+  (\texttt{sens-clustergold}, \texttt{gpt-4.1-mini}, 140 runs):}
+  Registered after auditing rubric omission in Batch A.1
+  \texttt{replies-cluster}, testing \(\mathcal{H}_{S1\text{-gold}}\) and
+  \(\mathcal{H}_{S2\text{-gold}}\) with \texttt{CLUSTER\_GOLD\_PROMPT}.
+\item
+  \textbf{A.3 Second-Model Replication (\texttt{rep-haiku},
+  \texttt{claude-haiku-5-5}, 350 runs):} Registered 5 non-ceiling tasks
+  across 7 cells, namely \texttt{seed-none} and
+  \(\{\text{seed}, \text{parent}\} \times \{\text{first}, \text{minibatch}, \text{clustergold}\}\),
+  testing \(\mathcal{H}_{H1}\text{--}\mathcal{H}_{H3}\).
+\item
+  \textbf{A.4 Public Benchmarks, Strong Proposer, and Haiku Diverse (470
+  runs):} Registered 2 public tasks, \texttt{banking77} and
+  \texttt{bbh\_ste}, across 9 factorial cells plus 2 GEPA arms
+  (\(\mathcal{H}_{P1}\text{--}\mathcal{H}_{P5}\)), 3 tasks with
+  \texttt{gpt-4.1} proposer
+  (\(\mathcal{H}_{S1\text{-prop}}\text{--}\mathcal{H}_{S3\text{-prop}}\)),
+  and 5 tasks across 2 \texttt{diverse} cells on Haiku
+  (\(\mathcal{H}_{Hd}\)).
+\item
+  \textbf{A.5 Discovery-Motivated \texttt{carry-facts} Follow-Up
+  (\texttt{fix-carryfacts}, \texttt{gpt-4.1-mini}, 40 runs):} Registered
+  after inspecting Batch A.4 \texttt{banking77} trajectories, testing
+  \texttt{seed-first\ +\ carry} and \texttt{parent-first\ +\ carry} on
+  \texttt{banking77} and \texttt{bbh\_ste}
+  (\(\mathcal{H}_{F1}\text{--}\mathcal{H}_{F4}\)).
+\end{itemize}
 
 Table 7 lists the descriptive main-effect estimate
 \(\Delta_{\text{lineage}}\) and all 25 pre-registered hypothesis tests
@@ -1296,9 +1306,9 @@ across Batches A.1--A.5, and Table 8 reports the leave-one-task-out
 sensitivity analysis.
 
 \begin{center}
-\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
+\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.04}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{4.4cm}>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{2.7cm}@{}}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{6.4cm}>{\raggedright\arraybackslash}p{4.2cm}cl@{}}
 \toprule
 Batch \& ID & Hypothesis / Contrast Definition & Pre-Registered Criterion & Observed Point Estimate \& 95\% CI & Outcome \\
 \midrule
@@ -1352,7 +1362,7 @@ estimate and 25 pre-registered hypothesis tests across all five batches
 (1,750 analyzed runs).
 
 \begin{center}
-\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
+\scriptsize\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.04}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
 \begin{tabular}{@{}lccccccc@{}}
 \toprule
