@@ -115,7 +115,7 @@ gains of complex reflective loops at a fraction of their compute.
 \end{abstract}
 
 \hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\section{1 Introduction}\label{introduction}}
 
 Reflective prompt and program optimizers refine candidate instructions
 or code through an iterative propose-and-evaluate loop. In GEPA
@@ -226,7 +226,7 @@ Our main findings are as follows:
 \end{itemize}
 
 \hypertarget{related-work}{%
-\section{Related Work}\label{related-work}}
+\section{2 Related Work}\label{related-work}}
 
 \hypertarget{llm-guided-program-evolution}{%
 \subsection{LLM-Guided Program
@@ -320,7 +320,7 @@ a classic problem in inductive program synthesis
 farthest-point input selection to iterative error feedback.
 
 \hypertarget{methodology-and-experimental-design}{%
-\section{Methodology and Experimental
+\section{3 Methodology and Experimental
 Design}\label{methodology-and-experimental-design}}
 
 \hypertarget{the-pfa-optimization-loop}{%
@@ -487,44 +487,21 @@ Table 1 summarizes the seven primary tasks and two public extension
 tasks.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}llccccccl@{}}
+\begin{tabular}{@{}llcccccc>{\raggedright\arraybackslash}p{5.4cm}@{}}
 \toprule
-Task Family & Artifact Type & Categories (\(G\)) & \(|\mathcal{D}_{\text{search}}|\) & \(|\mathcal{D}_{\text{holdout}}|\) & Budget Cap (\(B\)) & Max Task Calls & Seed Score (Search / Holdout) & Latent Specification Withheld from \(c_0\) and Revealed via Feedback \\
+\textbf{Task Family} & \textbf{Artifact Type} & \parbox[b]{1.95cm}{\centering\textbf{Categories (\(G\))}} & \parbox[b]{1.95cm}{\centering\textbf{\(|\mathcal{D}_{\text{search}}|\)}} & \parbox[b]{1.95cm}{\centering\textbf{\(|\mathcal{D}_{\text{holdout}}|\)}} & \parbox[b]{1.95cm}{\centering\textbf{Budget Cap (\(B\))}} & \parbox[b]{1.95cm}{\centering\textbf{Max Task Calls}} & \parbox[b]{1.95cm}{\centering\textbf{Seed Score (Search / Holdout)}} & \textbf{Latent Specification Withheld from \(c_0\) and Revealed via Feedback} \\
 \midrule
-\texttt{labels} & Prompt & 12 & 24 (2/cat) & 24 (2/cat) & 8 & 192 & 0.00
-/ 0.00 & Exact \texttt{snake\_case} category names (\texttt{ipv4},
-\texttt{hex\_color}, \texttt{us\_date}, \texttt{semver}, etc.) \\
-\texttt{dates} & Prompt & 12 & 24 (2/cat) & 24 (2/cat) & 8 & 192 & 0.75
-/ 0.75 & Slash vs.~dot day/month order, 2-digit century cutoff (19xx
-vs.~20xx), \texttt{invalid} token \\
-\texttt{routing} & Prompt & 6 & 16 (2--3/cat) & 12 (2/cat) & 8 & 128 &
-0.00 / 0.00 & 6 queue names (\texttt{payments}, \texttt{fulfillment},
-\texttt{logistics}, \texttt{trust\_safety}, \texttt{privacy},
-\texttt{care}) \& edge policies \\
-\texttt{replies} & Prompt (Free-text) & 8 & 16 (2/cat) & 16 (2/cat) & 8
-& 128 & 0.00 / 0.00 & 8 Acme support policies (refund window,
-\textgreater7-day \$10 credit threshold, URLs, legal email, GDPR
-rules) \\
-\texttt{scone} & Prompt (Public NLI) & 6 & 36 (6/cat) & 72 (12/cat) & 8
-& 288 & 0.89 / 0.89 & 6 negation-scope conditions from ScoNe
-\citep{she2023scone}; binary \texttt{entailment} / \texttt{neutral}
-labels \\
-\texttt{duration} & Code (Python) & 7 & 24 & 24 & 12 & 288 & 0.46 / 0.42
-& Plain seconds, compound units (\texttt{1h\ 30m}), English words, clock
-(\texttt{M:SS}, \texttt{HH:MM:SS}), ISO 8601 (\texttt{PT1H30M}),
-\texttt{ValueError} \\
-\texttt{size} & Code (Python) & 7 & 24 & 24 & 12 & 288 & 0.21 / 0.21 &
-Plain bytes, SI decimal (\texttt{10KB}), IEC binary (\texttt{4MiB},
-\texttt{2Gi}), single-letter (\texttt{4K}), comma separators
-(\texttt{1,024}), English words \\
-\texttt{banking77} & Prompt (Public Cls.) & 12 & 24 (2/cat) & 36 (3/cat)
-& 8 & 192 & 0.00 / 0.00 & 12 intent labels sampled from Banking77
-\citep{casanueva2020efficient}, withheld from the initial seed \\
-\texttt{bbh\_ste} & Prompt (Public QA) & 6 & 18 (3/cat) & 36 (6/cat) & 8
-& 144 & 0.56 / 0.56 & 6 translation error classes in BBH-STE
-\citep{suzgun2022challenging}; all 6 option names given in seed \\
+\texttt{labels} & Prompt & 12 & 24 (2/cat) & 24 (2/cat) & 8 & 192 & 0.00 / 0.00 & Exact \texttt{snake\_case} category names (\texttt{ipv4}, \texttt{hex\_color}, \texttt{us\_date}, \texttt{semver}, etc.) \\
+\texttt{dates} & Prompt & 12 & 24 (2/cat) & 24 (2/cat) & 8 & 192 & 0.75 / 0.75 & Slash vs.~dot day/month order, 2-digit century cutoff (19xx vs.~20xx), \texttt{invalid} token \\
+\texttt{routing} & Prompt & 6 & 16 (2--3/cat) & 12 (2/cat) & 8 & 128 & 0.00 / 0.00 & 6 queue names (\texttt{payments}, \texttt{fulfillment}, \texttt{logistics}, \texttt{trust\_safety}, \texttt{privacy}, \texttt{care}) \& edge policies \\
+\texttt{replies} & Prompt (Free-text) & 8 & 16 (2/cat) & 16 (2/cat) & 8 & 128 & 0.00 / 0.00 & 8 Acme support policies (refund window, \textgreater7-day \$10 credit threshold, URLs, legal email, GDPR rules) \\
+\texttt{scone} & Prompt (Public NLI) & 6 & 36 (6/cat) & 72 (12/cat) & 8 & 288 & 0.89 / 0.89 & 6 negation-scope conditions from ScoNe \citep{she2023scone}; binary \texttt{entailment} / \texttt{neutral} labels \\
+\texttt{duration} & Code (Python) & 7 & 24 & 24 & 12 & 288 & 0.46 / 0.42 & Plain seconds, compound units (\texttt{1h\ 30m}), English words, clock (\texttt{M:SS}, \texttt{HH:MM:SS}), ISO 8601 (\texttt{PT1H30M}), \texttt{ValueError} \\
+\texttt{size} & Code (Python) & 7 & 24 & 24 & 12 & 288 & 0.21 / 0.21 & Plain bytes, SI decimal (\texttt{10KB}), IEC binary (\texttt{4MiB}, \texttt{2Gi}), single-letter (\texttt{4K}), comma separators (\texttt{1,024}), English words \\
+\texttt{banking77} & Prompt (Public Cls.) & 12 & 24 (2/cat) & 36 (3/cat) & 8 & 192 & 0.00 / 0.00 & 12 intent labels sampled from Banking77 \citep{casanueva2020efficient}, withheld from the initial seed \\
+\texttt{bbh\_ste} & Prompt (Public QA) & 6 & 18 (3/cat) & 36 (6/cat) & 8 & 144 & 0.56 / 0.56 & 6 translation error classes in BBH-STE \citep{suzgun2022challenging}; all 6 option names given in seed \\
 \bottomrule
 \end{tabular}%
 }
@@ -620,7 +597,7 @@ with 750 runs, Batch A.2 with 140 runs, Batch A.3 with 350 runs, Batch
 A.4 with 470 runs, and Batch A.5 with 40 runs.
 
 \hypertarget{experimental-results}{%
-\section{Experimental Results}\label{experimental-results}}
+\section{4 Experimental Results}\label{experimental-results}}
 
 \begin{figure}
 \centering
@@ -642,42 +619,25 @@ Tables 2A and 2B report held-out accuracy across the seven primary tasks
 on \texttt{gpt-4.1-mini}.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}lccccccccc@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.1cm}ccccccccc@{}}
 \toprule
-Lineage (\(P\)) \& Disclosure (\(F\)) & \texttt{labels} & \texttt{dates} & \texttt{routing} & \texttt{replies} & \texttt{scone} & \texttt{duration} & \texttt{size} & Mean (All 7) & Mean (5 Non-Ceil.) \\
+\textbf{Lineage (\(P\)) \& Disclosure (\(F\))} & \textbf{\texttt{labels}} & \textbf{\texttt{dates}} & \textbf{\texttt{routing}} & \textbf{\texttt{replies}} & \textbf{\texttt{scone}} & \textbf{\texttt{duration}} & \textbf{\texttt{size}} & \textbf{Mean (All 7)} & \parbox[b]{1.95cm}{\centering\textbf{Mean (5 Non-Ceil.)}} \\
 \midrule
-\texttt{seed-none} (Zero feedback) & 0.279 & 1.000 & 0.000 & 0.056 &
-0.897 & 0.633 & 0.738 & 0.515 & 0.341 \\
-\texttt{seed-first} & 0.408 & 1.000 & 0.500 & 0.294 & 0.899 & 0.562 &
-0.767 & 0.633 & 0.506 \\
-\texttt{seed-diverse} & 0.633 & 0.996 & 0.442 & 0.419 & 0.901 & 0.729 &
-0.738 & 0.694 & 0.592 \\
-\texttt{seed-minibatch} & 0.554 & 0.996 & 0.500 & 0.431 & 0.889 & 0.625
-& 0.804 & 0.686 & 0.583 \\
-\texttt{seed-cluster} & 0.613 & 0.988 & 0.533 & 0.212 & 0.899 & 0.637 &
-0.812 & 0.671 & 0.561 \\
-\texttt{seed-clustergold} (Batch A.2) & 0.683 & 1.000 & 0.625 & 0.794 &
-0.908 & 0.637 & 0.875 & 0.789 & 0.723 \\
-\texttt{parent-first} & 0.917 & 1.000 & 0.925 & 0.981 & 0.910 & 0.963 &
-0.929 & 0.946 & 0.943 \\
-\texttt{parent-diverse} & 0.942 & 1.000 & 0.858 & 0.906 & 0.912 & 0.971
-& 0.988 & 0.940 & 0.933 \\
-\texttt{parent-minibatch} & 0.883 & 0.992 & 0.750 & 0.919 & 0.889 &
-0.863 & 0.904 & 0.886 & 0.864 \\
-\texttt{parent-cluster} & 0.938 & 0.979 & 0.783 & 0.519 & 0.915 & 0.975
-& 0.942 & 0.864 & 0.831 \\
-\texttt{parent-clustergold} (Batch A.2) & 0.958 & 0.996 & 0.842 & 0.869
-& 0.900 & 0.971 & 0.963 & 0.928 & 0.921 \\
-\(\Delta_{\text{lineage}}\) (\texttt{first}, \texttt{diverse},
-\texttt{minibatch}, \texttt{cluster}) & \textbf{+0.368} & -0.002 &
-\textbf{+0.335} & \textbf{+0.492} & +0.010 & \textbf{+0.304} &
-\textbf{+0.160} & \textbf{+0.238} & \textbf{+0.332} \\
-95\% Bootstrap CI for \(\Delta_{\text{lineage}}\) & {[}+0.334, +0.402{]}
-& {[}-0.009, +0.004{]} & {[}+0.283, +0.387{]} & {[}+0.428, +0.552{]} &
-{[}+0.000, +0.020{]} & {[}+0.277, +0.330{]} & {[}+0.121, +0.199{]} &
-{[}+0.224, +0.252{]} & {[}+0.312, +0.351{]} \\
+\texttt{seed-none} (Zero feedback) & 0.279 & 1.000 & 0.000 & 0.056 & 0.897 & 0.633 & 0.738 & 0.515 & 0.341 \\
+\texttt{seed-first} & 0.408 & 1.000 & 0.500 & 0.294 & 0.899 & 0.562 & 0.767 & 0.633 & 0.506 \\
+\texttt{seed-diverse} & 0.633 & 0.996 & 0.442 & 0.419 & 0.901 & 0.729 & 0.738 & 0.694 & 0.592 \\
+\texttt{seed-minibatch} & 0.554 & 0.996 & 0.500 & 0.431 & 0.889 & 0.625 & 0.804 & 0.686 & 0.583 \\
+\texttt{seed-cluster} & 0.613 & 0.988 & 0.533 & 0.212 & 0.899 & 0.637 & 0.812 & 0.671 & 0.561 \\
+\texttt{seed-clustergold} (Batch A.2) & 0.683 & 1.000 & 0.625 & 0.794 & 0.908 & 0.637 & 0.875 & 0.789 & 0.723 \\
+\texttt{parent-first} & 0.917 & 1.000 & 0.925 & 0.981 & 0.910 & 0.963 & 0.929 & 0.946 & 0.943 \\
+\texttt{parent-diverse} & 0.942 & 1.000 & 0.858 & 0.906 & 0.912 & 0.971 & 0.988 & 0.940 & 0.933 \\
+\texttt{parent-minibatch} & 0.883 & 0.992 & 0.750 & 0.919 & 0.889 & 0.863 & 0.904 & 0.886 & 0.864 \\
+\texttt{parent-cluster} & 0.938 & 0.979 & 0.783 & 0.519 & 0.915 & 0.975 & 0.942 & 0.864 & 0.831 \\
+\texttt{parent-clustergold} (Batch A.2) & 0.958 & 0.996 & 0.842 & 0.869 & 0.900 & 0.971 & 0.963 & 0.928 & 0.921 \\
+\(\Delta_{\text{lineage}}\) (\texttt{first}, \texttt{diverse}, \texttt{minibatch}, \texttt{cluster}) & \textbf{+0.368} & -0.002 & \textbf{+0.335} & \textbf{+0.492} & +0.010 & \textbf{+0.304} & \textbf{+0.160} & \textbf{+0.238} & \textbf{+0.332} \\
+95\% Bootstrap CI for \(\Delta_{\text{lineage}}\) & {[}+0.334, +0.402{]} & {[}-0.009, +0.004{]} & {[}+0.283, +0.387{]} & {[}+0.428, +0.552{]} & {[}+0.000, +0.020{]} & {[}+0.277, +0.330{]} & {[}+0.121, +0.199{]} & {[}+0.224, +0.252{]} & {[}+0.312, +0.351{]} \\
 \bottomrule
 \end{tabular}%
 }
@@ -691,52 +651,23 @@ headroom above \texttt{seed-none} (\texttt{labels}, \texttt{routing},
 \texttt{dates} and \texttt{scone}.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{8.8cm}cc@{}}
 \toprule
 Cross-Task Contrast (7 Tasks Equal-Weighted, \texttt{gpt-4.1-mini}) & Point Estimate \& 95\% Bootstrap CI & 5 Non-Ceiling Tasks Mean \\
 \midrule
-Lineage main effect \(\Delta_{\text{lineage}}\) (\texttt{first},
-\texttt{diverse}, \texttt{minibatch}, \texttt{cluster}) &
-\textbf{+0.238} {[}+0.224, +0.252{]} & \textbf{+0.332} {[}+0.312,
-+0.351{]} \\
-Lineage main effect across all 5 schemes / across \texttt{clustergold}
-only & +0.218 {[}+0.204, +0.233{]} / +0.139 {[}+0.096, +0.181{]} &
-+0.305 / +0.198 \\
-Cross-row contrast: \texttt{parent-first} \(-\)
-\texttt{seed-clustergold} / \texttt{parent-first} \(-\)
-\texttt{seed-minibatch} & \textbf{+0.157} {[}+0.124, +0.195{]} /
-\textbf{+0.261} {[}+0.235, +0.285{]} & +0.220 / +0.360 \\
-Attenuation interaction
-\(I_{\text{diverse}} = (\text{diverse} - \text{first})_{\text{seed}} - (\text{diverse} - \text{first})_{\text{parent}}\)
-(\(\mathcal{H}_{C2}\)) & \textbf{+0.068} {[}+0.043, +0.092{]} &
-+0.096 \\
-Attenuation interaction
-\(I_{\text{minibatch}} = (\text{minibatch} - \text{first})_{\text{seed}} - (\text{minibatch} - \text{first})_{\text{parent}}\)
-& \textbf{+0.113} {[}+0.079, +0.148{]} & +0.156 \\
-Attenuation interaction
-\(I_{\text{cluster}} = (\text{cluster} - \text{first})_{\text{seed}} - (\text{cluster} - \text{first})_{\text{parent}}\)
-& \textbf{+0.120} {[}+0.073, +0.167{]} & +0.167 \\
-Attenuation interaction
-\(I_{\text{clustergold}} = (\text{clustergold} - \text{first})_{\text{seed}} - (\text{clustergold} - \text{first})_{\text{parent}}\)
-& \textbf{+0.174} {[}+0.127, +0.222{]} & +0.239 \\
-Seed row within-row contrasts: \texttt{seed-diverse} \(-\)
-\texttt{seed-first} / \texttt{seed-clustergold} \(-\)
-\texttt{seed-first} & +0.061 {[}+0.046, +0.077{]} / +0.156 {[}+0.122,
-+0.188{]} & +0.086 / +0.217 \\
-Seed row within-row contrasts: \texttt{seed-minibatch} \(-\)
-\texttt{seed-first} / \texttt{seed-cluster} \(-\) \texttt{seed-first} &
-+0.053 {[}+0.030, +0.075{]} / +0.038 {[}+0.009, +0.067{]} & +0.077 /
-+0.055 \\
-Parent row within-row contrasts: \texttt{parent-diverse} \(-\)
-\texttt{parent-first} / \texttt{parent-clustergold} \(-\)
-\texttt{parent-first} (\(\mathcal{H}_{S2\text{-gold}}\)) & -0.007
-{[}-0.025, +0.012{]} / -0.018 {[}-0.053, +0.010{]} & -0.010 / -0.022 \\
-Parent row within-row contrasts: \texttt{parent-minibatch} \(-\)
-\texttt{parent-first} / \texttt{parent-cluster} \(-\)
-\texttt{parent-first} & -0.061 {[}-0.086, -0.035{]} / -0.082 {[}-0.119,
--0.045{]} & -0.079 / -0.112 \\
+Lineage main effect \(\Delta_{\text{lineage}}\) (\texttt{first}, \texttt{diverse}, \texttt{minibatch}, \texttt{cluster}) & \textbf{+0.238} {[}+0.224, +0.252{]} & \textbf{+0.332} {[}+0.312, +0.351{]} \\
+Lineage main effect across all 5 schemes / across \texttt{clustergold} only & +0.218 {[}+0.204, +0.233{]} / +0.139 {[}+0.096, +0.181{]} & +0.305 / +0.198 \\
+Cross-row contrast: \texttt{parent-first} \(-\) \texttt{seed-clustergold} / \texttt{parent-first} \(-\) \texttt{seed-minibatch} & \textbf{+0.157} {[}+0.124, +0.195{]} / \textbf{+0.261} {[}+0.235, +0.285{]} & +0.220 / +0.360 \\
+Attenuation interaction \(I_{\text{diverse}} = (\text{diverse} - \text{first})_{\text{seed}} - (\text{diverse} - \text{first})_{\text{parent}}\) (\(\mathcal{H}_{C2}\)) & \textbf{+0.068} {[}+0.043, +0.092{]} & +0.096 \\
+Attenuation interaction \(I_{\text{minibatch}} = (\text{minibatch} - \text{first})_{\text{seed}} - (\text{minibatch} - \text{first})_{\text{parent}}\) & \textbf{+0.113} {[}+0.079, +0.148{]} & +0.156 \\
+Attenuation interaction \(I_{\text{cluster}} = (\text{cluster} - \text{first})_{\text{seed}} - (\text{cluster} - \text{first})_{\text{parent}}\) & \textbf{+0.120} {[}+0.073, +0.167{]} & +0.167 \\
+Attenuation interaction \(I_{\text{clustergold}} = (\text{clustergold} - \text{first})_{\text{seed}} - (\text{clustergold} - \text{first})_{\text{parent}}\) & \textbf{+0.174} {[}+0.127, +0.222{]} & +0.239 \\
+Seed row within-row contrasts: \texttt{seed-diverse} \(-\) \texttt{seed-first} / \texttt{seed-clustergold} \(-\) \texttt{seed-first} & +0.061 {[}+0.046, +0.077{]} / +0.156 {[}+0.122, +0.188{]} & +0.086 / +0.217 \\
+Seed row within-row contrasts: \texttt{seed-minibatch} \(-\) \texttt{seed-first} / \texttt{seed-cluster} \(-\) \texttt{seed-first} & +0.053 {[}+0.030, +0.075{]} / +0.038 {[}+0.009, +0.067{]} & +0.077 / +0.055 \\
+Parent row within-row contrasts: \texttt{parent-diverse} \(-\) \texttt{parent-first} / \texttt{parent-clustergold} \(-\) \texttt{parent-first} (\(\mathcal{H}_{S2\text{-gold}}\)) & -0.007 {[}-0.025, +0.012{]} / -0.018 {[}-0.053, +0.010{]} & -0.010 / -0.022 \\
+Parent row within-row contrasts: \texttt{parent-minibatch} \(-\) \texttt{parent-first} / \texttt{parent-cluster} \(-\) \texttt{parent-first} & -0.061 {[}-0.086, -0.035{]} / -0.082 {[}-0.119, -0.045{]} & -0.079 / -0.112 \\
 \bottomrule
 \end{tabular}%
 }
@@ -780,66 +711,38 @@ inheritance adds +0.222 overall and +0.257 when excluding
 \texttt{seed-clustergold}.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
 \begin{tabular}{@{}lccccccc@{}}
 \toprule
-Model Configuration \& Cell & \texttt{labels} & \texttt{routing} & \texttt{replies} & \texttt{duration} & \texttt{size} & Mean (5 Tasks) & Mean (3 Prompt Tasks) \\
+\parbox[b]{2.85cm}{\raggedright\textbf{Model Configuration \& Cell}} & \textbf{\texttt{labels}} & \textbf{\texttt{routing}} & \textbf{\texttt{replies}} & \textbf{\texttt{duration}} & \textbf{\texttt{size}} & \parbox[b]{2.25cm}{\centering\textbf{Mean (5 Tasks)}} & \parbox[b]{2.25cm}{\centering\textbf{Mean (3 Prompt Tasks)}} \\
 \midrule
-\textbf{Panel A: \texttt{claude-haiku-5-5} Replication (\(n=10\) runs
-per cell, 450 runs across Batches A.3 \& A.4)} & & & & & & & \\
-\texttt{seed-none} & 0.671 & 0.000 & 0.044 & 0.954 & 0.650 & 0.464 &
-0.238 \\
-\texttt{seed-first} & 0.725 & 0.500 & 0.312 & 0.863 & 0.817 & 0.643 &
-0.512 \\
-\texttt{seed-diverse} (Batch A.4) & 0.871 & 0.400 & 0.487 & 0.942 &
-0.879 & 0.716 & 0.586 \\
-\texttt{seed-minibatch} & 0.775 & 0.508 & 0.444 & 0.942 & 0.863 & 0.706
-& 0.576 \\
-\texttt{seed-clustergold} & 0.904 & 0.792 & 0.637 & 0.942 & 0.838 &
-0.823 & 0.778 \\
-\texttt{parent-first} & 0.958 & 0.950 & 0.988 & 1.000 & 1.000 & 0.979 &
-0.965 \\
-\texttt{parent-diverse} (Batch A.4) & 0.925 & 0.942 & 0.781 & 1.000 &
-1.000 & 0.930 & 0.883 \\
-\texttt{parent-minibatch} & 0.950 & 0.758 & 0.762 & 0.988 & 0.971 &
-0.886 & 0.823 \\
-\texttt{parent-clustergold} & 0.992 & 0.917 & 0.950 & 1.000 & 1.000 &
-0.972 & 0.953 \\
-Haiku \(\mathcal{H}_{H1}\) (\(\Delta_{\text{lineage}}\)) /
-\(\mathcal{H}_{H2}\) (\(I_{\text{clustergold}}\)) & +0.165 / +0.146 &
-+0.275 / +0.325 & +0.435 / +0.363 & +0.081 / +0.079 & +0.151 / +0.021 &
-\textbf{+0.222} {[}+0.204, +0.239{]} / \textbf{+0.187} {[}+0.152,
-+0.221{]} & +0.292 / +0.278 \\
-Haiku \(\mathcal{H}_{H3}\) (\texttt{parent-clustergold} \(-\)
-\texttt{parent-first}) / \(\mathcal{H}_{Hd}\) (\(I_{\text{diverse}}\)) &
-+0.033 / +0.179 & -0.033 / -0.092 & -0.038 / +0.381 & +0.000 / +0.079 &
-+0.000 / +0.062 & \textbf{-0.008} {[}-0.017, +0.002{]} / \textbf{+0.122}
-{[}+0.088, +0.158{]} & -0.013 / +0.156 \\
-\textbf{Panel B: Stronger Proposer (\texttt{gpt-4.1} Proposer \&
-Clusterer, \texttt{gpt-4.1-mini} Task Model, \(n=10\), 150 runs)} & & &
-& & & & \\
-\texttt{seed-none} (\texttt{gpt-4.1} prop.) & 0.279 & 0.000 & 0.062 & --
-& -- & -- & 0.114 (\(\Delta_{\text{prop}}\): +0.002 {[}-0.024,
-+0.031{]}) \\
-\texttt{seed-first} (\texttt{gpt-4.1} prop.) & 0.383 & 0.500 & 0.300 &
--- & -- & -- & 0.394 (\(\Delta_{\text{prop}}\): -0.006 {[}-0.035,
-+0.023{]}) \\
-\texttt{seed-clustergold} (\texttt{gpt-4.1} prop.) & 0.596 & 0.617 &
-0.681 & -- & -- & -- & 0.631 (\(\Delta_{\text{prop}}\): -0.069
-{[}-0.170, +0.033{]}) \\
-\texttt{parent-first} (\texttt{gpt-4.1} prop.) & 0.904 & 0.892 & 0.969 &
--- & -- & -- & 0.922 (\(\Delta_{\text{prop}}\): -0.019 {[}-0.053,
-+0.014{]}) \\
-\texttt{parent-clustergold} (\texttt{gpt-4.1} prop.) & 0.858 & 0.792 &
-0.944 & -- & -- & -- & 0.865 (\(\Delta_{\text{prop}}\): -0.025
-{[}-0.087, +0.057{]}) \\
-Strong-Proposer \(\mathcal{H}_{S1\text{-prop}}\)
-(\(\Delta_{\text{lineage}}\)) / \(\mathcal{H}_{S2\text{-prop}}\)
-(\(I_{\text{clustergold}}\)) / \(\mathcal{H}_{S3\text{-prop}}\) & -- &
--- & -- & -- & -- & -- & \textbf{+0.380} {[}+0.337, +0.425{]} /
-\textbf{+0.294} {[}+0.201, +0.381{]} / \textbf{-0.057} {[}-0.101,
--0.016{]} \\
+\multicolumn{8}{@{}l@{}}{\textbf{Panel A: \texttt{claude-haiku-5-5} Replication (\(n=10\) runs per cell, 450 runs across Batches A.3 \& A.4)}} \\
+\midrule
+\texttt{seed-none} & 0.671 & 0.000 & 0.044 & 0.954 & 0.650 & 0.464 & 0.238 \\
+\texttt{seed-first} & 0.725 & 0.500 & 0.312 & 0.863 & 0.817 & 0.643 & 0.512 \\
+\texttt{seed-diverse} (Batch A.4) & 0.871 & 0.400 & 0.487 & 0.942 & 0.879 & 0.716 & 0.586 \\
+\texttt{seed-minibatch} & 0.775 & 0.508 & 0.444 & 0.942 & 0.863 & 0.706 & 0.576 \\
+\texttt{seed-clustergold} & 0.904 & 0.792 & 0.637 & 0.942 & 0.838 & 0.823 & 0.778 \\
+\texttt{parent-first} & 0.958 & 0.950 & 0.988 & 1.000 & 1.000 & 0.979 & 0.965 \\
+\texttt{parent-diverse} (Batch A.4) & 0.925 & 0.942 & 0.781 & 1.000 & 1.000 & 0.930 & 0.883 \\
+\texttt{parent-minibatch} & 0.950 & 0.758 & 0.762 & 0.988 & 0.971 & 0.886 & 0.823 \\
+\texttt{parent-clustergold} & 0.992 & 0.917 & 0.950 & 1.000 & 1.000 & 0.972 & 0.953 \\
+Haiku \(\mathcal{H}_{H1}\) (\(\Delta_{\text{lineage}}\)) & +0.165 & +0.275 & +0.435 & +0.081 & +0.151 & \textbf{+0.222} {[}+0.204, +0.239{]} & +0.292 \\
+Haiku \(\mathcal{H}_{H2}\) (\(I_{\text{clustergold}}\)) & +0.146 & +0.325 & +0.363 & +0.079 & +0.021 & \textbf{+0.187} {[}+0.152, +0.221{]} & +0.278 \\
+Haiku \(\mathcal{H}_{H3}\) (\texttt{parent-cgold} \(-\) \texttt{first}) & +0.033 & -0.033 & -0.038 & +0.000 & +0.000 & \textbf{-0.008} {[}-0.017, +0.002{]} & -0.013 \\
+Haiku \(\mathcal{H}_{Hd}\) (\(I_{\text{diverse}}\)) & +0.179 & -0.092 & +0.381 & +0.079 & +0.062 & \textbf{+0.122} {[}+0.088, +0.158{]} & +0.156 \\
+\midrule
+\multicolumn{8}{@{}l@{}}{\textbf{Panel B: Stronger Proposer (\texttt{gpt-4.1} Proposer \& Clusterer, \texttt{gpt-4.1-mini} Task Model, \(n=10\), 150 runs)}} \\
+\midrule
+\texttt{seed-none} (\texttt{gpt-4.1} prop.) & 0.279 & 0.000 & 0.062 & -- & -- & -- & 0.114 (\(\Delta_{\text{prop}}\): +0.002) \\
+\texttt{seed-first} (\texttt{gpt-4.1} prop.) & 0.383 & 0.500 & 0.300 & -- & -- & -- & 0.394 (\(\Delta_{\text{prop}}\): -0.006) \\
+\texttt{seed-clustergold} (\texttt{gpt-4.1} prop.) & 0.596 & 0.617 & 0.681 & -- & -- & -- & 0.631 (\(\Delta_{\text{prop}}\): -0.069) \\
+\texttt{parent-first} (\texttt{gpt-4.1} prop.) & 0.904 & 0.892 & 0.969 & -- & -- & -- & 0.922 (\(\Delta_{\text{prop}}\): -0.019) \\
+\texttt{parent-clustergold} (\texttt{gpt-4.1} prop.) & 0.858 & 0.792 & 0.944 & -- & -- & -- & 0.865 (\(\Delta_{\text{prop}}\): -0.025) \\
+Strong-Prop. \(\mathcal{H}_{S1\text{-prop}}\) (\(\Delta_{\text{lineage}}\)) & +0.392 & +0.283 & +0.466 & -- & -- & -- & \textbf{+0.380} {[}+0.337, +0.425{]} \\
+Strong-Prop. \(\mathcal{H}_{S2\text{-prop}}\) (\(I_{\text{clustergold}}\)) & +0.258 & +0.217 & +0.406 & -- & -- & -- & \textbf{+0.294} {[}+0.201, +0.381{]} \\
+Strong-Prop. \(\mathcal{H}_{S3\text{-prop}}\) (\texttt{parent-cgold} \(-\) \texttt{first}) & -0.046 & -0.100 & -0.025 & -- & -- & -- & \textbf{-0.057} {[}-0.101, -0.016{]} \\
 \bottomrule
 \end{tabular}%
 }
@@ -886,46 +789,30 @@ Table 4 reports the 9-cell factorial grid alongside GEPA on the
 12-intent Banking77 subset and BBH-STE.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-Condition / Method & \texttt{banking77} Held-Out & \texttt{bbh\_ste} Held-Out & Pooled Mean & \texttt{banking77} Intents Named in Best Prompt (Run Distribution; Mean / 12) & \texttt{banking77} Search Tokens / Run (Median / Mean) & \texttt{bbh\_ste} Search Tokens / Run (Median / Mean) \\
+\parbox[b]{2.85cm}{\raggedright\textbf{Condition / Method}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{banking77} Held-Out}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{bbh\_ste} Held-Out}} & \textbf{Pooled Mean} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{banking77} Intents Named in Best Prompt (Run Distribution; Mean / 12)}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{banking77} Search Tokens / Run (Median / Mean)}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{bbh\_ste} Search Tokens / Run (Median / Mean)}} \\
 \midrule
-\textbf{Panel A: Pre-Registered Public Benchmark Grid
-(\texttt{gpt-4.1-mini}, \(n=10\) runs per cell, Batch A.4)} & & & & &
-& \\
-\texttt{seed-none} & 0.000 & 0.556 & 0.278 & 0.0 / 12 & 21.7k / 22.0k &
-42.7k / 42.8k \\
-\texttt{seed-first} & 0.225 & 0.631 & 0.428 & 3.2 / 12 (range 1--4) &
-25.5k / 26.0k & 48.2k / 47.9k \\
-\texttt{seed-diverse} & 0.233 & 0.628 & 0.431 & -- & 26.8k / 27.0k &
-47.0k / 47.4k \\
-\texttt{seed-minibatch} & 0.194 & 0.611 & 0.403 & -- & 26.6k / 26.5k &
-47.1k / 47.6k \\
-\texttt{seed-clustergold} & 0.250 & 0.681 & 0.466 & -- & 41.4k / 41.8k &
-61.8k / 61.5k \\
-\texttt{parent-first} & 0.372 & 0.653 & 0.513 &
-\texttt{{[}6,11,4,11,7,9,4,4,0,0{]}} (5.6 / 12) & 38.7k / 37.3k & 52.5k
-/ 55.3k \\
-\texttt{parent-diverse} & 0.403 & 0.656 & 0.530 & -- & 37.8k / 37.3k &
-53.0k / 55.0k \\
-\texttt{parent-minibatch} & 0.361 & 0.642 & 0.502 & -- & 35.4k / 35.6k &
-53.9k / 54.7k \\
-\texttt{parent-clustergold} & 0.400 & 0.667 & 0.534 & -- & 55.4k / 56.4k
-& 69.8k / 71.4k \\
-\textbf{Panel B: GEPA Baseline (Batch A.4) and Discovery-Motivated
-\texttt{carry-facts} Follow-Up (Batch A.5, \(n=10\))} & & & & & & \\
-\texttt{GEPA\ mb3} (No early stop) & 0.664 & 0.633 & 0.649 & Median 9.0,
-Mean 9.0 / 12 & 106.9k / 107.3k & 121.6k / 121.9k \\
-\texttt{GEPA\ mb3\ +\ stop} & 0.661 & 0.644 & 0.653 & -- & 102.3k /
-105.3k & 114.9k / 118.5k \\
-\texttt{seed-first\ +\ carry} & 0.317 & 0.614 & 0.466 &
-\texttt{{[}4,4,4,4,4,4,4,4,4,4{]}} (4.0 / 12) & 34.6k / 34.3k & 49.0k /
-49.1k \\
-\texttt{parent-first\ +\ carry} & \textbf{0.856} & 0.592 &
-\textbf{0.724} & \texttt{{[}11,12,12,11,12,11,12,12,12,12{]}} (11.7 /
-12) & \textbf{45.8k} / 51.0k & 55.5k / 55.7k \\
+\multicolumn{7}{@{}l@{}}{\textbf{Panel A: Pre-Registered Public Benchmark Grid (\texttt{gpt-4.1-mini}, \(n=10\) runs per cell, Batch A.4)}} \\
+\midrule
+\texttt{seed-none} & 0.000 & 0.556 & 0.278 & 0.0 / 12 & 21.7k / 22.0k & 42.7k / 42.8k \\
+\texttt{seed-first} & 0.225 & 0.631 & 0.428 & 3.2 / 12 (range 1--4) & 25.5k / 26.0k & 48.2k / 47.9k \\
+\texttt{seed-diverse} & 0.233 & 0.628 & 0.431 & -- & 26.8k / 27.0k & 47.0k / 47.4k \\
+\texttt{seed-minibatch} & 0.194 & 0.611 & 0.403 & -- & 26.6k / 26.5k & 47.1k / 47.6k \\
+\texttt{seed-clustergold} & 0.250 & 0.681 & 0.466 & -- & 41.4k / 41.8k & 61.8k / 61.5k \\
+\texttt{parent-first} & 0.372 & 0.653 & 0.513 & \texttt{{[}6,11,4,11,7,9,4,4,0,0{]}} (5.6 / 12) & 38.7k / 37.3k & 52.5k / 55.3k \\
+\texttt{parent-diverse} & 0.403 & 0.656 & 0.530 & -- & 37.8k / 37.3k & 53.0k / 55.0k \\
+\texttt{parent-minibatch} & 0.361 & 0.642 & 0.502 & -- & 35.4k / 35.6k & 53.9k / 54.7k \\
+\texttt{parent-clustergold} & 0.400 & 0.667 & 0.534 & -- & 55.4k / 56.4k & 69.8k / 71.4k \\
+\midrule
+\multicolumn{7}{@{}l@{}}{\textbf{Panel B: GEPA Baseline (Batch A.4) and Discovery-Motivated \texttt{carry-facts} Follow-Up (Batch A.5, \(n=10\))}} \\
+\midrule
+\texttt{GEPA\ mb3} (No early stop) & 0.664 & 0.633 & 0.649 & Median 9.0, Mean 9.0 / 12 & 106.9k / 107.3k & 121.6k / 121.9k \\
+\texttt{GEPA\ mb3\ +\ stop} & 0.661 & 0.644 & 0.653 & -- & 102.3k / 105.3k & 114.9k / 118.5k \\
+\texttt{seed-first\ +\ carry} & 0.317 & 0.614 & 0.466 & \texttt{{[}4,4,4,4,4,4,4,4,4,4{]}} (4.0 / 12) & 34.6k / 34.3k & 49.0k / 49.1k \\
+\texttt{parent-first\ +\ carry} & \textbf{0.856} & 0.592 & \textbf{0.724} & \texttt{{[}11,12,12,11,12,11,12,12,12,12{]}} (11.7 / 12) & \textbf{45.8k} / 51.0k & 55.5k / 55.7k \\
 \bottomrule
 \end{tabular}%
 }
@@ -1026,64 +913,48 @@ seed resetting crowds out pre-trained capabilities on unshown
 categories.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}lllccccc@{}}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{2.3cm}>{\raggedright\arraybackslash}p{3.5cm}cccc>{\raggedright\arraybackslash}p{3.4cm}@{}}
 \toprule
-Task Family & Shown Categories in \texttt{seed-first} & Unshown Failing Categories (\(\mathcal{U}_\tau\)) & \texttt{seed-none} Coverage & \texttt{seed-first} Coverage & \texttt{seed-diverse} Coverage & \texttt{seed-cluster} Coverage & Contrast (\texttt{seed-first} \(-\) \texttt{seed-none}, 95\% CI) \\
+\textbf{Task Family} & \textbf{Shown Categories in \texttt{seed-first}} & \textbf{Unshown Failing Categories (\(\mathcal{U}_\tau\))} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{seed-none} Coverage}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{seed-first} Coverage}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{seed-diverse} Coverage}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{seed-cluster} Coverage}} & \textbf{Contrast (\texttt{seed-first} \(-\) \texttt{seed-none}, 95\% CI)} \\
 \midrule
-\textbf{Panel A: Proposal Coverage of Unshown Failing Categories in the
-\texttt{seed} Row (\(\mathcal{H}_{C1}\), \(n=10\) runs per cell)} & & &
-& & & & \\
-\texttt{labels} & \texttt{iso\_date}, \texttt{us\_date} &
-\texttt{email}, \texttt{eu\_date}, \texttt{hex\_color}, \texttt{ipv4},
-\texttt{ipv6}, \texttt{mac\_address}, \texttt{semver} & 0.133 & 0.151 &
-0.414 & 0.545 & +0.018 {[}-0.031, +0.067{]} \\
-\texttt{duration} & \texttt{days/weeks}, \texttt{number}, \texttt{units}
-& \texttt{clock}, \texttt{iso}, \texttt{words} & 0.058 & 0.003 & 0.009 &
--- & \textbf{-0.055} {[}-0.082, -0.033{]} \\
-\texttt{duration} (\texttt{seed-iso} / \texttt{seed-random}) &
-\texttt{iso} only / 4 random failures & \texttt{clock}, \texttt{iso},
-\texttt{words} & 0.058 & -- & -- & -- & \texttt{iso}: 0.009
-(\textbf{-0.048} {[}-0.079, -0.021{]}) / \texttt{rand}: 0.118 (+0.061
-{[}-0.003, +0.121{]}) \\
-\texttt{size} & \texttt{bytes}, \texttt{si} & \texttt{iec},
-\texttt{invalid}, \texttt{letter}, \texttt{separator}, \texttt{words} &
-0.431 & 0.318 & 0.345 & 0.945 & \textbf{-0.113} {[}-0.144, -0.082{]} \\
-\textbf{Panel B: Cross-Round Search-Set Failure Exposure,
-Parent-to-Child Retention, Prompt Length, and Token Cost
-(\texttt{first-k}, \(n=10\))} & & & & & & & \\
-\textbf{Task} & \textbf{Union of Search Failures Shown
-(\texttt{seed-first})} & \textbf{Union of Search Failures Shown
-(\texttt{parent-first})} & \textbf{Parent-to-Child Retention
-(\texttt{parent-first})} & \textbf{Mean Best Chars (\texttt{seed} /
-\texttt{parent})} & \textbf{Mean Search Tokens (\texttt{seed} /
-\texttt{parent})} & \textbf{Solved Runs (\texttt{seed} /
-\texttt{parent})} & \textbf{Held-Out Best (\texttt{seed-first} /
-\texttt{parent-first})} \\
-\texttt{labels} & 0.17 (4 / 24) & \textbf{0.54} & 0.70 & 335 / 579 &
-27.3k / 25.0k & 0/10 vs.~7/10 & 0.408 / 0.917 \\
-\texttt{dates} & 0.17 (4 / 24) & 0.17 & 1.00 & 188 / 191 & 4.5k / 4.5k &
-10/10 vs.~10/10 & 1.000 / 1.000 \\
-\texttt{routing} & 0.25 (4 / 16) & \textbf{0.61} & 0.91 & 327 / 1512 &
-17.7k / 27.7k & 0/10 vs.~9/10 & 0.500 / 0.925 \\
-\texttt{replies} & 0.25 (4 / 16) & \textbf{0.86} & 0.83 & 792 / 2314 &
-39.7k / 35.2k & 0/10 vs.~10/10 & 0.294 / 0.981 \\
-\texttt{scone} & 0.11 (4 / 36) & 0.12 & 0.97 & 280 / 481 & 46.1k / 54.1k
-& 0/10 vs.~2/10 & 0.899 / 0.910 \\
-\texttt{duration} & 0.17 (4 / 24) & \textbf{0.51} & 0.95 & 1139 / 4296 &
-10.3k / 15.9k & 0/10 vs.~6/10 & 0.562 / 0.963 \\
-\texttt{size} & 0.17 (4 / 24) & \textbf{0.46} & 0.83 & 1782 / 2504 &
-13.0k / 8.2k & 0/10 vs.~8/10 & 0.767 / 0.929 \\
+\texttt{labels} & \texttt{iso\_date}, \texttt{us\_date} & \texttt{email}, \texttt{eu\_date}, \texttt{hex\_color}, \texttt{ipv4}, \texttt{ipv6}, \texttt{mac\_address}, \texttt{semver} & 0.133 & 0.151 & 0.414 & 0.545 & +0.018 {[}-0.031, +0.067{]} \\
+\texttt{duration} & \texttt{days/weeks}, \texttt{number}, \texttt{units} & \texttt{clock}, \texttt{iso}, \texttt{words} & 0.058 & 0.003 & 0.009 & -- & \textbf{-0.055} {[}-0.082, -0.033{]} \\
+\texttt{duration} (\texttt{seed-iso} / \texttt{seed-random}) & \texttt{iso} only / 4 random failures & \texttt{clock}, \texttt{iso}, \texttt{words} & 0.058 & -- & -- & -- & \texttt{iso}: 0.009 (\textbf{-0.048} {[}-0.079, -0.021{]}) / \texttt{rand}: 0.118 (+0.061 {[}-0.003, +0.121{]}) \\
+\texttt{size} & \texttt{bytes}, \texttt{si} & \texttt{iec}, \texttt{invalid}, \texttt{letter}, \texttt{separator}, \texttt{words} & 0.431 & 0.318 & 0.345 & 0.945 & \textbf{-0.113} {[}-0.144, -0.082{]} \\
 \bottomrule
 \end{tabular}%
 }
 \end{center}
 
-\textbf{Table 5:} Unshown-category proposal coverage in the
-\texttt{seed} row (Panel A, \(\mathcal{H}_{C1}\)) and cross-round
-exposure, retention, candidate length, and token cost in
-\texttt{first-k} cells (Panel B, \texttt{gpt-4.1-mini}).
+\textbf{Table 5A:} Proposal-level coverage of unshown failing categories
+in the \texttt{seed} row (\(\mathcal{H}_{C1}\), \texttt{gpt-4.1-mini},
+\(n=10\) runs per cell).
+
+\begin{center}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
+\resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Task} & \parbox[b]{2.25cm}{\centering\textbf{Union of Search Failures (\texttt{seed-first})}} & \parbox[b]{2.25cm}{\centering\textbf{Union of Search Failures (\texttt{parent-first})}} & \parbox[b]{2.25cm}{\centering\textbf{Parent-to-Child Retention (\texttt{parent-first})}} & \parbox[b]{2.25cm}{\centering\textbf{Mean Best Chars (\texttt{seed} / \texttt{parent})}} & \parbox[b]{2.25cm}{\centering\textbf{Mean Search Tokens (\texttt{seed} / \texttt{parent})}} & \parbox[b]{2.25cm}{\centering\textbf{Solved Runs (\texttt{seed} / \texttt{parent})}} & \parbox[b]{2.25cm}{\centering\textbf{Held-Out Best (\texttt{seed-first} / \texttt{parent-first})}} \\
+\midrule
+\texttt{labels} & 0.17 (4 / 24) & \textbf{0.54} & 0.70 & 335 / 579 & 27.3k / 25.0k & 0/10 vs.~7/10 & 0.408 / 0.917 \\
+\texttt{dates} & 0.17 (4 / 24) & 0.17 & 1.00 & 188 / 191 & 4.5k / 4.5k & 10/10 vs.~10/10 & 1.000 / 1.000 \\
+\texttt{routing} & 0.25 (4 / 16) & \textbf{0.61} & 0.91 & 327 / 1512 & 17.7k / 27.7k & 0/10 vs.~9/10 & 0.500 / 0.925 \\
+\texttt{replies} & 0.25 (4 / 16) & \textbf{0.86} & 0.83 & 792 / 2314 & 39.7k / 35.2k & 0/10 vs.~10/10 & 0.294 / 0.981 \\
+\texttt{scone} & 0.11 (4 / 36) & 0.12 & 0.97 & 280 / 481 & 46.1k / 54.1k & 0/10 vs.~2/10 & 0.899 / 0.910 \\
+\texttt{duration} & 0.17 (4 / 24) & \textbf{0.51} & 0.95 & 1139 / 4296 & 10.3k / 15.9k & 0/10 vs.~6/10 & 0.562 / 0.963 \\
+\texttt{size} & 0.17 (4 / 24) & \textbf{0.46} & 0.83 & 1782 / 2504 & 13.0k / 8.2k & 0/10 vs.~8/10 & 0.767 / 0.929 \\
+\bottomrule
+\end{tabular}%
+}
+\end{center}
+
+\textbf{Table 5B:} Cross-round search-set failure exposure,
+parent-to-child retention, mean candidate length, and mean search tokens
+per run in \texttt{first-k} cells (\texttt{gpt-4.1-mini}, \(n=10\) runs
+per cell).
 
 On both code synthesis tasks, rewriting the 4-line seed function with
 zero feedback in \texttt{seed-none} often produces general parsers that
@@ -1132,24 +1003,16 @@ summaries and raising \texttt{parent-clustergold} on \texttt{replies} to
 0.869 (Table 2A).
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
 \begin{tabular}{@{}lccccccccc@{}}
 \toprule
-Proposal Round (\(t\)) & \texttt{seed-first} & \texttt{seed-diverse} & \texttt{seed-clustergold} & \texttt{seed} (\texttt{clustergold} \(-\) \texttt{first}) & \texttt{parent-first} & \texttt{parent-diverse} & \texttt{parent-clustergold} & \texttt{parent} (\texttt{clustergold} \(-\) \texttt{first}) & 3 Prompt / 2 Code (\texttt{parent} Diff.) \\
+\parbox[b]{2.55cm}{\raggedright\textbf{Proposal Round (\(t\))}} & \textbf{\texttt{seed-first}} & \textbf{\texttt{seed-diverse}} & \textbf{\texttt{seed-cgold}} & \parbox[b]{1.95cm}{\centering\textbf{\texttt{seed} (\texttt{cgold} \(-\) \texttt{first})}} & \textbf{\texttt{parent-first}} & \parbox[b]{1.95cm}{\centering\textbf{\texttt{parent-diverse}}} & \textbf{\texttt{parent-cgold}} & \parbox[b]{1.95cm}{\centering\textbf{\texttt{parent} (\texttt{cgold} \(-\) \texttt{first})}} & \parbox[b]{1.95cm}{\centering\textbf{3 Prompt / 2 Code (\texttt{parent} Diff.)}} \\
 \midrule
-\(t = 1\) (Edits \(c_0\)) & 0.446 & 0.550 & 0.659 & \textbf{+0.213}
-{[}+0.149, +0.272{]} & 0.487 & 0.533 & 0.633 & \textbf{+0.146}
-{[}+0.083, +0.205{]} & +0.183 / +0.090 \\
-\(t = 2\) & 0.518 & 0.582 & 0.707 & \textbf{+0.189} {[}+0.136, +0.238{]}
-& 0.669 & 0.779 & 0.842 & \textbf{+0.173} {[}+0.118, +0.219{]} & +0.209
-/ +0.119 \\
-\(t = 4\) & 0.564 & 0.628 & 0.747 & \textbf{+0.183} {[}+0.137, +0.222{]}
-& 0.946 & 0.926 & 0.929 & -0.017 {[}-0.067, +0.023{]} & -0.040 /
-+0.019 \\
-\(t = 7\) & 0.587 & 0.650 & 0.767 & \textbf{+0.180} {[}+0.132, +0.219{]}
-& 0.971 & 0.983 & 0.956 & -0.015 {[}-0.065, +0.024{]} & -0.038 /
-+0.019 \\
+\(t = 1\) (Edits \(c_0\)) & 0.446 & 0.550 & 0.659 & \textbf{+0.213} {[}+0.149, +0.272{]} & 0.487 & 0.533 & 0.633 & \textbf{+0.146} {[}+0.083, +0.205{]} & +0.183 / +0.090 \\
+\(t = 2\) & 0.518 & 0.582 & 0.707 & \textbf{+0.189} {[}+0.136, +0.238{]} & 0.669 & 0.779 & 0.842 & \textbf{+0.173} {[}+0.118, +0.219{]} & +0.209 / +0.119 \\
+\(t = 4\) & 0.564 & 0.628 & 0.747 & \textbf{+0.183} {[}+0.137, +0.222{]} & 0.946 & 0.926 & 0.929 & -0.017 {[}-0.067, +0.023{]} & -0.040 / +0.019 \\
+\(t = 7\) & 0.587 & 0.650 & 0.767 & \textbf{+0.180} {[}+0.132, +0.219{]} & 0.971 & 0.983 & 0.956 & -0.015 {[}-0.065, +0.024{]} & -0.038 / +0.019 \\
 \bottomrule
 \end{tabular}%
 }
@@ -1158,40 +1021,48 @@ Proposal Round (\(t\)) & \texttt{seed-first} & \texttt{seed-diverse} & \texttt{s
 \textbf{Table 5C:} Anytime search-set accuracy across the five
 non-ceiling tasks on \texttt{gpt-4.1-mini} at proposal steps
 \(t \in \{1, 2, 4, 7\}\), with 95\% bootstrap intervals for
-\texttt{clustergold} \(-\) \texttt{first} and separate \texttt{parent}
-differences for the 3 prompt tasks with \(B=8\) and 2 code tasks with
-\(B=12\).
+\texttt{clustergold} \(-\) \texttt{first} (\texttt{cgold} \(-\)
+\texttt{first}) and separate \texttt{parent} differences for the 3
+prompt tasks with \(B=8\) and 2 code tasks with \(B=12\).
 
 With expected answers preserved, the benefit of full-set clustering
-depends on both lineage and the optimization round (Tables 2B and 5C): -
-\textbf{Under seed resetting:} \texttt{seed-clustergold} is the
-strongest seed-row method on both \texttt{gpt-4.1-mini}, where it
-reaches 0.789 and beats \texttt{seed-first} by +0.156, and
-\texttt{claude-haiku-5-5}, where it reaches 0.823 and beats
-\texttt{seed-first} by +0.179. - \textbf{Under parent inheritance:} At
-terminal evaluation, \texttt{parent-clustergold} and
-\texttt{parent-first} show no detectable difference on
-\texttt{gpt-4.1-mini} at -0.018 or on \texttt{claude-haiku-5-5} at
--0.008, yielding positive attenuation interactions of
-\(I_{\text{clustergold}} = +0.174\) and \(+0.187\), as well as
-\(+0.916\) log-odds units on an exploratory logit scale, while
-\texttt{clustergold} scores lower by -0.057 under the \texttt{gpt-4.1}
-proposer. Table 5C shows how this convergence unfolds across rounds: at
-\(t=1\), where both rows edit \(c_0\), and at \(t=2\), the first
-parent-inheritance step, \texttt{clustergold} leads \texttt{first} by
-+0.146 and +0.173 in the parent row. By \(t=4\), sequential error
-exposure under \texttt{parent-first} closes the gap on both prompt and
-code tasks, reaching 0.946 versus 0.929, whereas \texttt{seed-first}
-remains 0.180 behind \texttt{seed-clustergold} at \(t=7\). Moreover, the
-extra clusterer call increases median search tokens on five of seven
-tasks, reaching up to 2.08\(\times\) on \texttt{routing} in
-\texttt{parent} at 58.5k versus 28.2k tokens and 2.17\(\times\) in
-\texttt{seed} at 38.1k versus 17.6k tokens. - \textbf{Clustered failures
-vs.~random mixed minibatches:} Under parent inheritance,
-\texttt{parent-clustergold} still beats \texttt{parent-minibatch} by
-+0.043 on \texttt{gpt-4.1-mini} and +0.086 on Haiku because
-\texttt{parent-minibatch} wastes display slots on already-passing
-examples and scores below \texttt{parent-first} by -0.061 and -0.093.
+depends on both lineage and the optimization round (Tables 2B and 5C):
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Under seed resetting:} \texttt{seed-clustergold} is the
+  strongest seed-row method on both \texttt{gpt-4.1-mini}, where it
+  reaches 0.789 and beats \texttt{seed-first} by +0.156, and
+  \texttt{claude-haiku-5-5}, where it reaches 0.823 and beats
+  \texttt{seed-first} by +0.179.
+\item
+  \textbf{Under parent inheritance:} At terminal evaluation,
+  \texttt{parent-clustergold} and \texttt{parent-first} show no
+  detectable difference on \texttt{gpt-4.1-mini} at -0.018 or on
+  \texttt{claude-haiku-5-5} at -0.008, yielding positive attenuation
+  interactions of \(I_{\text{clustergold}} = +0.174\) and \(+0.187\), as
+  well as \(+0.916\) log-odds units on an exploratory logit scale, while
+  \texttt{clustergold} scores lower by -0.057 under the \texttt{gpt-4.1}
+  proposer. Table 5C shows how this convergence unfolds across rounds:
+  at \(t=1\), where both rows edit \(c_0\), and at \(t=2\), the first
+  parent-inheritance step, \texttt{clustergold} leads \texttt{first} by
+  +0.146 and +0.173 in the parent row. By \(t=4\), sequential error
+  exposure under \texttt{parent-first} closes the gap on both prompt and
+  code tasks, reaching 0.946 versus 0.929, whereas \texttt{seed-first}
+  remains 0.180 behind \texttt{seed-clustergold} at \(t=7\). Moreover,
+  the extra clusterer call increases median search tokens on five of
+  seven tasks, reaching up to 2.08\(\times\) on \texttt{routing} in
+  \texttt{parent} at 58.5k versus 28.2k tokens and 2.17\(\times\) in
+  \texttt{seed} at 38.1k versus 17.6k tokens.
+\item
+  \textbf{Clustered failures vs.~random mixed minibatches:} Under parent
+  inheritance, \texttt{parent-clustergold} still beats
+  \texttt{parent-minibatch} by +0.043 on \texttt{gpt-4.1-mini} and
+  +0.086 on Haiku because \texttt{parent-minibatch} wastes display slots
+  on already-passing examples and scores below \texttt{parent-first} by
+  -0.061 and -0.093.
+\end{itemize}
 
 \hypertarget{system-level-search-efficiency-and-token-decomposition-against-gepa-mathcalh_c3}{%
 \subsection{\texorpdfstring{System-Level Search Efficiency and Token
@@ -1203,36 +1074,19 @@ Table 6 compares \texttt{evolve\ (parent-first)} against
 task-model call caps across all seven prompt tasks.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}lcccccc@{}}
+\begin{tabular}{@{}lcccc>{\centering\arraybackslash}p{3.9cm}c@{}}
 \toprule
-Task Family & Solved Runs (\texttt{evolve} / \texttt{GEPA+stop} / \texttt{GEPA}) & Held-Out Best (\texttt{evolve} / \texttt{GEPA+stop} / \texttt{GEPA}) & Conditional Median Tokens to Solve (\texttt{evolve} / \texttt{GEPA+stop} / \texttt{GEPA}) & Tokens-to-Solve Ratio (\texttt{GEPA+stop} / \texttt{evolve}, 95\% CI) & Unconditional Search Tokens / Run, Median / Mean (\texttt{evolve} \(\vert\) \texttt{GEPA+stop} \(\vert\) \texttt{GEPA}) & GEPA (\texttt{mb3}) Token Share: Full Re-Eval / Minibatch / Reflection \\
+\textbf{Task Family} & \parbox[b]{2.25cm}{\centering\textbf{Solved Runs (\texttt{evolve} / \texttt{GEPA+stop} / \texttt{GEPA})}} & \parbox[b]{2.25cm}{\centering\textbf{Held-Out Best (\texttt{evolve} / \texttt{GEPA+stop} / \texttt{GEPA})}} & \parbox[b]{2.25cm}{\centering\textbf{Conditional Median Tokens to Solve (\texttt{evolve} / \texttt{GEPA+stop} / \texttt{GEPA})}} & \parbox[b]{2.25cm}{\centering\textbf{Tokens-to-Solve Ratio (\texttt{GEPA+stop} / \texttt{evolve}, 95\% CI)}} & \textbf{Unconditional Search Tokens / Run, Median / Mean (\texttt{evolve} \(\vert\) \texttt{GEPA+stop} \(\vert\) \texttt{GEPA})} & \parbox[b]{2.25cm}{\centering\textbf{GEPA (\texttt{mb3}) Token Share: Full Re-Eval / Minibatch / Reflection}} \\
 \midrule
-\texttt{labels} & 7/10 / 6/10 / 6/10 & 0.917 / 0.908 / 0.917 & 21.4k /
-71.6k / 67.7k & \textbf{3.34\(\times\)} {[}2.23, 4.49{]} & 23.1k / 25.0k
-\(\vert\) 78.1k / 78.8k \(\vert\) 86.8k / 88.9k & 67\% / 27\% / 7\% \\
-\texttt{dates} & 10/10 / 10/10 / 9/10 & 1.000 / 0.988 / 0.992 & 4.4k /
-11.5k / 11.9k & \textbf{2.59\(\times\)} {[}2.30, 4.84{]} & 4.4k / 4.5k
-\(\vert\) 11.5k / 22.2k \(\vert\) 57.7k / 62.3k & 21\% / 77\% / 2\% \\
-\texttt{routing} & 9/10 / 2/10 / 1/10 & 0.925 / 0.842 / 0.750 & 27.3k /
-53.7k / 68.0k & Ineligible (\(<3\) GEPA solved) & 28.2k / 27.7k
-\(\vert\) 72.9k / 65.9k \(\vert\) 68.1k / 68.6k & 45\% / 39\% / 15\% \\
-\texttt{replies} & 10/10 / 2/10 / 2/10 & 0.981 / 0.850 / 0.850 & 34.3k /
-79.6k / 81.1k & Ineligible (\(<3\) GEPA solved) & 34.3k / 35.2k
-\(\vert\) 88.3k / 94.6k \(\vert\) 97.1k / 94.2k & 61\% / 28\% / 11\% \\
-\texttt{scone} & 2/10 / 4/10 / 4/10 & 0.910 / 0.899 / 0.918 & 47.5k /
-50.6k / 97.8k & Ineligible (\(<3\) \texttt{evolve} solved) & 53.5k /
-54.1k \(\vert\) 155.2k / 130.3k \(\vert\) 149.2k / 152.4k & 56\% / 38\%
-/ 5\% \\
-\texttt{banking77} (Base / \texttt{+carry}) & 0/10 (0/10) / 0/10 / 0/10
-& 0.372 (\textbf{0.856}) / 0.661 / 0.664 & -- / -- / -- & Ineligible (0
-solved runs) & 38.7k / 37.3k (45.8k / 51.0k) \(\vert\) 102.3k / 105.3k
-\(\vert\) 106.9k / 107.3k & 74\% / 18\% / 8\% \\
-\texttt{bbh\_ste} (Base / \texttt{+carry}) & 0/10 (0/10) / 0/10 / 0/10 &
-0.653 (0.592) / 0.644 / 0.633 & -- / -- / -- & Ineligible (0 solved
-runs) & 52.5k / 55.3k (55.5k / 55.7k) \(\vert\) 114.9k / 118.5k
-\(\vert\) 121.6k / 121.9k & 58\% / 30\% / 12\% \\
+\texttt{labels} & 7/10 / 6/10 / 6/10 & 0.917 / 0.908 / 0.917 & 21.4k / 71.6k / 67.7k & \textbf{3.34\(\times\)} {[}2.23, 4.49{]} & 23.1k / 25.0k \(\vert\) 78.1k / 78.8k \(\vert\) 86.8k / 88.9k & 67\% / 27\% / 7\% \\
+\texttt{dates} & 10/10 / 10/10 / 9/10 & 1.000 / 0.988 / 0.992 & 4.4k / 11.5k / 11.9k & \textbf{2.59\(\times\)} {[}2.30, 4.84{]} & 4.4k / 4.5k \(\vert\) 11.5k / 22.2k \(\vert\) 57.7k / 62.3k & 21\% / 77\% / 2\% \\
+\texttt{routing} & 9/10 / 2/10 / 1/10 & 0.925 / 0.842 / 0.750 & 27.3k / 53.7k / 68.0k & Ineligible (\(<3\) GEPA solved) & 28.2k / 27.7k \(\vert\) 72.9k / 65.9k \(\vert\) 68.1k / 68.6k & 45\% / 39\% / 15\% \\
+\texttt{replies} & 10/10 / 2/10 / 2/10 & 0.981 / 0.850 / 0.850 & 34.3k / 79.6k / 81.1k & Ineligible (\(<3\) GEPA solved) & 34.3k / 35.2k \(\vert\) 88.3k / 94.6k \(\vert\) 97.1k / 94.2k & 61\% / 28\% / 11\% \\
+\texttt{scone} & 2/10 / 4/10 / 4/10 & 0.910 / 0.899 / 0.918 & 47.5k / 50.6k / 97.8k & Ineligible (\(<3\) \texttt{evolve} solved) & 53.5k / 54.1k \(\vert\) 155.2k / 130.3k \(\vert\) 149.2k / 152.4k & 56\% / 38\% / 5\% \\
+\texttt{banking77} (Base / \texttt{+carry}) & 0/10 (0/10) / 0/10 / 0/10 & 0.372 (\textbf{0.856}) / 0.661 / 0.664 & -- / -- / -- & Ineligible (0 solved runs) & 38.7k / 37.3k (45.8k / 51.0k) \(\vert\) 102.3k / 105.3k \(\vert\) 106.9k / 107.3k & 74\% / 18\% / 8\% \\
+\texttt{bbh\_ste} (Base / \texttt{+carry}) & 0/10 (0/10) / 0/10 / 0/10 & 0.653 (0.592) / 0.644 / 0.633 & -- / -- / -- & Ineligible (0 solved runs) & 52.5k / 55.3k (55.5k / 55.7k) \(\vert\) 114.9k / 118.5k \(\vert\) 121.6k / 121.9k & 58\% / 30\% / 12\% \\
 \bottomrule
 \end{tabular}%
 }
@@ -1299,7 +1153,7 @@ Findings}\label{boundary-conditions-robustness-and-negative-findings}}
 \end{enumerate}
 
 \hypertarget{discussion}{%
-\section{Discussion}\label{discussion}}
+\section{5 Discussion}\label{discussion}}
 
 \textbf{Why parent inheritance substitutes for wide single-round
 disclosure.} Under seed resetting, the proposer has no persistent state,
@@ -1354,7 +1208,7 @@ and reserve full-set error clustering for one-shot repair, parallel
 best-of-\(N\) sampling, or the first two rounds of search.
 
 \hypertarget{limitations}{%
-\section{Limitations}\label{limitations}}
+\section{6 Limitations}\label{limitations}}
 
 Several constraints bound our conclusions. First, five of the seven
 primary tasks and \texttt{replies} are constructed by withholding rules
@@ -1442,121 +1296,52 @@ across Batches A.1--A.5, and Table 8 reports the leave-one-task-out
 sensitivity analysis.
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
-\begin{tabular}{@{}lllcl@{}}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{4.4cm}>{\raggedright\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{2.7cm}@{}}
 \toprule
 Batch \& ID & Hypothesis / Contrast Definition & Pre-Registered Criterion & Observed Point Estimate \& 95\% CI & Outcome \\
 \midrule
-\textbf{Batch A.1: Main Factorial Grid (\texttt{gpt-4.1-mini}, 7 tasks,
-\(n=10\), 750 runs; frozen at commit \texttt{d5ab8923})} & & & & \\
-\(\Delta_{\text{lineage}}\) & Parent \(-\) Seed mean over
-\texttt{first}, \texttt{diverse}, \texttt{minibatch}, \texttt{cluster} &
-Descriptive main-effect estimate & +0.238 {[}+0.224, +0.252{]} &
-Descriptive \\
-\(\mathcal{H}_{C2}\) (Primary) &
-\(I_{\text{diverse}} = (\text{div} - \text{first})_{\text{seed}} - (\text{div} - \text{first})_{\text{parent}}\)
-& Lower CI bound \(> 0\) & +0.068 {[}+0.043, +0.092{]} &
-\textbf{Supported} \\
-\(\mathcal{H}_{R1}\) (Refutation) & Both \(I_{\text{diverse}}\) and
-\(I_{\text{cluster}}\) 95\% CIs contain \(0\) & Refutes
-\(\mathcal{H}_{C2}\) if True & \(I_{\text{div}}\): {[}+0.043, +0.092{]};
-\(I_{\text{clus}}\): {[}+0.073, +0.167{]} & Rejected
-(\(\mathcal{H}_{C2}\) holds) \\
-\(\mathcal{H}_{R2}\) (Collapse) & \texttt{cluster} \(-\)
-\(\max(\text{other } F)\) has lower bound \(> 0\) in both rows & Favors
-full-set clustering in both rows if True & Seed: -0.044 {[}-0.078,
--0.018{]}; Parent: -0.095 {[}-0.132, -0.063{]} & Rejected \\
-\(\mathcal{H}_{C1}\) (Crowding) & Unshown-category coverage:
-\texttt{seed-first} \(-\) \texttt{seed-none} & Upper CI bound \(< 0\) on
-\(\ge 2/3\) tasks & \texttt{duration}: -0.055; \texttt{size}: -0.113;
-\texttt{labels}: +0.018 & \textbf{Supported} (2/3) \\
-\(\mathcal{H}_{R3}\) (ScoNe boundary) & All 4
-\texttt{seed-\{first,diverse,minibatch,cluster\}} \(-\)
-\texttt{seed-none} CIs on \texttt{scone} contain \(0\) & Narrows
-\(\mathcal{H}_{C1}\) to latent-rule tasks & All 4 contrasts within
-{[}-0.025, +0.017{]} & Confirmed (Boundary) \\
-\(\mathcal{H}_{C3}\) (GEPA tokens) & Conditional median tokens-to-solve
-ratio: \texttt{GEPA+stop} / \texttt{parent-first} & Lower CI bound
-\(> 1\) on eligible tasks (\(\ge 3/10\) solved) & \texttt{labels}:
-3.34\(\times\) {[}2.23, 4.49{]}; \texttt{dates}: 2.59\(\times\) {[}2.30,
-4.84{]} & \textbf{Supported} (2/2 eligible) \\
-\(\mathcal{H}_{R4}\) (Early-stop ref.) & Tokens-to-solve ratio CI
-contains \(1\) on \(\ge 3/5\) tasks & Restates \(\mathcal{H}_{C3}\) if
-True & 0/2 eligible tasks contain 1 (3/5 tasks ineligible: \(<3\) solved
-runs) & Not evaluable as registered (0/2 eligible contain 1) \\
-\textbf{Batch A.2: Target-Preserving Cluster Sensitivity
-(\texttt{sens-clustergold}, \texttt{gpt-4.1-mini}, 7 tasks, \(n=10\),
-140 runs)} & & & & \\
-\(\mathcal{H}_{S1\text{-gold}}\) (Info loss) & \texttt{replies}:
-\texttt{parent-clustergold} \(-\) \texttt{parent-cluster} \&
-\(\ge 80\%\) gold kept & Lower CI \(> 0\) \& retention \(\ge 80\%\) &
-+0.350 {[}+0.062, +0.612{]}; retention 65/65 (100\%) &
-\textbf{Supported} \\
-\(\mathcal{H}_{S2\text{-gold}}\) (Parent tie) & 7-task
-\texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper CI
-\(< 0\): harmful; \(0 \in\) CI: tie; Lower CI \(> 0\): gain & -0.018
-{[}-0.053, +0.010{]} (\(I_{\text{clustergold}} = +0.174\)) & \textbf{No
-resolved diff. (\(0 \in\) CI)} \\
-\textbf{Batch A.3: Second-Model Replication (\texttt{rep-haiku},
-\texttt{claude-haiku-5-5}, 5 tasks, \(n=10\), 350 runs)} & & & & \\
-\(\mathcal{H}_{H1}\) & Lineage main effect across \texttt{first},
-\texttt{minibatch}, \texttt{clustergold} & Lower CI bound \(> 0\) &
-+0.222 {[}+0.204, +0.239{]} & \textbf{Supported} \\
-\(\mathcal{H}_{H2}\) & Attenuation interaction
-\(I_{\text{clustergold}}\) on 5 tasks & Lower CI bound \(> 0\) & +0.187
-{[}+0.152, +0.221{]} & \textbf{Supported} \\
-\(\mathcal{H}_{H3}\) & \texttt{parent-clustergold} \(-\)
-\texttt{parent-first} non-superiority & Upper CI bound \(< +0.05\) &
--0.008 {[}-0.017, +0.002{]} & \textbf{Supported} \\
-\textbf{Batch A.4: Public Benchmarks, GEPA Public, Strong Proposer, and
-Haiku Diverse (470 runs)} & & & & \\
-\(\mathcal{H}_{P1}\) & Public (\texttt{banking77}, \texttt{bbh\_ste})
-lineage main effect (4 cols) & Lower CI bound \(> 0\) & +0.088
-{[}+0.045, +0.130{]} (\texttt{b77}: +0.158; \texttt{bbh}: +0.017) &
-\textbf{Supported} \\
-\(\mathcal{H}_{P2}\) & Public attenuation interaction
-\(I_{\text{clustergold}}\) & Lower CI bound \(> 0\) & +0.017 {[}-0.119,
-+0.151{]} & \textbf{Not supported} (Inconclusive) \\
-\(\mathcal{H}_{P3}\) & Public \texttt{parent-clustergold} \(-\)
-\texttt{parent-first} & Upper CI bound \(< +0.05\) & +0.021 {[}-0.101,
-+0.143{]} & \textbf{Not supported} (Width) \\
-\(\mathcal{H}_{P4}\) & Public attenuation interaction
-\(I_{\text{diverse}}\) & Lower CI bound \(> 0\) & -0.014 {[}-0.118,
-+0.093{]} & \textbf{Not supported} (Inconclusive) \\
-\(\mathcal{H}_{P5}\) & Public \texttt{parent-minibatch} \(-\)
-\texttt{parent-first} & Upper CI bound \(< 0\) & -0.011 {[}-0.113,
-+0.090{]} & \textbf{Not supported} (Inconclusive) \\
-\(\mathcal{H}_{S1\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1}
-proposer lineage main effect (\texttt{first}, \texttt{clustergold}) &
-Lower CI bound \(> 0\) & +0.380 {[}+0.337, +0.425{]} &
-\textbf{Supported} \\
-\(\mathcal{H}_{S2\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1}
-proposer attenuation interaction \(I_{\text{clustergold}}\) & Lower CI
-bound \(> 0\) & +0.294 {[}+0.201, +0.381{]} & \textbf{Supported} \\
-\(\mathcal{H}_{S3\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1}
-proposer \texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper
-CI bound \(< +0.05\) & -0.057 {[}-0.101, -0.016{]} &
-\textbf{Supported} \\
-\(\mathcal{H}_{Hd}\) (Haiku div.) & \texttt{claude-haiku-5-5}
-attenuation interaction \(I_{\text{diverse}}\) (5 tasks) & Lower CI
-bound \(> 0\) & +0.122 {[}+0.088, +0.158{]} & \textbf{Supported} \\
-\textbf{Batch A.5: Discovery-Motivated \texttt{carry-facts} Follow-Up
-(\texttt{gpt-4.1-mini}, 2 public tasks, \(n=10\), 40 runs)} & & & & \\
-\(\mathcal{H}_{F1}\) & \texttt{banking77}: \texttt{parent-carry} \(-\)
-\texttt{parent-first} & Lower CI bound \(> 0\) & +0.483 {[}+0.328,
-+0.644{]} & \textbf{Supported} \\
-\(\mathcal{H}_{F2}\) & \texttt{banking77}: \texttt{GEPA\ mb3} \(-\)
-\texttt{parent-carry} & Upper CI bound \(\le 0\) & -0.192 {[}-0.289,
--0.097{]} & \textbf{Supported} \\
-\(\mathcal{H}_{F3}\) (No harm) & \texttt{bbh\_ste}:
-\texttt{parent-carry} \(-\) \texttt{parent-first} & Lower CI bound
-\(> -0.05\) & -0.061 {[}-0.119, -0.006{]} & \textbf{Not supported}
-(Harm) \\
-\(\mathcal{H}_{F4}\) & Pooled (\texttt{banking77}, \texttt{bbh\_ste}):
-\texttt{parent-carry} \(-\) \texttt{seed-carry} & Lower CI bound \(> 0\)
-& +0.258 {[}+0.221, +0.296{]} (\texttt{b77}: +0.539; \texttt{bbh}:
--0.022) & \textbf{Supported} \\
+\multicolumn{5}{@{}l@{}}{\textbf{Batch A.1: Main Factorial Grid (\texttt{gpt-4.1-mini}, 7 tasks, \(n=10\), 750 runs; frozen at commit \texttt{d5ab8923})}} \\
+\midrule
+\(\Delta_{\text{lineage}}\) & Parent \(-\) Seed mean over \texttt{first}, \texttt{diverse}, \texttt{minibatch}, \texttt{cluster} & Descriptive main-effect estimate & +0.238 {[}+0.224, +0.252{]} & Descriptive \\
+\(\mathcal{H}_{C2}\) (Primary) & \(I_{\text{diverse}} = (\text{div} - \text{first})_{\text{seed}} - (\text{div} - \text{first})_{\text{parent}}\) & Lower CI bound \(> 0\) & +0.068 {[}+0.043, +0.092{]} & \textbf{Supported} \\
+\(\mathcal{H}_{R1}\) (Refutation) & Both \(I_{\text{diverse}}\) and \(I_{\text{cluster}}\) 95\% CIs contain \(0\) & Refutes \(\mathcal{H}_{C2}\) if True & \(I_{\text{div}}\): {[}+0.043, +0.092{]}; \(I_{\text{clus}}\): {[}+0.073, +0.167{]} & Rejected (\(\mathcal{H}_{C2}\) holds) \\
+\(\mathcal{H}_{R2}\) (Collapse) & \texttt{cluster} \(-\) \(\max(\text{other } F)\) has lower bound \(> 0\) in both rows & Favors full-set clustering in both rows if True & Seed: -0.044 {[}-0.078, -0.018{]}; Parent: -0.095 {[}-0.132, -0.063{]} & Rejected \\
+\(\mathcal{H}_{C1}\) (Crowding) & Unshown-category coverage: \texttt{seed-first} \(-\) \texttt{seed-none} & Upper CI bound \(< 0\) on \(\ge 2/3\) tasks & \texttt{duration}: -0.055; \texttt{size}: -0.113; \texttt{labels}: +0.018 & \textbf{Supported} (2/3) \\
+\(\mathcal{H}_{R3}\) (ScoNe boundary) & All 4 \texttt{seed} (\texttt{first}, \texttt{diverse}, \texttt{minibatch}, \texttt{cluster}) \(-\) \texttt{seed-none} CIs on \texttt{scone} contain \(0\) & Narrows \(\mathcal{H}_{C1}\) to latent-rule tasks & All 4 contrasts within {[}-0.025, +0.017{]} & Confirmed (Boundary) \\
+\(\mathcal{H}_{C3}\) (GEPA tokens) & Conditional median tokens-to-solve ratio: \texttt{GEPA+stop} / \texttt{parent-first} & Lower CI bound \(> 1\) on eligible tasks (\(\ge 3/10\) solved) & \texttt{labels}: 3.34\(\times\) {[}2.23, 4.49{]}; \texttt{dates}: 2.59\(\times\) {[}2.30, 4.84{]} & \textbf{Supported} (2/2 eligible) \\
+\(\mathcal{H}_{R4}\) (Early-stop ref.) & Tokens-to-solve ratio CI contains \(1\) on \(\ge 3/5\) tasks & Restates \(\mathcal{H}_{C3}\) if True & 0/2 eligible tasks contain 1 (3/5 tasks ineligible: \(<3\) solved runs) & Not evaluable as registered (0/2 eligible contain 1) \\
+\midrule
+\multicolumn{5}{@{}l@{}}{\textbf{Batch A.2: Target-Preserving Cluster Sensitivity (\texttt{sens-clustergold}, \texttt{gpt-4.1-mini}, 7 tasks, \(n=10\), 140 runs)}} \\
+\midrule
+\(\mathcal{H}_{S1\text{-gold}}\) (Info loss) & \texttt{replies}: \texttt{parent-clustergold} \(-\) \texttt{parent-cluster} \& \(\ge 80\%\) gold kept & Lower CI \(> 0\) \& retention \(\ge 80\%\) & +0.350 {[}+0.062, +0.612{]}; retention 65/65 (100\%) & \textbf{Supported} \\
+\(\mathcal{H}_{S2\text{-gold}}\) (Parent tie) & 7-task \texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper CI \(< 0\): harmful; \(0 \in\) CI: tie; Lower CI \(> 0\): gain & -0.018 {[}-0.053, +0.010{]} (\(I_{\text{clustergold}} = +0.174\)) & \textbf{No resolved diff. (\(0 \in\) CI)} \\
+\midrule
+\multicolumn{5}{@{}l@{}}{\textbf{Batch A.3: Second-Model Replication (\texttt{rep-haiku}, \texttt{claude-haiku-5-5}, 5 tasks, \(n=10\), 350 runs)}} \\
+\midrule
+\(\mathcal{H}_{H1}\) & Lineage main effect across \texttt{first}, \texttt{minibatch}, \texttt{clustergold} & Lower CI bound \(> 0\) & +0.222 {[}+0.204, +0.239{]} & \textbf{Supported} \\
+\(\mathcal{H}_{H2}\) & Attenuation interaction \(I_{\text{clustergold}}\) on 5 tasks & Lower CI bound \(> 0\) & +0.187 {[}+0.152, +0.221{]} & \textbf{Supported} \\
+\(\mathcal{H}_{H3}\) & \texttt{parent-clustergold} \(-\) \texttt{parent-first} non-superiority & Upper CI bound \(< +0.05\) & -0.008 {[}-0.017, +0.002{]} & \textbf{Supported} \\
+\midrule
+\multicolumn{5}{@{}l@{}}{\textbf{Batch A.4: Public Benchmarks, GEPA Public, Strong Proposer, and Haiku Diverse (470 runs)}} \\
+\midrule
+\(\mathcal{H}_{P1}\) & Public (\texttt{banking77}, \texttt{bbh\_ste}) lineage main effect (4 cols) & Lower CI bound \(> 0\) & +0.088 {[}+0.045, +0.130{]} (\texttt{b77}: +0.158; \texttt{bbh}: +0.017) & \textbf{Supported} \\
+\(\mathcal{H}_{P2}\) & Public attenuation interaction \(I_{\text{clustergold}}\) & Lower CI bound \(> 0\) & +0.017 {[}-0.119, +0.151{]} & \textbf{Not supported} (Inconclusive) \\
+\(\mathcal{H}_{P3}\) & Public \texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper CI bound \(< +0.05\) & +0.021 {[}-0.101, +0.143{]} & \textbf{Not supported} (Width) \\
+\(\mathcal{H}_{P4}\) & Public attenuation interaction \(I_{\text{diverse}}\) & Lower CI bound \(> 0\) & -0.014 {[}-0.118, +0.093{]} & \textbf{Not supported} (Inconclusive) \\
+\(\mathcal{H}_{P5}\) & Public \texttt{parent-minibatch} \(-\) \texttt{parent-first} & Upper CI bound \(< 0\) & -0.011 {[}-0.113, +0.090{]} & \textbf{Not supported} (Inconclusive) \\
+\(\mathcal{H}_{S1\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1} proposer lineage main effect (\texttt{first}, \texttt{clustergold}) & Lower CI bound \(> 0\) & +0.380 {[}+0.337, +0.425{]} & \textbf{Supported} \\
+\(\mathcal{H}_{S2\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1} proposer attenuation interaction \(I_{\text{clustergold}}\) & Lower CI bound \(> 0\) & +0.294 {[}+0.201, +0.381{]} & \textbf{Supported} \\
+\(\mathcal{H}_{S3\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1} proposer \texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper CI bound \(< +0.05\) & -0.057 {[}-0.101, -0.016{]} & \textbf{Supported} \\
+\(\mathcal{H}_{Hd}\) (Haiku div.) & \texttt{claude-haiku-5-5} attenuation interaction \(I_{\text{diverse}}\) (5 tasks) & Lower CI bound \(> 0\) & +0.122 {[}+0.088, +0.158{]} & \textbf{Supported} \\
+\midrule
+\multicolumn{5}{@{}l@{}}{\textbf{Batch A.5: Discovery-Motivated \texttt{carry-facts} Follow-Up (\texttt{gpt-4.1-mini}, 2 public tasks, \(n=10\), 40 runs)}} \\
+\midrule
+\(\mathcal{H}_{F1}\) & \texttt{banking77}: \texttt{parent-carry} \(-\) \texttt{parent-first} & Lower CI bound \(> 0\) & +0.483 {[}+0.328, +0.644{]} & \textbf{Supported} \\
+\(\mathcal{H}_{F2}\) & \texttt{banking77}: \texttt{GEPA\ mb3} \(-\) \texttt{parent-carry} & Upper CI bound \(\le 0\) & -0.192 {[}-0.289, -0.097{]} & \textbf{Supported} \\
+\(\mathcal{H}_{F3}\) (No harm) & \texttt{bbh\_ste}: \texttt{parent-carry} \(-\) \texttt{parent-first} & Lower CI bound \(> -0.05\) & -0.061 {[}-0.119, -0.006{]} & \textbf{Not supported} (Harm) \\
+\(\mathcal{H}_{F4}\) & Pooled (\texttt{banking77}, \texttt{bbh\_ste}): \texttt{parent-carry} \(-\) \texttt{seed-carry} & Lower CI bound \(> 0\) & +0.258 {[}+0.221, +0.296{]} (\texttt{b77}: +0.539; \texttt{bbh}: -0.022) & \textbf{Supported} \\
 \bottomrule
 \end{tabular}%
 }
@@ -1567,42 +1352,20 @@ estimate and 25 pre-registered hypothesis tests across all five batches
 (1,750 analyzed runs).
 
 \begin{center}
-\footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.18}
 \resizebox{\ifdim\width>\textwidth\textwidth\else\width\fi}{!}{%
 \begin{tabular}{@{}lccccccc@{}}
 \toprule
-Dropped Task & \texttt{gpt-4.1-mini} \(\Delta_{\text{lineage}}\) & \texttt{gpt-4.1-mini} \(I_{\text{diverse}}\) & \texttt{gpt-4.1-mini} Parent \texttt{cluster} \(-\) \texttt{first} & \texttt{gpt-4.1-mini} Parent \texttt{minibatch} \(-\) \texttt{first} & \texttt{claude-haiku-5-5} \(\mathcal{H}_{H1}\) (\(\Delta_{\text{lineage}}\)) & \texttt{claude-haiku-5-5} \(\mathcal{H}_{H2}\) (\(I_{\text{clustergold}}\)) & \texttt{claude-haiku-5-5} \(\mathcal{H}_{H3}\) (\texttt{parent-clustergold} \(-\) \texttt{parent-first}) \\
+\textbf{Dropped Task} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{gpt-4.1-mini} \(\Delta_{\text{lineage}}\)}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{gpt-4.1-mini} \(I_{\text{diverse}}\)}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{gpt-4.1-mini} Parent \texttt{cluster} \(-\) \texttt{first}}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{gpt-4.1-mini} Parent \texttt{minibatch} \(-\) \texttt{first}}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{claude-haiku-5-5} \(\mathcal{H}_{H1}\) (\(\Delta_{\text{lineage}}\))}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{claude-haiku-5-5} \(\mathcal{H}_{H2}\) (\(I_{\text{clustergold}}\))}} & \parbox[b]{2.25cm}{\centering\textbf{\texttt{claude-haiku-5-5} \(\mathcal{H}_{H3}\) (\texttt{parent-clustergold} \(-\) \texttt{parent-first})}} \\
 \midrule
-None (Full set) & +0.238 {[}+0.224, +0.252{]} & +0.068 {[}+0.043,
-+0.092{]} & -0.082 {[}-0.119, -0.045{]} & -0.061 {[}-0.086, -0.035{]} &
-+0.222 {[}+0.204, +0.239{]} & +0.187 {[}+0.152, +0.221{]} & -0.008
-{[}-0.017, +0.002{]} \\
-\(-\) \texttt{labels} & +0.217 {[}+0.201, +0.233{]} & +0.046 {[}+0.020,
-+0.071{]} & -0.099 {[}-0.142, -0.057{]} & -0.065 {[}-0.094, -0.036{]} &
-+0.236 {[}+0.215, +0.256{]} & +0.197 {[}+0.155, +0.238{]} & -0.018
-{[}-0.029, -0.007{]} \\
-\(-\) \texttt{dates} & +0.278 {[}+0.261, +0.294{]} & +0.080 {[}+0.051,
-+0.107{]} & -0.092 {[}-0.135, -0.051{]} & -0.069 {[}-0.099, -0.039{]} &
--- & -- & -- \\
-\(-\) \texttt{routing} & +0.222 {[}+0.207, +0.236{]} & +0.078 {[}+0.053,
-+0.101{]} & -0.072 {[}-0.111, -0.033{]} & -0.042 {[}-0.064, -0.018{]} &
-+0.208 {[}+0.190, +0.226{]} & +0.152 {[}+0.111, +0.192{]} & -0.001
-{[}-0.009, +0.007{]} \\
-\(-\) \texttt{replies} & +0.196 {[}+0.183, +0.209{]} & +0.046 {[}+0.019,
-+0.072{]} & -0.019 {[}-0.045, +0.008{]} & -0.060 {[}-0.090, -0.031{]} &
-+0.168 {[}+0.151, +0.184{]} & +0.143 {[}+0.111, +0.173{]} & -0.000
-{[}-0.009, +0.009{]} \\
-\(-\) \texttt{scone} & +0.276 {[}+0.260, +0.293{]} & +0.079 {[}+0.051,
-+0.107{]} & -0.097 {[}-0.140, -0.053{]} & -0.067 {[}-0.098, -0.037{]} &
--- & -- & -- \\
-\(-\) \texttt{duration} & +0.227 {[}+0.211, +0.243{]} & +0.053
-{[}+0.025, +0.080{]} & -0.098 {[}-0.141, -0.056{]} & -0.054 {[}-0.083,
--0.025{]} & +0.257 {[}+0.236, +0.278{]} & +0.214 {[}+0.169, +0.258{]} &
--0.009 {[}-0.021, +0.003{]} \\
-\(-\) \texttt{size} & +0.251 {[}+0.236, +0.267{]} & +0.094 {[}+0.071,
-+0.117{]} & -0.098 {[}-0.138, -0.058{]} & -0.067 {[}-0.091, -0.042{]} &
-+0.239 {[}+0.220, +0.258{]} & +0.228 {[}+0.189, +0.267{]} & -0.009
-{[}-0.021, +0.003{]} \\
+None (Full set) & +0.238 {[}+0.224, +0.252{]} & +0.068 {[}+0.043, +0.092{]} & -0.082 {[}-0.119, -0.045{]} & -0.061 {[}-0.086, -0.035{]} & +0.222 {[}+0.204, +0.239{]} & +0.187 {[}+0.152, +0.221{]} & -0.008 {[}-0.017, +0.002{]} \\
+\(-\) \texttt{labels} & +0.217 {[}+0.201, +0.233{]} & +0.046 {[}+0.020, +0.071{]} & -0.099 {[}-0.142, -0.057{]} & -0.065 {[}-0.094, -0.036{]} & +0.236 {[}+0.215, +0.256{]} & +0.197 {[}+0.155, +0.238{]} & -0.018 {[}-0.029, -0.007{]} \\
+\(-\) \texttt{dates} & +0.278 {[}+0.261, +0.294{]} & +0.080 {[}+0.051, +0.107{]} & -0.092 {[}-0.135, -0.051{]} & -0.069 {[}-0.099, -0.039{]} & -- & -- & -- \\
+\(-\) \texttt{routing} & +0.222 {[}+0.207, +0.236{]} & +0.078 {[}+0.053, +0.101{]} & -0.072 {[}-0.111, -0.033{]} & -0.042 {[}-0.064, -0.018{]} & +0.208 {[}+0.190, +0.226{]} & +0.152 {[}+0.111, +0.192{]} & -0.001 {[}-0.009, +0.007{]} \\
+\(-\) \texttt{replies} & +0.196 {[}+0.183, +0.209{]} & +0.046 {[}+0.019, +0.072{]} & -0.019 {[}-0.045, +0.008{]} & -0.060 {[}-0.090, -0.031{]} & +0.168 {[}+0.151, +0.184{]} & +0.143 {[}+0.111, +0.173{]} & -0.000 {[}-0.009, +0.009{]} \\
+\(-\) \texttt{scone} & +0.276 {[}+0.260, +0.293{]} & +0.079 {[}+0.051, +0.107{]} & -0.097 {[}-0.140, -0.053{]} & -0.067 {[}-0.098, -0.037{]} & -- & -- & -- \\
+\(-\) \texttt{duration} & +0.227 {[}+0.211, +0.243{]} & +0.053 {[}+0.025, +0.080{]} & -0.098 {[}-0.141, -0.056{]} & -0.054 {[}-0.083, -0.025{]} & +0.257 {[}+0.236, +0.278{]} & +0.214 {[}+0.169, +0.258{]} & -0.009 {[}-0.021, +0.003{]} \\
+\(-\) \texttt{size} & +0.251 {[}+0.236, +0.267{]} & +0.094 {[}+0.071, +0.117{]} & -0.098 {[}-0.138, -0.058{]} & -0.067 {[}-0.091, -0.042{]} & +0.239 {[}+0.220, +0.258{]} & +0.228 {[}+0.189, +0.267{]} & -0.009 {[}-0.021, +0.003{]} \\
 \bottomrule
 \end{tabular}%
 }
@@ -1628,9 +1391,9 @@ from scratch after restoring credit.
 \section{Appendix B: Verbatim Prompt Templates and Seed
 Specifications}\label{appendix-b-verbatim-prompt-templates-and-seed-specifications}}
 
-\hypertarget{b.1-proposer-and-task-model-prompt-templates}{%
-\subsection{B.1 Proposer and Task-Model Prompt
-Templates}\label{b.1-proposer-and-task-model-prompt-templates}}
+\hypertarget{proposer-and-task-model-prompt-templates}{%
+\subsection{Proposer and Task-Model Prompt
+Templates}\label{proposer-and-task-model-prompt-templates}}
 
 Every optimization run uses \texttt{LLMProposer} with
 \texttt{PROPOSE\_TEMPLATE} in
@@ -1707,10 +1470,10 @@ verbatim string \texttt{CARRY\_FACTS} is appended to
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{b.2-verbatim-objectives-and-seed-candidates-c_0-for-all-nine-tasks}{%
-\subsection{\texorpdfstring{B.2 Verbatim Objectives and Seed Candidates
+\hypertarget{verbatim-objectives-and-seed-candidates-c_0-for-all-nine-tasks}{%
+\subsection{\texorpdfstring{Verbatim Objectives and Seed Candidates
 (\(c_0\)) for All Nine
-Tasks}{B.2 Verbatim Objectives and Seed Candidates (c\_0) for All Nine Tasks}}\label{b.2-verbatim-objectives-and-seed-candidates-c_0-for-all-nine-tasks}}
+Tasks}{Verbatim Objectives and Seed Candidates (c\_0) for All Nine Tasks}}\label{verbatim-objectives-and-seed-candidates-c_0-for-all-nine-tasks}}
 
 \begin{itemize}
 \tightlist
@@ -1858,9 +1621,9 @@ Tasks}{B.2 Verbatim Objectives and Seed Candidates (c\_0) for All Nine Tasks}}\l
   \end{itemize}
 \end{itemize}
 
-\hypertarget{b.3-verbatim-clustering-and-judge-prompts}{%
-\subsection{B.3 Verbatim Clustering and Judge
-Prompts}\label{b.3-verbatim-clustering-and-judge-prompts}}
+\hypertarget{verbatim-clustering-and-judge-prompts}{%
+\subsection{Verbatim Clustering and Judge
+Prompts}\label{verbatim-clustering-and-judge-prompts}}
 
 In \texttt{cluster} (Batch A.1), all failing cases of \(p_t\) are passed
 to one call of the clusterer model using \texttt{CLUSTER\_PROMPT} in
