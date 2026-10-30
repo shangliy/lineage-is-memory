@@ -18,8 +18,12 @@ cd "$PAPER_DIR"
 # Ensure email in paper.tex matches EMAIL_ADDR
 sed -i -E "s/\\\\texttt\\{[a-zA-Z0-9._%+-]+@gmail\\.com\\}/\\\\texttt{${EMAIL_ADDR}}/g" paper.tex
 
-pdflatex -interaction=nonstopmode paper.tex >/dev/null
-bibtex paper >/dev/null
+# Verify line 1 is \pdfoutput=1 and file is pure 7-bit ASCII
+head -n 1 paper.tex | grep -q '^\\pdfoutput=1$' || {
+  echo "ERROR: First line of paper.tex must be \\pdfoutput=1" >&2
+  exit 1
+}
+
 pdflatex -interaction=nonstopmode paper.tex >/dev/null
 pdflatex -interaction=nonstopmode paper.tex >/dev/null
 
@@ -29,15 +33,14 @@ trap 'rm -rf "$STAGE"' EXIT
 
 mkdir -p "$STAGE/figs"
 cp "$PAPER_DIR/paper.tex" "$STAGE/paper.tex"
-cp "$PAPER_DIR/paper.bbl" "$STAGE/paper.bbl"
 cp "$PAPER_DIR/figs/fig1-lineage-disclosure.png" "$STAGE/figs/"
 cp "$PAPER_DIR/figs/fig2-banking77-carry.png" "$STAGE/figs/"
 
 # Package tarball BEFORE running test pdflatex so no .aux/.log/.pdf pollute the archive
 OUT_TAR="$PAPER_DIR/arxiv-upload.tar.gz"
-tar -czf "$OUT_TAR" -C "$STAGE" paper.tex paper.bbl figs/fig1-lineage-disclosure.png figs/fig2-banking77-carry.png
+tar -czf "$OUT_TAR" -C "$STAGE" paper.tex figs/fig1-lineage-disclosure.png figs/fig2-banking77-carry.png
 
-# Simulate arXiv's AutoTeX server (runs pdflatex on paper.tex + paper.bbl WITHOUT bibtex or refs.bib)
+# Simulate arXiv's AutoTeX server in an isolated empty directory with ONLY the tarball contents
 (
   cd "$STAGE"
   pdflatex -interaction=nonstopmode paper.tex >/dev/null
@@ -63,9 +66,8 @@ arXiv Submission Metadata & Checklist (https://arxiv.org/submit)
 
 1. Upload Package:
    File: $OUT_TAR ($TAR_SIZE)
-   Contents:
+   Contents (100% self-contained, \pdfoutput=1 on line 1, BBL inlined, pure 7-bit ASCII):
      - paper.tex
-     - paper.bbl
      - figs/fig1-lineage-disclosure.png
      - figs/fig2-banking77-carry.png
 

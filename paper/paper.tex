@@ -1,50 +1,28 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
-%
-\documentclass[
-  10pt,
-]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
+\pdfoutput=1
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
 \usepackage[margin=0.85in]{geometry}
-\usepackage{color}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}
+\usepackage{booktabs,array}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\usepackage[dvipsnames]{xcolor}
 \usepackage{fancyvrb}
 \newcommand{\VerbBar}{|}
 \newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
 \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
 \newenvironment{Shaded}{}{}
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
 \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
@@ -77,60 +55,24 @@
 \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
-\usepackage{graphicx}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-% Set default figure placement to htbp
-\makeatletter
-\def\fps@figure{htbp}
-\makeatother
-\setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
-\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
-\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
-\DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
-\DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}
-\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
-\usepackage{graphicx}
-\graphicspath{{./}{../}}
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage[round]{natbib}
 \bibliographystyle{plainnat}
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\usepackage{url}
 \urlstyle{same}
-\hypersetup{
+\usepackage[
   pdftitle={Lineage Is Memory: Parent Inheritance and Feedback Disclosure in Short-Budget LLM-Guided Optimization},
   pdfauthor={Shanglin Yang, Zhan Shi},
   colorlinks=true,
-  linkcolor={Maroon},
-  filecolor={Maroon},
-  citecolor={Blue},
-  urlcolor={Blue},
-  pdfcreator={LaTeX via pandoc}}
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=Blue
+]{hyperref}
 
-\title{Lineage Is Memory: Parent Inheritance and Feedback Disclosure in
-Short-Budget LLM-Guided Optimization}
+\title{Lineage Is Memory: Parent Inheritance and Feedback Disclosure in Short-Budget LLM-Guided Optimization}
 \author{
   \textbf{Shanglin Yang}\\
   Independent Researcher\\
@@ -260,7 +202,7 @@ Our main findings are as follows:
   GEPA's median token cost, while \texttt{seed-first} with the same
   sentence retained only the 4 intents shown in round 1 and scored
   0.317. On BBH-STE, where all six option labels are already in the
-  seed, the same sentence reduced accuracy by −0.061.
+  seed, the same sentence reduced accuracy by -0.061.
 \item
   \textbf{Parent inheritance closes the gap with wider per-round
   disclosure over multiple rounds (Sections 4.4--4.6):} When resetting
@@ -728,11 +670,11 @@ Lineage (\(P\)) \& Disclosure (\(F\)) & \texttt{labels} & \texttt{dates} & \text
 \texttt{parent-clustergold} (Batch A.2) & 0.958 & 0.996 & 0.842 & 0.869
 & 0.900 & 0.971 & 0.963 & 0.928 & 0.921 \\
 \(\Delta_{\text{lineage}}\) (\texttt{first}, \texttt{diverse},
-\texttt{minibatch}, \texttt{cluster}) & \textbf{+0.368} & −0.002 &
+\texttt{minibatch}, \texttt{cluster}) & \textbf{+0.368} & -0.002 &
 \textbf{+0.335} & \textbf{+0.492} & +0.010 & \textbf{+0.304} &
 \textbf{+0.160} & \textbf{+0.238} & \textbf{+0.332} \\
 95\% Bootstrap CI for \(\Delta_{\text{lineage}}\) & {[}+0.334, +0.402{]}
-& {[}−0.009, +0.004{]} & {[}+0.283, +0.387{]} & {[}+0.428, +0.552{]} &
+& {[}-0.009, +0.004{]} & {[}+0.283, +0.387{]} & {[}+0.428, +0.552{]} &
 {[}+0.000, +0.020{]} & {[}+0.277, +0.330{]} & {[}+0.121, +0.199{]} &
 {[}+0.224, +0.252{]} & {[}+0.312, +0.351{]} \\
 \bottomrule
@@ -788,12 +730,12 @@ Seed row within-row contrasts: \texttt{seed-minibatch} \(-\)
 +0.055 \\
 Parent row within-row contrasts: \texttt{parent-diverse} \(-\)
 \texttt{parent-first} / \texttt{parent-clustergold} \(-\)
-\texttt{parent-first} (\(\mathcal{H}_{S2\text{-gold}}\)) & −0.007
-{[}−0.025, +0.012{]} / −0.018 {[}−0.053, +0.010{]} & −0.010 / −0.022 \\
+\texttt{parent-first} (\(\mathcal{H}_{S2\text{-gold}}\)) & -0.007
+{[}-0.025, +0.012{]} / -0.018 {[}-0.053, +0.010{]} & -0.010 / -0.022 \\
 Parent row within-row contrasts: \texttt{parent-minibatch} \(-\)
 \texttt{parent-first} / \texttt{parent-cluster} \(-\)
-\texttt{parent-first} & −0.061 {[}−0.086, −0.035{]} / −0.082 {[}−0.119,
-−0.045{]} & −0.079 / −0.112 \\
+\texttt{parent-first} & -0.061 {[}-0.086, -0.035{]} / -0.082 {[}-0.119,
+-0.045{]} & -0.079 / -0.112 \\
 \bottomrule
 \end{tabular}%
 }
@@ -870,33 +812,33 @@ Haiku \(\mathcal{H}_{H1}\) (\(\Delta_{\text{lineage}}\)) /
 +0.221{]} & +0.292 / +0.278 \\
 Haiku \(\mathcal{H}_{H3}\) (\texttt{parent-clustergold} \(-\)
 \texttt{parent-first}) / \(\mathcal{H}_{Hd}\) (\(I_{\text{diverse}}\)) &
-+0.033 / +0.179 & −0.033 / −0.092 & −0.038 / +0.381 & +0.000 / +0.079 &
-+0.000 / +0.062 & \textbf{−0.008} {[}−0.017, +0.002{]} / \textbf{+0.122}
-{[}+0.088, +0.158{]} & −0.013 / +0.156 \\
++0.033 / +0.179 & -0.033 / -0.092 & -0.038 / +0.381 & +0.000 / +0.079 &
++0.000 / +0.062 & \textbf{-0.008} {[}-0.017, +0.002{]} / \textbf{+0.122}
+{[}+0.088, +0.158{]} & -0.013 / +0.156 \\
 \textbf{Panel B: Stronger Proposer (\texttt{gpt-4.1} Proposer \&
 Clusterer, \texttt{gpt-4.1-mini} Task Model, \(n=10\), 150 runs)} & & &
 & & & & \\
 \texttt{seed-none} (\texttt{gpt-4.1} prop.) & 0.279 & 0.000 & 0.062 & --
-& -- & -- & 0.114 (\(\Delta_{\text{prop}}\): +0.002 {[}−0.024,
+& -- & -- & 0.114 (\(\Delta_{\text{prop}}\): +0.002 {[}-0.024,
 +0.031{]}) \\
 \texttt{seed-first} (\texttt{gpt-4.1} prop.) & 0.383 & 0.500 & 0.300 &
--- & -- & -- & 0.394 (\(\Delta_{\text{prop}}\): −0.006 {[}−0.035,
+-- & -- & -- & 0.394 (\(\Delta_{\text{prop}}\): -0.006 {[}-0.035,
 +0.023{]}) \\
 \texttt{seed-clustergold} (\texttt{gpt-4.1} prop.) & 0.596 & 0.617 &
-0.681 & -- & -- & -- & 0.631 (\(\Delta_{\text{prop}}\): −0.069
-{[}−0.170, +0.033{]}) \\
+0.681 & -- & -- & -- & 0.631 (\(\Delta_{\text{prop}}\): -0.069
+{[}-0.170, +0.033{]}) \\
 \texttt{parent-first} (\texttt{gpt-4.1} prop.) & 0.904 & 0.892 & 0.969 &
--- & -- & -- & 0.922 (\(\Delta_{\text{prop}}\): −0.019 {[}−0.053,
+-- & -- & -- & 0.922 (\(\Delta_{\text{prop}}\): -0.019 {[}-0.053,
 +0.014{]}) \\
 \texttt{parent-clustergold} (\texttt{gpt-4.1} prop.) & 0.858 & 0.792 &
-0.944 & -- & -- & -- & 0.865 (\(\Delta_{\text{prop}}\): −0.025
-{[}−0.087, +0.057{]}) \\
+0.944 & -- & -- & -- & 0.865 (\(\Delta_{\text{prop}}\): -0.025
+{[}-0.087, +0.057{]}) \\
 Strong-Proposer \(\mathcal{H}_{S1\text{-prop}}\)
 (\(\Delta_{\text{lineage}}\)) / \(\mathcal{H}_{S2\text{-prop}}\)
 (\(I_{\text{clustergold}}\)) / \(\mathcal{H}_{S3\text{-prop}}\) & -- &
 -- & -- & -- & -- & -- & \textbf{+0.380} {[}+0.337, +0.425{]} /
-\textbf{+0.294} {[}+0.201, +0.381{]} / \textbf{−0.057} {[}−0.101,
-−0.016{]} \\
+\textbf{+0.294} {[}+0.201, +0.381{]} / \textbf{-0.057} {[}-0.101,
+-0.016{]} \\
 \bottomrule
 \end{tabular}%
 }
@@ -921,7 +863,7 @@ parent inheritance on \texttt{labels}, \texttt{routing}, and
 \texttt{replies} while holding the task model fixed at
 \texttt{gpt-4.1-mini}. Across all five tested conditions, replacing
 \texttt{gpt-4.1-mini} with \texttt{gpt-4.1} yields no positive accuracy
-gain, with \(\Delta_{\text{prop}}\) ranging from −0.069 in
+gain, with \(\Delta_{\text{prop}}\) ranging from -0.069 in
 \texttt{seed-clustergold} to +0.002 in \texttt{seed-none}. On
 \texttt{labels} under \texttt{seed-none}, both proposers average
 \(67/240 = 0.279\) from distinct run distributions, where nine of ten
@@ -1045,7 +987,7 @@ every run, and scores 0.317, whereas \texttt{parent-first\ +\ carry}
 accumulates 11 to 12 intents across rounds with a mean of 11.7 out of
 12. Conversely, on \texttt{bbh\_ste}, where all six option labels are
 already given in the seed, appending \texttt{CARRY\_FACTS} reduced
-\texttt{parent-first} accuracy from 0.653 to 0.592, a change of −0.061
+\texttt{parent-first} accuracy from 0.653 to 0.592, a change of -0.061
 that fails non-inferiority test \(\mathcal{H}_{F3}\). Copying feedback
 facts into the prompt helps when label inventories must be discovered
 from feedback, and slightly hurts when the specification is already
@@ -1060,14 +1002,14 @@ When resetting to the seed, replacing the first four failures with four
 farthest-point diverse failures raises 7-task accuracy by +0.061 on
 \texttt{gpt-4.1-mini} (Table 2B), led by \texttt{labels},
 \texttt{duration}, and \texttt{replies}. Under parent inheritance, the
-difference between \texttt{diverse} and \texttt{first} is −0.007,
+difference between \texttt{diverse} and \texttt{first} is -0.007,
 yielding a positive attenuation interaction of
 \(I_{\text{diverse}} = +0.068\) that supports \(\mathcal{H}_{C2}\) and
 rejects \(\mathcal{H}_{R1}\). This interaction replicates on
 \texttt{claude-haiku-5-5} across the five non-ceiling tasks at
 \(I_{\text{diverse}} = +0.122\) (Table 3, Panel A). At the task level,
 \texttt{size} is the only task with a materially negative
-\(I_{\text{diverse}}\) on \texttt{gpt-4.1-mini} at −0.088, while
+\(I_{\text{diverse}}\) on \texttt{gpt-4.1-mini} at -0.088, while
 \texttt{routing} is the only non-ceiling task where
 \texttt{seed-diverse} scores below \texttt{seed-first} on both models
 because surface edit distance selects two \texttt{fulfillment} tickets
@@ -1095,18 +1037,18 @@ Task Family & Shown Categories in \texttt{seed-first} & Unshown Failing Categori
 \texttt{labels} & \texttt{iso\_date}, \texttt{us\_date} &
 \texttt{email}, \texttt{eu\_date}, \texttt{hex\_color}, \texttt{ipv4},
 \texttt{ipv6}, \texttt{mac\_address}, \texttt{semver} & 0.133 & 0.151 &
-0.414 & 0.545 & +0.018 {[}−0.031, +0.067{]} \\
+0.414 & 0.545 & +0.018 {[}-0.031, +0.067{]} \\
 \texttt{duration} & \texttt{days/weeks}, \texttt{number}, \texttt{units}
 & \texttt{clock}, \texttt{iso}, \texttt{words} & 0.058 & 0.003 & 0.009 &
--- & \textbf{−0.055} {[}−0.082, −0.033{]} \\
+-- & \textbf{-0.055} {[}-0.082, -0.033{]} \\
 \texttt{duration} (\texttt{seed-iso} / \texttt{seed-random}) &
 \texttt{iso} only / 4 random failures & \texttt{clock}, \texttt{iso},
 \texttt{words} & 0.058 & -- & -- & -- & \texttt{iso}: 0.009
-(\textbf{−0.048} {[}−0.079, −0.021{]}) / \texttt{rand}: 0.118 (+0.061
-{[}−0.003, +0.121{]}) \\
+(\textbf{-0.048} {[}-0.079, -0.021{]}) / \texttt{rand}: 0.118 (+0.061
+{[}-0.003, +0.121{]}) \\
 \texttt{size} & \texttt{bytes}, \texttt{si} & \texttt{iec},
 \texttt{invalid}, \texttt{letter}, \texttt{separator}, \texttt{words} &
-0.431 & 0.318 & 0.345 & 0.945 & \textbf{−0.113} {[}−0.144, −0.082{]} \\
+0.431 & 0.318 & 0.345 & 0.945 & \textbf{-0.113} {[}-0.144, -0.082{]} \\
 \textbf{Panel B: Cross-Round Search-Set Failure Exposure,
 Parent-to-Child Retention, Prompt Length, and Token Cost
 (\texttt{first-k}, \(n=10\))} & & & & & & & \\
@@ -1148,12 +1090,12 @@ handle several unshown formats, reaching 0.058 unshown coverage on
 \texttt{duration} and 0.431 on \texttt{size}. When \texttt{seed-first}
 shows four unit-suffix or SI failures, the proposer specializes its code
 to those displayed formats and drops handlers for unshown categories,
-lowering unshown coverage by −0.055 on \texttt{duration} and −0.113 on
+lowering unshown coverage by -0.055 on \texttt{duration} and -0.113 on
 \texttt{size}, and lowering held-out accuracy on \texttt{duration} below
 \texttt{seed-none} on both \texttt{gpt-4.1-mini} and
 \texttt{claude-haiku-5-5} (Tables 2A and 3). The causal intervention on
 \texttt{duration} confirms this mechanism: showing only ISO-8601
-failures in \texttt{seed-iso} reduces unshown coverage by −0.048,
+failures in \texttt{seed-iso} reduces unshown coverage by -0.048,
 whereas showing 4 random failures per round in \texttt{seed-random}
 changes it by +0.061. On \texttt{labels}, where the zero-feedback prior
 rarely guesses hidden \texttt{snake\_case} names, no drop occurs, so
@@ -1175,7 +1117,7 @@ four of the seven tasks despite producing longer candidates.
 Lineage}\label{full-set-error-clustering-with-and-without-lineage}}
 
 In Batch A.1, the initial \texttt{cluster} arm underperformed
-\texttt{first} in the parent row by −0.082 and lost to the best
+\texttt{first} in the parent row by -0.082 and lost to the best
 alternative disclosure scheme in both rows, refuting
 \(\mathcal{H}_{R2}\) (Table 7). Leave-one-task-out analysis (Table 8)
 traced this deficit to \texttt{replies}, where \texttt{parent-cluster}
@@ -1202,10 +1144,10 @@ Proposal Round (\(t\)) & \texttt{seed-first} & \texttt{seed-diverse} & \texttt{s
 & 0.669 & 0.779 & 0.842 & \textbf{+0.173} {[}+0.118, +0.219{]} & +0.209
 / +0.119 \\
 \(t = 4\) & 0.564 & 0.628 & 0.747 & \textbf{+0.183} {[}+0.137, +0.222{]}
-& 0.946 & 0.926 & 0.929 & −0.017 {[}−0.067, +0.023{]} & −0.040 /
+& 0.946 & 0.926 & 0.929 & -0.017 {[}-0.067, +0.023{]} & -0.040 /
 +0.019 \\
 \(t = 7\) & 0.587 & 0.650 & 0.767 & \textbf{+0.180} {[}+0.132, +0.219{]}
-& 0.971 & 0.983 & 0.956 & −0.015 {[}−0.065, +0.024{]} & −0.038 /
+& 0.971 & 0.983 & 0.956 & -0.015 {[}-0.065, +0.024{]} & -0.038 /
 +0.019 \\
 \bottomrule
 \end{tabular}%
@@ -1228,11 +1170,11 @@ reaches 0.789 and beats \texttt{seed-first} by +0.156, and
 \texttt{seed-first} by +0.179. - \textbf{Under parent inheritance:} At
 terminal evaluation, \texttt{parent-clustergold} and
 \texttt{parent-first} show no detectable difference on
-\texttt{gpt-4.1-mini} at −0.018 or on \texttt{claude-haiku-5-5} at
-−0.008, yielding positive attenuation interactions of
+\texttt{gpt-4.1-mini} at -0.018 or on \texttt{claude-haiku-5-5} at
+-0.008, yielding positive attenuation interactions of
 \(I_{\text{clustergold}} = +0.174\) and \(+0.187\), as well as
 \(+0.916\) log-odds units on an exploratory logit scale, while
-\texttt{clustergold} scores lower by −0.057 under the \texttt{gpt-4.1}
+\texttt{clustergold} scores lower by -0.057 under the \texttt{gpt-4.1}
 proposer. Table 5C shows how this convergence unfolds across rounds: at
 \(t=1\), where both rows edit \(c_0\), and at \(t=2\), the first
 parent-inheritance step, \texttt{clustergold} leads \texttt{first} by
@@ -1248,7 +1190,7 @@ vs.~random mixed minibatches:} Under parent inheritance,
 \texttt{parent-clustergold} still beats \texttt{parent-minibatch} by
 +0.043 on \texttt{gpt-4.1-mini} and +0.086 on Haiku because
 \texttt{parent-minibatch} wastes display slots on already-passing
-examples and scores below \texttt{parent-first} by −0.061 and −0.093.
+examples and scores below \texttt{parent-first} by -0.061 and -0.093.
 
 \hypertarget{system-level-search-efficiency-and-token-decomposition-against-gepa-mathcalh_c3}{%
 \subsection{\texorpdfstring{System-Level Search Efficiency and Token
@@ -1336,15 +1278,15 @@ Findings}\label{boundary-conditions-robustness-and-negative-findings}}
 \item
   \textbf{Task-specificity of \texttt{CARRY\_FACTS}
   (\(\mathcal{H}_{F3}\)):} Appending \texttt{CARRY\_FACTS} lowers
-  \texttt{parent-first} accuracy on \texttt{bbh\_ste} by −0.061, where
+  \texttt{parent-first} accuracy on \texttt{bbh\_ste} by -0.061, where
   all option labels are already present in the seed.
 \item
   \textbf{Task-level exceptions:} On \texttt{routing}, surface
   edit-distance \texttt{diverse} sampling scores below \texttt{first}
   under seed resetting on both models; under parent inheritance on
   \texttt{gpt-4.1-mini}, \texttt{parent-clustergold} scores below
-  \texttt{parent-first} on \texttt{replies} by −0.112 and on
-  \texttt{routing} by −0.083. On \texttt{scone}, all cells sit near
+  \texttt{parent-first} on \texttt{replies} by -0.112 and on
+  \texttt{routing} by -0.083. On \texttt{scone}, all cells sit near
   ceiling between 0.889 and 0.918.
 \item
   \textbf{Leave-one-task-out stability:} Dropping any single task (Table
@@ -1352,7 +1294,7 @@ Findings}\label{boundary-conditions-robustness-and-negative-findings}}
   \texttt{gpt-4.1-mini} and between +0.168 and +0.257 on Haiku,
   \(I_{\text{diverse}}\) stays between +0.046 and +0.094, and
   \texttt{parent-minibatch} \(-\) \texttt{parent-first} stays between
-  −0.042 and −0.069.
+  -0.042 and -0.069.
 \end{enumerate}
 
 \hypertarget{discussion}{%
@@ -1436,7 +1378,7 @@ system-level across parent selection, minibatch gating, minibatch size,
 and reflection wording. Fourth, \texttt{carry-facts} was designed after
 inspecting Batch A.4 \texttt{banking77} logs and tested on two public
 benchmarks, helping \texttt{banking77} by +0.483 and hurting
-\texttt{bbh\_ste} by −0.061. Fifth, \texttt{banking77} was subsampled to
+\texttt{bbh\_ste} by -0.061. Fifth, \texttt{banking77} was subsampled to
 12 intents and \texttt{bbh\_ste} to 198 examples, with held-out sets of
 12 to 72 examples across tasks, to fit the 8-evaluation budget and
 300-character feedback window. Sixth, \texttt{dates} and \texttt{scone}
@@ -1522,17 +1464,17 @@ Descriptive \\
 (\(\mathcal{H}_{C2}\) holds) \\
 \(\mathcal{H}_{R2}\) (Collapse) & \texttt{cluster} \(-\)
 \(\max(\text{other } F)\) has lower bound \(> 0\) in both rows & Favors
-full-set clustering in both rows if True & Seed: −0.044 {[}−0.078,
-−0.018{]}; Parent: −0.095 {[}−0.132, −0.063{]} & Rejected \\
+full-set clustering in both rows if True & Seed: -0.044 {[}-0.078,
+-0.018{]}; Parent: -0.095 {[}-0.132, -0.063{]} & Rejected \\
 \(\mathcal{H}_{C1}\) (Crowding) & Unshown-category coverage:
 \texttt{seed-first} \(-\) \texttt{seed-none} & Upper CI bound \(< 0\) on
-\(\ge 2/3\) tasks & \texttt{duration}: −0.055; \texttt{size}: −0.113;
+\(\ge 2/3\) tasks & \texttt{duration}: -0.055; \texttt{size}: -0.113;
 \texttt{labels}: +0.018 & \textbf{Supported} (2/3) \\
 \(\mathcal{H}_{R3}\) (ScoNe boundary) & All 4
 \texttt{seed-\{first,diverse,minibatch,cluster\}} \(-\)
 \texttt{seed-none} CIs on \texttt{scone} contain \(0\) & Narrows
 \(\mathcal{H}_{C1}\) to latent-rule tasks & All 4 contrasts within
-{[}−0.025, +0.017{]} & Confirmed (Boundary) \\
+{[}-0.025, +0.017{]} & Confirmed (Boundary) \\
 \(\mathcal{H}_{C3}\) (GEPA tokens) & Conditional median tokens-to-solve
 ratio: \texttt{GEPA+stop} / \texttt{parent-first} & Lower CI bound
 \(> 1\) on eligible tasks (\(\ge 3/10\) solved) & \texttt{labels}:
@@ -1552,8 +1494,8 @@ runs) & Not evaluable as registered (0/2 eligible contain 1) \\
 \textbf{Supported} \\
 \(\mathcal{H}_{S2\text{-gold}}\) (Parent tie) & 7-task
 \texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper CI
-\(< 0\): harmful; \(0 \in\) CI: tie; Lower CI \(> 0\): gain & −0.018
-{[}−0.053, +0.010{]} (\(I_{\text{clustergold}} = +0.174\)) & \textbf{No
+\(< 0\): harmful; \(0 \in\) CI: tie; Lower CI \(> 0\): gain & -0.018
+{[}-0.053, +0.010{]} (\(I_{\text{clustergold}} = +0.174\)) & \textbf{No
 resolved diff. (\(0 \in\) CI)} \\
 \textbf{Batch A.3: Second-Model Replication (\texttt{rep-haiku},
 \texttt{claude-haiku-5-5}, 5 tasks, \(n=10\), 350 runs)} & & & & \\
@@ -1565,7 +1507,7 @@ resolved diff. (\(0 \in\) CI)} \\
 {[}+0.152, +0.221{]} & \textbf{Supported} \\
 \(\mathcal{H}_{H3}\) & \texttt{parent-clustergold} \(-\)
 \texttt{parent-first} non-superiority & Upper CI bound \(< +0.05\) &
-−0.008 {[}−0.017, +0.002{]} & \textbf{Supported} \\
+-0.008 {[}-0.017, +0.002{]} & \textbf{Supported} \\
 \textbf{Batch A.4: Public Benchmarks, GEPA Public, Strong Proposer, and
 Haiku Diverse (470 runs)} & & & & \\
 \(\mathcal{H}_{P1}\) & Public (\texttt{banking77}, \texttt{bbh\_ste})
@@ -1573,16 +1515,16 @@ lineage main effect (4 cols) & Lower CI bound \(> 0\) & +0.088
 {[}+0.045, +0.130{]} (\texttt{b77}: +0.158; \texttt{bbh}: +0.017) &
 \textbf{Supported} \\
 \(\mathcal{H}_{P2}\) & Public attenuation interaction
-\(I_{\text{clustergold}}\) & Lower CI bound \(> 0\) & +0.017 {[}−0.119,
+\(I_{\text{clustergold}}\) & Lower CI bound \(> 0\) & +0.017 {[}-0.119,
 +0.151{]} & \textbf{Not supported} (Inconclusive) \\
 \(\mathcal{H}_{P3}\) & Public \texttt{parent-clustergold} \(-\)
-\texttt{parent-first} & Upper CI bound \(< +0.05\) & +0.021 {[}−0.101,
+\texttt{parent-first} & Upper CI bound \(< +0.05\) & +0.021 {[}-0.101,
 +0.143{]} & \textbf{Not supported} (Width) \\
 \(\mathcal{H}_{P4}\) & Public attenuation interaction
-\(I_{\text{diverse}}\) & Lower CI bound \(> 0\) & −0.014 {[}−0.118,
+\(I_{\text{diverse}}\) & Lower CI bound \(> 0\) & -0.014 {[}-0.118,
 +0.093{]} & \textbf{Not supported} (Inconclusive) \\
 \(\mathcal{H}_{P5}\) & Public \texttt{parent-minibatch} \(-\)
-\texttt{parent-first} & Upper CI bound \(< 0\) & −0.011 {[}−0.113,
+\texttt{parent-first} & Upper CI bound \(< 0\) & -0.011 {[}-0.113,
 +0.090{]} & \textbf{Not supported} (Inconclusive) \\
 \(\mathcal{H}_{S1\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1}
 proposer lineage main effect (\texttt{first}, \texttt{clustergold}) &
@@ -1593,7 +1535,7 @@ proposer attenuation interaction \(I_{\text{clustergold}}\) & Lower CI
 bound \(> 0\) & +0.294 {[}+0.201, +0.381{]} & \textbf{Supported} \\
 \(\mathcal{H}_{S3\text{-prop}}\) (Strong prop.) & \texttt{gpt-4.1}
 proposer \texttt{parent-clustergold} \(-\) \texttt{parent-first} & Upper
-CI bound \(< +0.05\) & −0.057 {[}−0.101, −0.016{]} &
+CI bound \(< +0.05\) & -0.057 {[}-0.101, -0.016{]} &
 \textbf{Supported} \\
 \(\mathcal{H}_{Hd}\) (Haiku div.) & \texttt{claude-haiku-5-5}
 attenuation interaction \(I_{\text{diverse}}\) (5 tasks) & Lower CI
@@ -1604,16 +1546,16 @@ bound \(> 0\) & +0.122 {[}+0.088, +0.158{]} & \textbf{Supported} \\
 \texttt{parent-first} & Lower CI bound \(> 0\) & +0.483 {[}+0.328,
 +0.644{]} & \textbf{Supported} \\
 \(\mathcal{H}_{F2}\) & \texttt{banking77}: \texttt{GEPA\ mb3} \(-\)
-\texttt{parent-carry} & Upper CI bound \(\le 0\) & −0.192 {[}−0.289,
-−0.097{]} & \textbf{Supported} \\
+\texttt{parent-carry} & Upper CI bound \(\le 0\) & -0.192 {[}-0.289,
+-0.097{]} & \textbf{Supported} \\
 \(\mathcal{H}_{F3}\) (No harm) & \texttt{bbh\_ste}:
 \texttt{parent-carry} \(-\) \texttt{parent-first} & Lower CI bound
-\(> -0.05\) & −0.061 {[}−0.119, −0.006{]} & \textbf{Not supported}
+\(> -0.05\) & -0.061 {[}-0.119, -0.006{]} & \textbf{Not supported}
 (Harm) \\
 \(\mathcal{H}_{F4}\) & Pooled (\texttt{banking77}, \texttt{bbh\_ste}):
 \texttt{parent-carry} \(-\) \texttt{seed-carry} & Lower CI bound \(> 0\)
 & +0.258 {[}+0.221, +0.296{]} (\texttt{b77}: +0.539; \texttt{bbh}:
-−0.022) & \textbf{Supported} \\
+-0.022) & \textbf{Supported} \\
 \bottomrule
 \end{tabular}%
 }
@@ -1631,35 +1573,35 @@ estimate and 25 pre-registered hypothesis tests across all five batches
 Dropped Task & \texttt{gpt-4.1-mini} \(\Delta_{\text{lineage}}\) & \texttt{gpt-4.1-mini} \(I_{\text{diverse}}\) & \texttt{gpt-4.1-mini} Parent \texttt{cluster} \(-\) \texttt{first} & \texttt{gpt-4.1-mini} Parent \texttt{minibatch} \(-\) \texttt{first} & \texttt{claude-haiku-5-5} \(\mathcal{H}_{H1}\) (\(\Delta_{\text{lineage}}\)) & \texttt{claude-haiku-5-5} \(\mathcal{H}_{H2}\) (\(I_{\text{clustergold}}\)) & \texttt{claude-haiku-5-5} \(\mathcal{H}_{H3}\) (\texttt{parent-clustergold} \(-\) \texttt{parent-first}) \\
 \midrule
 None (Full set) & +0.238 {[}+0.224, +0.252{]} & +0.068 {[}+0.043,
-+0.092{]} & −0.082 {[}−0.119, −0.045{]} & −0.061 {[}−0.086, −0.035{]} &
-+0.222 {[}+0.204, +0.239{]} & +0.187 {[}+0.152, +0.221{]} & −0.008
-{[}−0.017, +0.002{]} \\
++0.092{]} & -0.082 {[}-0.119, -0.045{]} & -0.061 {[}-0.086, -0.035{]} &
++0.222 {[}+0.204, +0.239{]} & +0.187 {[}+0.152, +0.221{]} & -0.008
+{[}-0.017, +0.002{]} \\
 \(-\) \texttt{labels} & +0.217 {[}+0.201, +0.233{]} & +0.046 {[}+0.020,
-+0.071{]} & −0.099 {[}−0.142, −0.057{]} & −0.065 {[}−0.094, −0.036{]} &
-+0.236 {[}+0.215, +0.256{]} & +0.197 {[}+0.155, +0.238{]} & −0.018
-{[}−0.029, −0.007{]} \\
++0.071{]} & -0.099 {[}-0.142, -0.057{]} & -0.065 {[}-0.094, -0.036{]} &
++0.236 {[}+0.215, +0.256{]} & +0.197 {[}+0.155, +0.238{]} & -0.018
+{[}-0.029, -0.007{]} \\
 \(-\) \texttt{dates} & +0.278 {[}+0.261, +0.294{]} & +0.080 {[}+0.051,
-+0.107{]} & −0.092 {[}−0.135, −0.051{]} & −0.069 {[}−0.099, −0.039{]} &
++0.107{]} & -0.092 {[}-0.135, -0.051{]} & -0.069 {[}-0.099, -0.039{]} &
 -- & -- & -- \\
 \(-\) \texttt{routing} & +0.222 {[}+0.207, +0.236{]} & +0.078 {[}+0.053,
-+0.101{]} & −0.072 {[}−0.111, −0.033{]} & −0.042 {[}−0.064, −0.018{]} &
-+0.208 {[}+0.190, +0.226{]} & +0.152 {[}+0.111, +0.192{]} & −0.001
-{[}−0.009, +0.007{]} \\
++0.101{]} & -0.072 {[}-0.111, -0.033{]} & -0.042 {[}-0.064, -0.018{]} &
++0.208 {[}+0.190, +0.226{]} & +0.152 {[}+0.111, +0.192{]} & -0.001
+{[}-0.009, +0.007{]} \\
 \(-\) \texttt{replies} & +0.196 {[}+0.183, +0.209{]} & +0.046 {[}+0.019,
-+0.072{]} & −0.019 {[}−0.045, +0.008{]} & −0.060 {[}−0.090, −0.031{]} &
-+0.168 {[}+0.151, +0.184{]} & +0.143 {[}+0.111, +0.173{]} & −0.000
-{[}−0.009, +0.009{]} \\
++0.072{]} & -0.019 {[}-0.045, +0.008{]} & -0.060 {[}-0.090, -0.031{]} &
++0.168 {[}+0.151, +0.184{]} & +0.143 {[}+0.111, +0.173{]} & -0.000
+{[}-0.009, +0.009{]} \\
 \(-\) \texttt{scone} & +0.276 {[}+0.260, +0.293{]} & +0.079 {[}+0.051,
-+0.107{]} & −0.097 {[}−0.140, −0.053{]} & −0.067 {[}−0.098, −0.037{]} &
++0.107{]} & -0.097 {[}-0.140, -0.053{]} & -0.067 {[}-0.098, -0.037{]} &
 -- & -- & -- \\
 \(-\) \texttt{duration} & +0.227 {[}+0.211, +0.243{]} & +0.053
-{[}+0.025, +0.080{]} & −0.098 {[}−0.141, −0.056{]} & −0.054 {[}−0.083,
-−0.025{]} & +0.257 {[}+0.236, +0.278{]} & +0.214 {[}+0.169, +0.258{]} &
-−0.009 {[}−0.021, +0.003{]} \\
+{[}+0.025, +0.080{]} & -0.098 {[}-0.141, -0.056{]} & -0.054 {[}-0.083,
+-0.025{]} & +0.257 {[}+0.236, +0.278{]} & +0.214 {[}+0.169, +0.258{]} &
+-0.009 {[}-0.021, +0.003{]} \\
 \(-\) \texttt{size} & +0.251 {[}+0.236, +0.267{]} & +0.094 {[}+0.071,
-+0.117{]} & −0.098 {[}−0.138, −0.058{]} & −0.067 {[}−0.091, −0.042{]} &
-+0.239 {[}+0.220, +0.258{]} & +0.228 {[}+0.189, +0.267{]} & −0.009
-{[}−0.021, +0.003{]} \\
++0.117{]} & -0.098 {[}-0.138, -0.058{]} & -0.067 {[}-0.091, -0.042{]} &
++0.239 {[}+0.220, +0.258{]} & +0.228 {[}+0.189, +0.267{]} & -0.009
+{[}-0.021, +0.003{]} \\
 \bottomrule
 \end{tabular}%
 }
@@ -1974,6 +1916,256 @@ In \texttt{replies}, candidate outputs are scored at temperature 0 by
 \end{Shaded}
 
 
-  \bibliography{refs.bib}
+  \begin{thebibliography}{29}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agrawal et~al.(2025)Agrawal, Tan, Soylu, Ziems, Khare, Opsahl-Ong,
+  Singhvi, Shandilya, Ryan, Jiang, Potts, and Sen]{a2025gepa}
+Lakshya~A Agrawal, Shangyin Tan, Dilara Soylu, Noah Ziems, Rishi Khare, Krista
+  Opsahl-Ong, Arnav Singhvi, Herumb Shandilya, Michael~James Ryan, Meng Jiang,
+  Christopher Potts, and Koushik Sen.
+\newblock Gepa: Reflective prompt evolution can outperform reinforcement
+  learning.
+\newblock arXiv (Cornell University), 2025.
+\newblock URL \url{http://arxiv.org/abs/2507.19457}.
+
+\bibitem[Bayat et~al.(2026)Bayat, Aminnaseri, Pezeshkpour, and
+  Hruschka]{bayat2026reflective}
+Farima~Fatahi Bayat, Moin Aminnaseri, Pouya Pezeshkpour, and Estevam Hruschka.
+\newblock Reflective prompt tuning through language model function-calling.
+\newblock arXiv preprint, 2026.
+\newblock URL \url{http://arxiv.org/abs/2605.21781v1}.
+
+\bibitem[Casanueva et~al.(2020)Casanueva, Tem\v{c}inas, Gerz, Henderson, and
+  Vuli\'{c}]{casanueva2020efficient}
+I\~{n}igo Casanueva, Tadas Tem\v{c}inas, Daniela Gerz, Matthew Henderson, and Ivan
+  Vuli\'{c}.
+\newblock Efficient intent detection with dual sentence encoders.
+\newblock arXiv preprint, 2020.
+\newblock URL \url{http://arxiv.org/abs/2003.04807v1}.
+
+\bibitem[Chen et~al.(2026)Chen, Wang, and Chen]{chen2026adagepa}
+Junyang Chen, Zecheng Wang, and Jingbang Chen.
+\newblock Adagepa: Adaptive feedback allocation for reflective prompt
+  optimization.
+\newblock arXiv (Cornell University), 2026.
+\newblock URL \url{https://arxiv.org/abs/2609.39927}.
+
+\bibitem[Ding et~al.(2026)Ding, Hong, Shi, Wang, Lin, Yin, Liu, Wang, and
+  Chen]{ding2026scaling}
+Zixin Ding, Junyuan Hong, Zhan Shi, Jiachen~T. Wang, Zinan Lin, Li~Yin, Meng
+  Liu, Zhangyang Wang, and Yuxin Chen.
+\newblock Scaling textual gradients via sampling-based momentum.
+\newblock In \emph{Proceedings of the ACM SIGKDD Conference on Knowledge
+  Discovery and Data Mining (KDD)}, 2026.
+\newblock \doi{10.1145/3786335.3813168}.
+\newblock URL \url{https://arxiv.org/abs/2506.00400}.
+
+\bibitem[Fernando et~al.(2023)Fernando, Banarse, Michalewski, Osindero, and
+  Rockt\"{a}schel]{fernando2023promptbreeder}
+Chrisantha Fernando, Dylan Banarse, Henryk Michalewski, Simon Osindero, and Tim
+  Rockt\"{a}schel.
+\newblock Promptbreeder: Self-referential self-improvement via prompt
+  evolution.
+\newblock arXiv (Cornell University), 2023.
+\newblock URL \url{http://arxiv.org/abs/2309.16797}.
+
+\bibitem[Giummarra et~al.(2026)Giummarra, Baglieri, Maria, Farruggio, Piatto,
+  and Micale]{giummarra2026understanding}
+Andrea Giummarra, Carmelo Baglieri, Antonio~Di Maria, Andrea Farruggio, Michele
+  Piatto, and Giovanni Micale.
+\newblock Understanding when reflective prompt and skill optimization helps on
+  locally served reasoning models: A two-model study of gepa and skillopt.
+\newblock arXiv (Cornell University), 2026.
+\newblock URL \url{https://arxiv.org/abs/2610.26020}.
+
+\bibitem[Guo et~al.(2023)Guo, Wang, Guo, Li, Song, Tan, Liu, Bian, and
+  Yang]{guo2023evoprompt}
+Qingyan Guo, Rui Wang, Junliang Guo, Bei Li, Kai-Tao Song, Xu~Tan, Guoqing Liu,
+  Jiang Bian, and Yujiu Yang.
+\newblock Evoprompt: Connecting llms with evolutionary algorithms yields
+  powerful prompt optimizers, 2023.
+\newblock URL
+  \url{https://www.semanticscholar.org/paper/a9c75cf664f675a1b4034b0256ec3c5168e293df}.
+
+\bibitem[Koh et~al.(2026)Koh, Mo, Le, Zhan, Zheng, Bevis, Owen, Charney, Liu,
+  and Wu]{koh2026contrastive}
+Derek Koh, Jinghui Mo, Benjamin~H. Le, Jiening Zhan, Baofen Zheng, Kevin Bevis,
+  Nathaniel~C. Owen, Lauren~Elizabeth Charney, Wenqiong Liu, and Jingwei Wu.
+\newblock Contrastive reflection for iterative prompt optimization.
+\newblock arXiv preprint, 2026.
+\newblock URL \url{http://arxiv.org/abs/2606.30840v1}.
+
+\bibitem[Kravatskiy et~al.(2026)Kravatskiy, Khrulkov, and
+  Oseledets]{kravatskiy2026improvevolve}
+Alexey Kravatskiy, Valentin Khrulkov, and Ivan Oseledets.
+\newblock Improvevolve: Basin-hopping meets llm-guided evolutionary search.
+\newblock arXiv (Cornell University), 2026.
+\newblock URL \url{https://arxiv.org/abs/2602.10233}.
+
+\bibitem[Liu et~al.(2026)Liu, Tang, Singh, and Ghadar]{liu2026espo}
+Li-Hao Liu, Peng Tang, Kunwar~Yashraj Singh, and Shabnam Ghadar.
+\newblock Espo: Error-structured prompt optimization via diagnose, diversify,
+  and stabilize.
+\newblock arXiv (Cornell University), 2026.
+\newblock URL
+  \url{https://www.semanticscholar.org/paper/28eda5f75fa63a19fbd36d6540065ca806c0609a}.
+
+\bibitem[Lumer et~al.(2026)Lumer, Sen, Subbiah, and Paul]{lumer2026reflective}
+Elias Lumer, Sahil Sen, Vamse~Kumar Subbiah, and Kevin Paul.
+\newblock Reflective prompt optimization of a deep-research agent: A
+  topic-disjoint, multi-seed protocol for measuring transferable gains and
+  prompt-level overfitting.
+\newblock arXiv preprint, 2026.
+\newblock URL \url{http://arxiv.org/abs/2610.12601v1}.
+
+\bibitem[Ma et~al.(2024)Ma, Wang, Zhou, Li, Du, Gui, Zhang, and
+  Huang]{ma2024large}
+Ruotian Ma, Xiaolei Wang, Xin Zhou, Jian Li, Nan Du, Tao Gui, Qi~Zhang, and
+  Xuanjing Huang.
+\newblock Are large language models good prompt optimizers?
+\newblock arXiv preprint, 2024.
+\newblock URL \url{http://arxiv.org/abs/2402.02101v1}.
+
+\bibitem[Novikov et~al.(2025)Novikov, V\~{u}, Eisenberger, Dupont, Huang, Wagner,
+  Shirobokov, Kozlovskii, Ruiz, Mehrabian, Kumar, and
+  See]{alexander2025alphaevolve}
+Alexander Novikov, Ng\^{a}n V\~{u}, Marvin Eisenberger, Emilien Dupont, Po-Sen Huang,
+  Adam~Zsolt Wagner, S.~Shirobokov, Borislav~M. Kozlovskii, Francisco J.~R.
+  Ruiz, Abbas Mehrabian, Manish Kumar, and Abigail See.
+\newblock Alphaevolve: A coding agent for scientific and algorithmic discovery.
+\newblock arXiv (Cornell University), 2025.
+\newblock URL \url{http://arxiv.org/abs/2506.13131}.
+
+\bibitem[Oved et~al.(2026)Oved, Pony, Naparstek, and
+  Barzelay]{oved2026evolution}
+Tal Oved, Roi Pony, Oshri Naparstek, and Udi Barzelay.
+\newblock Evolution or illusion? rethinking evaluation in llm evolutionary
+  search.
+\newblock arXiv (Cornell University), 2026.
+\newblock URL \url{https://arxiv.org/abs/2609.19799}.
+
+\bibitem[Pryzant et~al.(2023)Pryzant, Iter, Li, Lee, Zhu, and
+  Zeng]{pryzant2023automatic}
+Reid Pryzant, Dan Iter, Jerry~Zheng Li, Yin~Tat Lee, Chenguang Zhu, and Michael
+  Zeng.
+\newblock Automatic prompt optimization with ``gradient descent'' and beam
+  search.
+\newblock \emph{Conference on Empirical Methods in Natural Language Processing
+  (EMNLP)}, 2023.
+\newblock \doi{10.18653/v1/2023.emnlp-main.494}.
+\newblock URL \url{https://doi.org/10.18653/v1/2023.emnlp-main.494}.
+
+\bibitem[Pu et~al.(2017)Pu, Miranda, Solar-Lezama, and
+  Kaelbling]{pu2017selecting}
+Yewen Pu, Zachery Miranda, Armando Solar-Lezama, and Leslie~Pack Kaelbling.
+\newblock Selecting representative examples for program synthesis.
+\newblock arXiv preprint, 2017.
+\newblock URL \url{http://arxiv.org/abs/1711.03243v3}.
+
+\bibitem[Romera-Paredes et~al.(2023)Romera-Paredes, Barekatain, Novikov,
+  Balog, Kumar, Dupont, Ruiz, Ellenberg, Wang, Fawzi, Kohli, and
+  Fawzi]{romeraparedes2023mathematical}
+Bernardino Romera-Paredes, Mohammadamin Barekatain, Alexander Novikov, Matej
+  Balog, Manish Kumar, Emilien Dupont, Francisco J.~R. Ruiz, Jordan~S.
+  Ellenberg, Pengming Wang, Omar Fawzi, Pushmeet Kohli, and Alhussein Fawzi.
+\newblock Mathematical discoveries from program search with large language
+  models.
+\newblock \emph{Nature}, 2023.
+\newblock \doi{10.1038/s41586-023-06924-6}.
+\newblock URL \url{https://doi.org/10.1038/s41586-023-06924-6}.
+
+\bibitem[She et~al.(2023)She, Potts, Bowman, and Geiger]{she2023scone}
+Jingyuan~Selena She, Christopher Potts, Samuel~R. Bowman, and Atticus Geiger.
+\newblock Scone: Benchmarking negation reasoning in language models with
+  fine-tuning and in-context learning.
+\newblock \emph{Annual Meeting of the Association for Computational Linguistics
+  (ACL)}, 2023.
+\newblock \doi{10.18653/v1/2023.acl-short.154}.
+\newblock URL \url{https://doi.org/10.18653/v1/2023.acl-short.154}.
+
+\bibitem[Shi and Yang(2025)]{shi2025integrating}
+Zhan Shi and Shanglin Yang.
+\newblock Integrating domain knowledge into large language models for fashion
+  recommendation.
+\newblock arXiv preprint, 2025.
+\newblock URL \url{https://arxiv.org/abs/2502.15696}.
+
+\bibitem[Shi and Yang(2026)]{shi2026selective}
+Zhan Shi and Shanglin Yang.
+\newblock Selective {LLM}-guided regularization for enhancing recommendation
+  models.
+\newblock In \emph{Companion Proceedings of the 19th ACM International
+  Conference on Web Search and Data Mining (WSDM Companion)}, pages 148--153,
+  2026.
+\newblock \doi{10.1145/3779211.3795736}.
+\newblock URL \url{https://doi.org/10.1145/3779211.3795736}.
+
+\bibitem[Singh et~al.(2026)Singh, Gautam, Gupta, Mehrotra, Bakshi, and
+  Gulwani]{singh2026coding}
+Agamdeep Singh, Srishti Gautam, Priyanshu Gupta, Nikita Mehrotra, Tanmay
+  Bakshi, and Sumit Gulwani.
+\newblock Coding agents are strong prompt optimizers.
+\newblock arXiv (Cornell University), 2026.
+\newblock URL \url{https://arxiv.org/abs/2609.26261}.
+
+\bibitem[Suzgun et~al.(2022)Suzgun, Scales, Sch\"{a}rli, Gehrmann, Tay, Chung,
+  Chowdhery, Le, Chi, Zhou, and Wei]{suzgun2022challenging}
+Mirac Suzgun, Nathan Scales, Nathanael Sch\"{a}rli, Sebastian Gehrmann, Yi~Tay,
+  Hyung~Won Chung, Aakanksha Chowdhery, Quoc~V. Le, Ed~H. Chi, Denny Zhou, and
+  Jason Wei.
+\newblock Challenging big-bench tasks and whether chain-of-thought can solve
+  them.
+\newblock arXiv preprint, 2022.
+\newblock URL \url{http://arxiv.org/abs/2210.09261v1}.
+
+\bibitem[Yang et~al.(2023)Yang, Wang, Lu, Liu, Le, Zhou, and
+  Chen]{yang2023large}
+Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc~Viet Le, Denny Zhou,
+  and Xinyun Chen.
+\newblock Large language models as optimizers.
+\newblock arXiv (Cornell University), 2023.
+\newblock URL \url{http://arxiv.org/abs/2309.03409}.
+
+\bibitem[Yang(2026)]{yang2026ideationgoodhart}
+Shanglin Yang.
+\newblock What should you optimize when you optimize an {LLM} research-ideation
+  harness?
+\newblock GitHub repository and pre-registered technical report, 2026.
+\newblock URL \url{https://github.com/shangliy/ideation-goodhart}.
+
+\bibitem[Yang and Shi(2026)]{yang2026selfevolvingrecsys}
+Shanglin Yang and Zhan Shi.
+\newblock Self-evolving recommender systems: A survey and an evaluation audit.
+\newblock Preprints.org, 2026.
+\newblock URL \url{https://doi.org/10.20944/preprints202610.2336.v1}.
+
+\bibitem[Yin and Wang(2025)]{yin2025llmautodiff}
+Li~Yin and Zhangyang Wang.
+\newblock {LLM-AutoDiff}: Auto-differentiate any {LLM} workflow.
+\newblock arXiv preprint, 2025.
+\newblock URL \url{https://arxiv.org/abs/2501.16673}.
+
+\bibitem[Yuksekgonul et~al.(2024)Yuksekgonul, Bianchi, Boen, Liu, Huang,
+  Guestrin, and Zou]{yuksekgonul2024textgrad}
+Mert Yuksekgonul, Federico Bianchi, Joseph Boen, Sheng Liu, Zhi Huang, Carlos
+  Guestrin, and James Zou.
+\newblock Textgrad: Automatic "differentiation" via text.
+\newblock arXiv preprint, 2024.
+\newblock URL \url{http://arxiv.org/abs/2406.07496v1}.
+
+\bibitem[Zhou and Cheng(2026)]{zhou2026explore}
+Xiaofan Zhou and Lu~Cheng.
+\newblock Explore more, validate less: Efficient reflective prompt
+  optimization.
+\newblock arXiv preprint, 2026.
+\newblock URL \url{http://arxiv.org/abs/2610.27367v2}.
+
+\end{thebibliography}
+
 
 \end{document}
