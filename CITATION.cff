@@ -12,6 +12,7 @@ authors:
     email: "ashi2@scu.edu"
 date-released: 2026-10-28
 license: MIT
+doi: "10.48550/arXiv.2610.41157"
 repository-code: "https://github.com/shangliy/lineage-is-memory"
 preferred-citation:
   type: article
@@ -27,3 +28,8 @@ preferred-citation:
       email: "ashi2@scu.edu"
   year: 2026
   journal: "arXiv preprint"
+  doi: "10.48550/arXiv.2610.41157"
+  url: "https://arxiv.org/abs/2610.41157"
+  identifiers:
+    - type: other
+      value: "arXiv:2610.41157"

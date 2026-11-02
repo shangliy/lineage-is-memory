@@ -1,7 +1,10 @@
 # Lineage Is Memory
 
-Code, run summaries and pre-registrations for **"Lineage Is Memory: Build on the Best
-Parent and Let It Accumulate What Feedback Reveals"** ([paper/paper.pdf](paper/paper.pdf); arXiv: coming soon).
+[![arXiv](https://img.shields.io/badge/arXiv-2610.41157-b31b1b.svg)](https://arxiv.org/abs/2610.41157)
+
+Code, run summaries and pre-registrations for **"Lineage Is Memory: Parent Inheritance and
+Feedback Disclosure in Short-Budget LLM-Guided Optimization"**
+([arXiv:2610.41157](https://arxiv.org/abs/2610.41157); PDF also in [paper/paper.pdf](paper/paper.pdf)).
 
 In LLM-guided prompt evolution, *building on the best parent* (lineage) is the main
 lever, and it works as memory: facts the feedback reveals accumulate in the prompt
@@ -71,9 +74,14 @@ See [CITATION.cff](CITATION.cff), or:
 
 ```bibtex
 @misc{yang2026lineage,
-  title  = {Lineage Is Memory: Parent Inheritance and Feedback Disclosure in Short-Budget LLM-Guided Optimization},
-  author = {Yang, Shanglin and Shi, Zhan},
-  year   = {2026},
+  title         = {Lineage Is Memory: Parent Inheritance and Feedback Disclosure in Short-Budget LLM-Guided Optimization},
+  author        = {Yang, Shanglin and Shi, Zhan},
+  year          = {2026},
+  eprint        = {2610.41157},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.SE},
+  doi           = {10.48550/arXiv.2610.41157},
+  url           = {https://arxiv.org/abs/2610.41157},
 }
 ```
 
